@@ -2,6 +2,95 @@ import type { Concept } from '../../types';
 
 export const biochem: Concept[] = [
   {
+    id: 'photosynthesis',
+    title: 'Photosynthesis',
+    category: 'biochem',
+    flagship: true,
+    tags: [
+      'plants',
+      'chlorophyll',
+      'light',
+      'carbon dioxide',
+      'oxygen',
+      'glucose',
+      'chloroplast',
+      'limiting factors',
+    ],
+    aliases: ['how plants make food', 'light reactions', 'calvin cycle', 'plants eating sunlight'],
+    difficulty: 2,
+    rarity: 'common',
+    summary:
+      'Plants turn sunlight, water and air into sugar — and give off the oxygen you breathe.',
+    steps: [
+      {
+        title: 'Food from light',
+        text: 'Plants don’t eat. They build their own sugar using energy from light.',
+      },
+      {
+        title: 'The ingredients',
+        text: 'Carbon dioxide from the air (or water), water from the roots, and light.',
+      },
+      {
+        title: 'Chlorophyll',
+        text: 'Chlorophyll in chloroplasts absorbs red and blue light best and reflects green.',
+      },
+      {
+        title: 'Splitting water',
+        text: 'Light energy splits water. The leftover oxygen escapes as the bubbles you can count.',
+      },
+      {
+        title: 'Building sugar',
+        text: 'The captured energy powers the Calvin cycle, which builds sugar from CO₂.',
+      },
+      {
+        title: 'Limiting factors',
+        text: 'The ingredient in shortest supply — light, CO₂ or warmth — sets the speed.',
+      },
+    ],
+    interaction: { template: 'flagship', config: { component: 'photosynthesis' } },
+    goDeeper:
+      'Photosynthesis happens in two linked stages inside chloroplasts. In the light-dependent reactions on the thylakoid membranes, chlorophyll in photosystems II and I absorbs light, water is split (releasing O₂), and an electron transport chain makes ATP and NADPH. In the Calvin cycle in the stroma, the enzyme Rubisco fixes CO₂ onto a five-carbon sugar, and ATP and NADPH are used to build three-carbon sugars that the plant turns into glucose, sucrose and starch.\n\nIn reality, it’s a bit more complicated: the bubbles from pondweed are mostly oxygen but also contain some nitrogen and other dissolved gases, so bubble counting is an estimate. Plants do use some green light (it penetrates deeper into leaves), just less efficiently. Temperature mainly affects the enzyme-driven Calvin cycle rather than light capture. The overall equation hides many steps — and the O₂ actually comes from water, not from CO₂.',
+    quiz: [
+      {
+        kind: 'mc',
+        prompt: 'Where does the oxygen given off in photosynthesis come from?',
+        options: ['Carbon dioxide', 'Water', 'Glucose', 'The soil'],
+        answer: 1,
+        explain: 'Light energy splits water molecules; the oxygen atoms pair up into O₂.',
+      },
+      {
+        kind: 'predict',
+        scenario:
+          'A plant is under a very bright lamp at a good temperature, but the water has almost no CO₂.',
+        prompt: 'What happens if you move the lamp even closer?',
+        options: [
+          'Bubbles increase a lot',
+          'Hardly any change — CO₂ is the limiting factor',
+          'The plant stops photosynthesizing',
+          'It makes CO₂ instead',
+        ],
+        answer: 1,
+        explain:
+          'More of a non-limiting factor doesn’t help. Add the scarce ingredient (CO₂) instead.',
+      },
+      {
+        kind: 'mc',
+        prompt: 'Why do most plants look green?',
+        options: [
+          'They absorb green light best',
+          'Chlorophyll reflects most green light',
+          'They are full of green water',
+          'Green light makes sugar',
+        ],
+        answer: 1,
+        explain: 'Chlorophyll absorbs red and blue light strongly and reflects much of the green.',
+      },
+    ],
+    relatedConcepts: ['enzymes'],
+    funFact:
+      'About half of the oxygen you breathe was made by tiny ocean plankton, not by land plants.',
+  },
+  {
     id: 'enzymes',
     title: 'Enzymes & Activation Energy',
     category: 'biochem',
