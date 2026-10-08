@@ -19,7 +19,11 @@ const mk = (id: string, rarity: AvatarRarity, exclusive = false): Avatar => ({
   source: exclusive ? { kind: 'mystery' } : { kind: 'pack' },
 });
 
-const pool = AVATAR_RARITIES.flatMap((r) => [mk(`${r}-1`, r), mk(`${r}-2`, r), mk(`${r}-x`, r, true)]);
+const pool = AVATAR_RARITIES.flatMap((r) => [
+  mk(`${r}-1`, r),
+  mk(`${r}-2`, r),
+  mk(`${r}-x`, r, true),
+]);
 
 describe('pack odds', () => {
   it.each(Object.keys(PACKS) as PackTier[])('%s odds sum to 1', (tier) => {

@@ -3,8 +3,24 @@ import { punnett, simulateEcosystem, splitGenotype } from '../src/sim';
 import type { EcoSpecies, PunnettConfig } from '../src/types';
 
 describe('ecosystem', () => {
-  const grass: EcoSpecies = { id: 'g', label: 'Grass', emoji: '🌱', color: '#0f0', start: 50, growth: 0.8, capacity: 100 };
-  const rabbit: EcoSpecies = { id: 'r', label: 'Rabbit', emoji: '🐇', color: '#888', start: 10, death: 0.2, eats: [{ id: 'g', rate: 0.02, efficiency: 0.5 }] };
+  const grass: EcoSpecies = {
+    id: 'g',
+    label: 'Grass',
+    emoji: '🌱',
+    color: '#0f0',
+    start: 50,
+    growth: 0.8,
+    capacity: 100,
+  };
+  const rabbit: EcoSpecies = {
+    id: 'r',
+    label: 'Rabbit',
+    emoji: '🐇',
+    color: '#888',
+    start: 10,
+    death: 0.2,
+    eats: [{ id: 'g', rate: 0.02, efficiency: 0.5 }],
+  };
 
   it('producers grow logistically toward capacity', () => {
     const run = simulateEcosystem([grass], { g: 5 }, 400);
@@ -17,7 +33,15 @@ describe('ecosystem', () => {
   });
 
   it('removing a predator lets prey rise', () => {
-    const fox: EcoSpecies = { id: 'f', label: 'Fox', emoji: '🦊', color: '#f80', start: 3, death: 0.3, eats: [{ id: 'r', rate: 0.05, efficiency: 0.4 }] };
+    const fox: EcoSpecies = {
+      id: 'f',
+      label: 'Fox',
+      emoji: '🦊',
+      color: '#f80',
+      start: 3,
+      death: 0.3,
+      eats: [{ id: 'r', rate: 0.05, efficiency: 0.4 }],
+    };
     const withFox = simulateEcosystem([grass, rabbit, fox], { g: 50, r: 10, f: 3 }, 300).at(-1)!;
     const noFox = simulateEcosystem([grass, rabbit, fox], { g: 50, r: 10, f: 0 }, 300).at(-1)!;
     expect(noFox.r).toBeGreaterThan(withFox.r);
@@ -29,7 +53,11 @@ describe('punnett', () => {
     name: 'Flower color',
     alleles: ['P', 'p'],
     inheritance: 'complete',
-    phenotypes: { PP: { label: 'Purple', color: '#a0f' }, Pp: { label: 'Purple', color: '#a0f' }, pp: { label: 'White', color: '#fff' } },
+    phenotypes: {
+      PP: { label: 'Purple', color: '#a0f' },
+      Pp: { label: 'Purple', color: '#a0f' },
+      pp: { label: 'White', color: '#fff' },
+    },
   };
 
   it('Aa × Aa gives 3:1', () => {

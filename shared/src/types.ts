@@ -203,14 +203,7 @@ export interface SliderConfig {
 }
 
 export type LockShape =
-  | 'triangle'
-  | 'square'
-  | 'circle'
-  | 'star'
-  | 'hexagon'
-  | 'cross'
-  | 'wave'
-  | 'notch';
+  'triangle' | 'square' | 'circle' | 'star' | 'hexagon' | 'cross' | 'wave' | 'notch';
 
 export interface LockKeyConfig {
   prompt: string;
@@ -369,7 +362,14 @@ export type Clue =
       kind: 'slider';
       title: string;
       intro: string;
-      input: { label: string; unit?: string; min: number; max: number; step: number; start: number };
+      input: {
+        label: string;
+        unit?: string;
+        min: number;
+        max: number;
+        step: number;
+        start: number;
+      };
       /** Expression in terms of `x`. */
       expr: string;
       outputLabel: string;

@@ -146,7 +146,10 @@ export function exprVariables(src: string): string[] {
   const walk = (n: Node) => {
     if (n.t === 'var' && n.name !== 'pi') out.add(n.name);
     if (n.t === 'neg') walk(n.a);
-    if (n.t === 'bin') (walk(n.a), walk(n.b));
+    if (n.t === 'bin') {
+      walk(n.a);
+      walk(n.b);
+    }
     if (n.t === 'call') n.args.forEach(walk);
   };
   walk(compileExpr(src));

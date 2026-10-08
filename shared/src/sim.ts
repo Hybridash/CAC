@@ -92,7 +92,11 @@ export interface PunnettResult {
   phenotypes: Record<string, number>;
 }
 
-export function punnett(gene: PunnettConfig['gene'], mother: string, father: string): PunnettResult {
+export function punnett(
+  gene: PunnettConfig['gene'],
+  mother: string,
+  father: string,
+): PunnettResult {
   const x = gene.inheritance === 'x-linked';
   const mg = splitGenotype(mother, gene.alleles, x);
   const fg = splitGenotype(father, gene.alleles, x);

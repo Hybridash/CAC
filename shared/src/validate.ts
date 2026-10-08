@@ -24,7 +24,8 @@ export function validateConcept(c: Concept, allIds: Set<string>): string[] {
   if (!c.goDeeper || c.goDeeper.length < 80) e.push(at('goDeeper is too short'));
   if (!c.summary) e.push(at('missing summary'));
   for (const r of c.relatedConcepts) if (!allIds.has(r)) e.push(at(`unknown related concept ${r}`));
-  for (const r of c.prerequisites ?? []) if (!allIds.has(r)) e.push(at(`unknown prerequisite ${r}`));
+  for (const r of c.prerequisites ?? [])
+    if (!allIds.has(r)) e.push(at(`unknown prerequisite ${r}`));
   if (c.relatedConcepts.includes(c.id)) e.push(at('relates to itself'));
 
   const it = c.interaction;
@@ -99,7 +100,8 @@ export function validateConcept(c: Concept, allIds: Set<string>): string[] {
     case 'ecosystem': {
       const ids = new Set(it.config.species.map((s) => s.id));
       for (const s of it.config.species)
-        for (const x of s.eats ?? []) if (!ids.has(x.id)) e.push(at(`${s.id} eats unknown ${x.id}`));
+        for (const x of s.eats ?? [])
+          if (!ids.has(x.id)) e.push(at(`${s.id} eats unknown ${x.id}`));
       for (const t of it.config.toggleable) if (!ids.has(t)) e.push(at(`toggle ${t} unknown`));
       break;
     }
