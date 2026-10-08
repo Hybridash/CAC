@@ -97,6 +97,7 @@ function Lesson({ concept }: { concept: Concept }) {
             </div>
             <h1 className="text-4xl font-extrabold sm:text-5xl">{concept.title}</h1>
             <p className="mt-2 text-lg text-ink-soft">{concept.summary}</p>
+            <Prerequisites concept={concept} />
           </div>
           <div className="card min-w-60 p-4 text-sm">
             <div className="mb-2 flex items-center justify-between gap-3">
@@ -285,5 +286,27 @@ function StepCards({
         </button>
       </div>
     </div>
+  );
+}
+
+function Prerequisites({ concept }: { concept: Concept }) {
+  const progress = usePlayer((s) => s.player?.progress);
+  const prereqs = (concept.prerequisites ?? []).map((id) => CONCEPT_BY_ID[id]).filter(Boolean);
+  if (!prereqs.length) return null;
+  return (
+    <p className="mt-3 flex flex-wrap items-center gap-1.5 text-sm">
+      <span className="font-bold text-ink-soft">Recommended first:</span>
+      {prereqs.map((p) => (
+        <Link
+          key={p.id}
+          to={`/learn/${p.id}`}
+          className={`chip py-0.5 ${progress?.[p.id]?.completedAt ? 'bg-emerald-100 text-emerald-800' : 'bg-white text-ink ring-1 ring-black/10'}`}
+        >
+          {progress?.[p.id]?.completedAt ? '✓ ' : ''}
+          {p.title}
+        </Link>
+      ))}
+      <span className="text-xs text-ink-soft">(optional — dive right in if you like!)</span>
+    </p>
   );
 }

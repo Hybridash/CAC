@@ -8,6 +8,8 @@ import { Placeholder } from './pages/Placeholder';
 import { LessonPage } from './lesson/LessonPage';
 import { ShopPage } from './shop/ShopPage';
 import { CollectionPage } from './shop/CollectionPage';
+import { KnowledgeMapPage } from './map/KnowledgeMapPage';
+import { ProfilePage } from './profile/ProfilePage';
 import { usePlayer } from './store/player';
 
 export function App() {
@@ -27,11 +29,11 @@ export function App() {
             <Route index element={<HomePage />} />
             <Route path="library" element={<LibraryPage />} />
             <Route path="learn/:id" element={<LessonPage />} />
-            <Route path="map" element={<Placeholder title="Knowledge Map" />} />
+            <Route path="map" element={<KnowledgeMapPage />} />
             <Route path="mysteries" element={<Placeholder title="Bio Mysteries" />} />
             <Route path="shop" element={<ShopPage />} />
             <Route path="collection" element={<CollectionPage />} />
-            <Route path="profile" element={<Placeholder title="Profile" />} />
+            <Route path="profile" element={<ProfilePage />} />
             <Route path="*" element={<Placeholder title="Page not found" />} />
           </Route>
         </Routes>
