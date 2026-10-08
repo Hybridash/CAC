@@ -2,6 +2,7 @@ import type { Concept } from '../../types';
 import { biochem } from './biochem';
 import { cell_ } from './cell';
 import { ecology } from './ecology';
+import { evolution } from './evolution';
 import { genetics } from './genetics';
 import { immunology } from './immunology';
 import { microbes } from './microbes';
@@ -17,6 +18,7 @@ export const CONCEPTS: Concept[] = [
   ...neuro,
   ...immunology,
   ...microbes,
+  ...evolution,
   ...ecology,
 ];
 

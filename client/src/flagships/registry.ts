@@ -7,6 +7,7 @@ import { TranslationLesson } from './translation/TranslationLesson';
 import { MitosisLesson } from './mitosis/MitosisLesson';
 import { VaccineLesson } from './vaccines/VaccineLesson';
 import { EtcLesson } from './etc/EtcLesson';
+import { SelectionLesson } from './selection/SelectionLesson';
 
 /** Hand-built flagship lessons, keyed by the `component` name in concept data. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,4 +19,5 @@ export const FLAGSHIPS: Record<string, ComponentType<TemplateProps<any>>> = {
   mitosis: MitosisLesson,
   vaccines: VaccineLesson,
   'electron-transport-chain': EtcLesson,
+  'natural-selection': SelectionLesson,
 };
