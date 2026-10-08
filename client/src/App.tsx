@@ -5,6 +5,7 @@ import { Layout } from './components/Layout';
 import { HomePage } from './pages/Home';
 import { LibraryPage } from './pages/Library';
 import { Placeholder } from './pages/Placeholder';
+import { LessonPage } from './lesson/LessonPage';
 import { usePlayer } from './store/player';
 
 export function App() {
@@ -23,7 +24,7 @@ export function App() {
           <Route element={<Layout />}>
             <Route index element={<HomePage />} />
             <Route path="library" element={<LibraryPage />} />
-            <Route path="learn/:id" element={<Placeholder title="Lesson" />} />
+            <Route path="learn/:id" element={<LessonPage />} />
             <Route path="map" element={<Placeholder title="Knowledge Map" />} />
             <Route path="mysteries" element={<Placeholder title="Bio Mysteries" />} />
             <Route path="shop" element={<Placeholder title="Shop" />} />
