@@ -30,6 +30,93 @@ const chromatid = (
 
 export const cell_: Concept[] = [
   {
+    id: 'mitosis',
+    title: 'Mitosis',
+    category: 'cell',
+    flagship: true,
+    tags: ['cell division', 'chromosomes', 'growth', 'cell cycle', 'cancer', 'spindle'],
+    aliases: ['cell division', 'how cells divide', 'cell cycle', 'PMAT'],
+    difficulty: 2,
+    rarity: 'common',
+    summary: 'One cell becomes two identical cells — the way you grow and heal.',
+    steps: [
+      {
+        title: 'Interphase: copy',
+        text: 'The cell grows and copies every chromosome, so each one becomes an X of two identical halves.',
+      },
+      {
+        title: 'Prophase: pack up',
+        text: 'Chromosomes coil up tight, the nucleus breaks down, and spindle fibers start to grow.',
+      },
+      {
+        title: 'Metaphase: line up',
+        text: 'Chromosomes line up single-file across the middle of the cell.',
+      },
+      {
+        title: 'Anaphase: pull apart',
+        text: 'Spindle fibers pull the two halves of each X to opposite ends.',
+      },
+      {
+        title: 'Telophase: split',
+        text: 'New nuclei form and the cell pinches in two (cytokinesis).',
+      },
+      {
+        title: 'Two identical cells',
+        text: 'Each new cell has exactly the same chromosomes as the original.',
+      },
+      {
+        title: 'When control fails',
+        text: 'Checkpoints normally stop faulty division. If they break, cells can divide out of control: cancer.',
+      },
+    ],
+    interaction: { template: 'flagship', config: { component: 'mitosis' } },
+    goDeeper:
+      'The cell cycle has interphase (G1, S and G2) and the mitotic (M) phase. DNA is replicated in S phase, producing sister chromatids held together at the centromere by cohesin. In prophase, chromatin condenses and the mitotic spindle forms from centrosomes; in prometaphase, the nuclear envelope breaks down and microtubules attach to kinetochores. The spindle assembly checkpoint holds the cell in metaphase until every chromosome is attached from both poles; then separase cuts cohesin and anaphase begins. Cytokinesis in animal cells uses a contractile ring of actin and myosin.\n\nIn reality, it’s a bit more complicated: human cells have 46 chromosomes (the lesson shows 4), and textbooks often add prometaphase as a separate stage. Plant cells don’t pinch — they build a cell plate down the middle. Cancer usually needs several mutations, typically in genes that push the cycle forward (oncogenes) and in genes that act as brakes (tumor suppressors like p53).',
+    quiz: [
+      {
+        kind: 'mc',
+        prompt: 'What happens in metaphase?',
+        options: [
+          'DNA is copied',
+          'Chromosomes line up in the middle',
+          'The cell splits in two',
+          'Sister chromatids are pulled apart',
+        ],
+        answer: 1,
+        explain: 'In metaphase, chromosomes line up single-file across the cell’s middle.',
+      },
+      {
+        kind: 'mc',
+        prompt: 'How do the two daughter cells compare to the parent cell?',
+        options: [
+          'They have half the chromosomes',
+          'They are genetically identical',
+          'They are all different',
+          'One gets all the DNA',
+        ],
+        answer: 1,
+        explain: 'Mitosis makes identical copies — unlike meiosis.',
+      },
+      {
+        kind: 'predict',
+        scenario:
+          'A mutation breaks the checkpoint that stops cells from dividing when they shouldn’t.',
+        prompt: 'What is most likely to happen?',
+        options: [
+          'Cells stop dividing forever',
+          'Cells divide out of control and may form a tumor',
+          'Cells become bacteria',
+          'Nothing at all',
+        ],
+        answer: 1,
+        explain: 'Without checkpoints, cells keep dividing — the hallmark of cancer.',
+      },
+    ],
+    relatedConcepts: ['meiosis'],
+    funFact:
+      'Your body makes roughly 3.8 million new cells every second, mostly blood and gut cells.',
+  },
+  {
     id: 'meiosis',
     title: 'Meiosis',
     category: 'cell',
