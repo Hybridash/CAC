@@ -27,7 +27,7 @@ const MIGRATIONS: string[] = [
     quiz_perfect INTEGER NOT NULL DEFAULT 0,
     best_score INTEGER NOT NULL DEFAULT 0,
     last_quiz_at TEXT,
-    last_review_reward_at TEXT,
+    last_quiz_reward_at TEXT,
     completed_at TEXT,
     PRIMARY KEY (user_id, concept_id)
   );
