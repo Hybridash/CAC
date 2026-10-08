@@ -14,6 +14,7 @@ import { microbesLibrary } from './microbes-library';
 import { neuro } from './neuro';
 import { neuroLibrary } from './neuro-library';
 import { physiology } from './physiology';
+import { plants } from './plants';
 import { physiologyLibrary } from './physiology-library';
 
 /** Every concept in the library, assembled from the per-category data files. */
@@ -32,6 +33,7 @@ export const CONCEPTS: Concept[] = [
   ...immunologyLibrary,
   ...microbes,
   ...microbesLibrary,
+  ...plants,
   ...evolution,
   ...ecology,
 ];
