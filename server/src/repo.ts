@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import type { ConceptProgress, PlayerState } from '@bioplay/shared';
+import { STARTER_AVATAR, type ConceptProgress, type PlayerState } from '@bioplay/shared';
 import type { DB } from './db.js';
 
 export interface UserRow {
@@ -32,11 +32,15 @@ export const hashToken = (token: string) => crypto.createHash('sha256').update(t
 export function createUser(db: DB, now: Date): { user: UserRow; token: string } {
   const id = crypto.randomUUID();
   const token = crypto.randomBytes(32).toString('base64url');
-  db.prepare('INSERT INTO users (id, token_hash, created_at) VALUES (?, ?, ?)').run(
-    id,
-    hashToken(token),
-    now.toISOString(),
-  );
+  db.transaction(() => {
+    db.prepare(
+      'INSERT INTO users (id, token_hash, created_at, equipped_avatar) VALUES (?, ?, ?, ?)',
+    ).run(id, hashToken(token), now.toISOString(), STARTER_AVATAR);
+    // Everyone starts with one friendly avatar so the header isn't empty.
+    db.prepare(
+      'INSERT INTO inventory (user_id, avatar_id, count, acquired_at) VALUES (?, ?, 1, ?)',
+    ).run(id, STARTER_AVATAR, now.toISOString());
+  })();
   return { user: getUser(db, id)!, token };
 }
 

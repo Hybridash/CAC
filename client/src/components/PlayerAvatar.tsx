@@ -1,16 +1,18 @@
+import { AVATAR_BY_ID, STARTER_AVATAR } from '@bioplay/shared';
 import { usePlayer } from '../store/player';
+import { AvatarArt } from './AvatarArt';
 
-/** The player's equipped avatar (placeholder until the collection ships). */
+/** The player's equipped avatar, shown in the header and cheering during lessons. */
 export function PlayerAvatar({ size = 40 }: { size?: number }) {
-  const name = usePlayer((s) => s.player?.displayName ?? 'Explorer');
+  const equipped = usePlayer((s) => s.player?.equippedAvatar ?? STARTER_AVATAR);
+  const avatar = AVATAR_BY_ID[equipped] ?? AVATAR_BY_ID[STARTER_AVATAR];
   return (
     <span
-      className="grid place-items-center rounded-full bg-emerald-100 ring-2 ring-white"
-      style={{ width: size, height: size, fontSize: size * 0.55 }}
-      title={name}
-      aria-hidden
+      className="grid place-items-center rounded-full bg-white ring-2 ring-emerald-200"
+      style={{ width: size, height: size }}
+      title={avatar.name}
     >
-      🧑‍🔬
+      <AvatarArt avatar={avatar} size={size * 0.92} animate={size > 48} />
     </span>
   );
 }

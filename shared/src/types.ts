@@ -432,7 +432,8 @@ export type AvatarBody =
   | 'eel'
   | 'bat'
   | 'flower'
-  | 'tooth';
+  | 'tooth'
+  | 'wolf';
 
 export type AvatarAccessory =
   | 'none'

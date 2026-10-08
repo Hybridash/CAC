@@ -1,11 +1,14 @@
 import type { NextFunction, Request, Response } from 'express';
 import type { DB } from './db.js';
 import { getUserByToken, type UserRow } from './repo.js';
+import type { Rng } from '@bioplay/shared';
 import type { Clock } from './time.js';
 
 export interface AppContext {
   db: DB;
   clock: Clock;
+  /** Randomness for pack rolls; injectable so tests can be deterministic. */
+  rng?: Rng;
 }
 
 export class HttpError extends Error {
