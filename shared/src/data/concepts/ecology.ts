@@ -2,6 +2,90 @@ import type { Concept } from '../../types';
 
 export const ecology: Concept[] = [
   {
+    id: 'food-chains',
+    title: 'Food Chains & Webs',
+    category: 'ecology',
+    flagship: true,
+    tags: ['producers', 'consumers', 'decomposers', 'energy flow', 'predators', 'herbivores'],
+    aliases: ['food web', 'who eats who', 'producer consumer decomposer', 'trophic levels'],
+    difficulty: 1,
+    rarity: 'common',
+    summary: 'Every living thing needs energy, and it all starts with the sun.',
+    steps: [
+      {
+        title: 'Everyone needs energy',
+        text: 'Living things need energy to move, grow and stay warm.',
+      },
+      {
+        title: 'Producers',
+        text: 'Plants are producers: they make their own food using sunlight.',
+      },
+      {
+        title: 'Consumers',
+        text: 'Animals are consumers: they get energy by eating plants or other animals.',
+      },
+      {
+        title: 'Follow the arrows',
+        text: 'Arrows in a food chain point from the thing that is eaten to the thing that eats it.',
+      },
+      {
+        title: 'Energy gets lost',
+        text: 'Only about 10% of energy passes up each step. The rest is used up or lost as heat.',
+      },
+      {
+        title: 'Ripple effects',
+        text: 'Remove one link and the effects ripple up and down the chain.',
+      },
+      {
+        title: 'Recyclers',
+        text: 'Decomposers like fungi and bacteria break down dead things and return nutrients to the soil.',
+      },
+    ],
+    interaction: { template: 'flagship', config: { component: 'food-chains' } },
+    goDeeper:
+      'Organisms are grouped into trophic levels: producers (autotrophs), primary consumers (herbivores), secondary and tertiary consumers (carnivores and omnivores), and decomposers/detritivores, which process dead matter from every level. Because organisms use most of the energy they take in for respiration, movement and heat, only around 10% (often 5–20%) of energy is passed on as new biomass to the next level. This is why food chains rarely have more than 4–5 links, and why top predators are scarce.\n\nIn reality, it’s a bit more complicated: real ecosystems are food webs, not single chains. Frogs eat many insects, snakes eat mice as well as frogs, and hawks eat many prey. In a web, removing one species often has smaller or more surprising effects than in a single chain, because other links can take up the slack — or, as with keystone species, the effects can be bigger than expected.',
+    quiz: [
+      {
+        kind: 'mc',
+        prompt: 'In a food chain, what does an arrow mean?',
+        options: [
+          '“is bigger than”',
+          '“is eaten by” (energy flows this way)',
+          '“lives near”',
+          '“is the parent of”',
+        ],
+        answer: 1,
+        explain: 'Arrows point in the direction energy flows: from the food to the eater.',
+      },
+      {
+        kind: 'predict',
+        scenario: 'All the frogs in a meadow die from a disease.',
+        prompt: 'What happens to the grasshoppers?',
+        options: [
+          'They decrease',
+          'They increase, because fewer are eaten',
+          'Nothing',
+          'They turn into frogs',
+        ],
+        answer: 1,
+        explain: 'With fewer predators, grasshopper numbers rise — and they eat more grass.',
+      },
+      {
+        kind: 'label',
+        prompt: 'Match each role to an example.',
+        pairs: [
+          { term: 'Producer', definition: 'Grass' },
+          { term: 'Consumer', definition: 'Frog' },
+          { term: 'Decomposer', definition: 'Mushroom' },
+        ],
+        explain: 'Producers make food, consumers eat, decomposers recycle.',
+      },
+    ],
+    relatedConcepts: ['predator-prey'],
+    funFact:
+      'A single hawk might depend on millions of grass plants to support the food chain beneath it.',
+  },
+  {
     id: 'predator-prey',
     title: 'Predator–Prey Cycles',
     category: 'ecology',

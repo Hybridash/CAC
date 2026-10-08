@@ -1,9 +1,27 @@
 import type { ComponentType } from 'react';
 import type { TemplateProps } from '../templates/framework/types';
 import { InsulinLesson } from './insulin/InsulinLesson';
+import { ActionPotentialLesson } from './neuron/ActionPotentialLesson';
+import { PhotosynthesisLesson } from './photosynthesis/PhotosynthesisLesson';
+import { TranslationLesson } from './translation/TranslationLesson';
+import { MitosisLesson } from './mitosis/MitosisLesson';
+import { VaccineLesson } from './vaccines/VaccineLesson';
+import { EtcLesson } from './etc/EtcLesson';
+import { SelectionLesson } from './selection/SelectionLesson';
+import { FoodChainLesson } from './foodchain/FoodChainLesson';
+import { ResistanceLesson } from './resistance/ResistanceLesson';
 
 /** Hand-built flagship lessons, keyed by the `component` name in concept data. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const FLAGSHIPS: Record<string, ComponentType<TemplateProps<any>>> = {
   insulin: InsulinLesson,
+  'action-potential': ActionPotentialLesson,
+  photosynthesis: PhotosynthesisLesson,
+  translation: TranslationLesson,
+  mitosis: MitosisLesson,
+  vaccines: VaccineLesson,
+  'electron-transport-chain': EtcLesson,
+  'natural-selection': SelectionLesson,
+  'food-chains': FoodChainLesson,
+  'antibiotic-resistance': ResistanceLesson,
 };

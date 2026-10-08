@@ -2,6 +2,99 @@ import type { Concept } from '../../types';
 
 export const genetics: Concept[] = [
   {
+    id: 'translation',
+    title: 'From DNA to Protein',
+    category: 'genetics',
+    flagship: true,
+    tags: [
+      'transcription',
+      'translation',
+      'mRNA',
+      'tRNA',
+      'ribosome',
+      'codons',
+      'protein synthesis',
+      'central dogma',
+    ],
+    aliases: [
+      'protein synthesis',
+      'central dogma',
+      'gene expression',
+      'dna to rna to protein',
+      'sickle cell mutation',
+    ],
+    difficulty: 3,
+    rarity: 'common',
+    summary:
+      'Your DNA is a recipe book. Cells copy one recipe to RNA, then a ribosome cooks up a protein.',
+    steps: [
+      {
+        title: 'The recipe',
+        text: 'A gene is a stretch of DNA that holds the instructions for one protein.',
+      },
+      {
+        title: 'Copy it (transcription)',
+        text: 'In the nucleus, RNA polymerase builds an mRNA copy. A pairs with U, T with A, G with C.',
+      },
+      {
+        title: 'Read it (translation)',
+        text: 'A ribosome reads the mRNA three letters at a time. Each three-letter word is a codon.',
+      },
+      {
+        title: 'Deliveries',
+        text: 'tRNAs carry amino acids. Each tRNA’s anticodon pairs with one codon, so the right amino acid is added.',
+      },
+      {
+        title: 'Stop and fold',
+        text: 'A stop codon ends the chain. The protein folds into a shape that lets it do its job.',
+      },
+      {
+        title: 'One letter matters',
+        text: 'Changing a single DNA letter can swap one amino acid — sometimes with big effects.',
+      },
+    ],
+    interaction: { template: 'flagship', config: { component: 'translation' } },
+    goDeeper:
+      'The “central dogma” describes information flowing from DNA to RNA (transcription) to protein (translation). RNA polymerase reads the template strand 3′→5′ and builds mRNA 5′→3′, so the mRNA matches the coding strand except that it has U instead of T. In eukaryotes, the pre-mRNA is capped, spliced to remove introns, and given a poly-A tail before it leaves the nucleus. Ribosomes read codons 5′→3′; 61 codons specify the 20 standard amino acids and 3 are stop codons, so the code is redundant (several codons can mean the same amino acid).\n\nIn reality, it’s a bit more complicated: the sequence in the lesson is the real start of the β-globin gene (Met-His-Leu-Thr-Pro-Glu-Glu…), shortened so the glutamic acid comes third. The real sickle-cell mutation changes the 6th amino acid (Glu → Val), which makes hemoglobin molecules stick together into long fibers when oxygen is low, bending red blood cells into sickle shapes. Also, the first methionine is removed from mature hemoglobin, and real tRNAs can sometimes pair loosely at the third codon letter (“wobble”).',
+    quiz: [
+      {
+        kind: 'mc',
+        prompt: 'In RNA, which base pairs with A on the DNA template?',
+        options: ['T', 'U', 'G', 'C'],
+        answer: 1,
+        explain: 'RNA uses uracil (U) instead of thymine (T).',
+      },
+      {
+        kind: 'label',
+        prompt: 'Match each molecule to its job.',
+        pairs: [
+          { term: 'mRNA', definition: 'A working copy of a gene' },
+          { term: 'tRNA', definition: 'Carries an amino acid to the ribosome' },
+          { term: 'Ribosome', definition: 'Reads codons and links amino acids' },
+        ],
+        explain: 'mRNA is the message, tRNA the delivery truck, the ribosome the factory.',
+      },
+      {
+        kind: 'predict',
+        scenario:
+          'One DNA letter changes so a codon goes from GAG (glutamic acid) to GUG (valine).',
+        prompt: 'What happens to the protein?',
+        options: [
+          'Nothing — one letter can’t matter',
+          'One amino acid is swapped, which can change how the protein behaves',
+          'The whole protein becomes DNA',
+          'The protein gets twice as long',
+        ],
+        answer: 1,
+        explain:
+          'A single swap can change the protein’s properties — this is what causes sickle-cell disease.',
+      },
+    ],
+    relatedConcepts: ['incomplete-dominance', 'meiosis'],
+    funFact:
+      'A ribosome adds about 15–20 amino acids per second in bacteria, and a few per second in your cells.',
+  },
+  {
     id: 'incomplete-dominance',
     title: 'Incomplete Dominance & Codominance',
     category: 'genetics',
