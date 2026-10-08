@@ -1,6 +1,7 @@
 import type { Concept } from '../../types';
 import { biochem } from './biochem';
 import { cell_ } from './cell';
+import { cellLibrary } from './cell-library';
 import { ecology } from './ecology';
 import { evolution } from './evolution';
 import { genetics } from './genetics';
@@ -12,6 +13,7 @@ import { physiology } from './physiology';
 /** Every concept in the library, assembled from the per-category data files. */
 export const CONCEPTS: Concept[] = [
   ...cell_,
+  ...cellLibrary,
   ...genetics,
   ...biochem,
   ...physiology,
