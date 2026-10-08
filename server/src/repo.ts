@@ -23,7 +23,7 @@ export interface ProgressRow {
   quiz_perfect: number;
   best_score: number;
   last_quiz_at: string | null;
-  last_review_reward_at: string | null;
+  last_quiz_reward_at: string | null;
   completed_at: string | null;
 }
 

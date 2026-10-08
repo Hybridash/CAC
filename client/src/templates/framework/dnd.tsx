@@ -148,11 +148,13 @@ export function DropZone({
   label,
   children,
   className = '',
+  style,
 }: {
   id: string;
   label: string;
   children: (s: { isOver: boolean; armed: boolean }) => ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id });
   const arena = useArena();
@@ -161,7 +163,8 @@ export function DropZone({
     <div
       ref={setNodeRef}
       onClick={() => armed && arena.place(id)}
-      className={`relative ${armed ? 'cursor-pointer' : ''} ${className}`}
+      className={`${className.includes('absolute') ? '' : 'relative'} ${armed ? 'cursor-pointer' : ''} ${className}`}
+      style={style}
       data-zone={id}
     >
       {children({ isOver, armed })}
