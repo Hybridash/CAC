@@ -3,6 +3,7 @@ import { biochem } from './biochem';
 import { biochemLibrary } from './biochem-library';
 import { cell_ } from './cell';
 import { cellLibrary } from './cell-library';
+import { development } from './development';
 import { ecology } from './ecology';
 import { ecologyLibrary } from './ecology-library';
 import { evolution } from './evolution';
@@ -40,6 +41,7 @@ export const CONCEPTS: Concept[] = [
   ...evolutionLibrary,
   ...ecology,
   ...ecologyLibrary,
+  ...development,
 ];
 
 export const CONCEPT_BY_ID: Record<string, Concept> = Object.fromEntries(
