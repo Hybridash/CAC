@@ -2,6 +2,86 @@ import type { Concept } from '../../types';
 
 export const immunology: Concept[] = [
   {
+    id: 'vaccines',
+    title: 'How Vaccines Work',
+    category: 'immunology',
+    flagship: true,
+    tags: ['immunity', 'memory cells', 'antibodies', 'booster', 'immunization', 'mRNA vaccine'],
+    aliases: ['vaccination', 'immunization', 'shots', 'jabs', 'booster shots', 'immune memory'],
+    difficulty: 3,
+    rarity: 'common',
+    summary:
+      'A vaccine is a practice run that teaches your immune system to recognize a germ before it ever meets it.',
+    steps: [
+      {
+        title: 'A learning system',
+        text: 'Your immune system can learn the shape of a germ and remember it for years.',
+      },
+      {
+        title: 'A practice run',
+        text: 'A vaccine shows your body a harmless piece or weakened version of a germ — a “wanted poster”.',
+      },
+      {
+        title: 'Memory is made',
+        text: 'The first response is slow, but it leaves behind memory cells that know exactly what to look for.',
+      },
+      { title: 'The real thing', text: 'Later, the real germ shows up and starts copying itself.' },
+      {
+        title: 'Fast response',
+        text: 'Memory cells spring into action within days, flooding the body with antibodies before the germ can spread.',
+      },
+      {
+        title: 'Without a vaccine',
+        text: 'An unvaccinated body must learn from scratch, which takes a week or more — long enough to get sick.',
+      },
+      {
+        title: 'Boosters',
+        text: 'A booster dose reminds the immune system and makes the memory even stronger.',
+      },
+    ],
+    interaction: { template: 'flagship', config: { component: 'vaccines' } },
+    goDeeper:
+      'Vaccines train adaptive immunity. Antigen-presenting cells show vaccine antigens to helper T cells, which help B cells make antibodies and help cytotoxic T cells develop. Some B and T cells become long-lived memory cells. On re-exposure, the secondary (memory) response is faster, larger and produces better-binding antibodies thanks to affinity maturation. Vaccine types include live-attenuated (weakened), inactivated, subunit/protein, toxoid, viral-vector and mRNA vaccines; mRNA vaccines give cells temporary instructions to make one viral protein, and the mRNA is broken down within days.\n\nIn reality, it’s a bit more complicated: the model compresses everything into virus and antibody curves, but T cells matter a lot too, and protection can wane over time or be reduced when a virus mutates (which is why flu vaccines are updated yearly). Vaccines greatly lower the risk of illness but no vaccine is 100% effective — vaccinated people can sometimes still get mild infections. When enough people are immune, spread slows for everyone, which is called herd immunity.',
+    quiz: [
+      {
+        kind: 'mc',
+        prompt: 'What does a vaccine mainly create that protects you later?',
+        options: ['Memory cells', 'Red blood cells', 'Extra stomach acid', 'New neurons'],
+        answer: 0,
+        explain: 'Memory cells remember the germ and trigger a fast response next time.',
+      },
+      {
+        kind: 'predict',
+        scenario:
+          'A vaccinated person and an unvaccinated person catch the same virus on the same day.',
+        prompt: 'What usually happens?',
+        options: [
+          'Both get equally sick',
+          'The vaccinated person clears it faster and gets less sick',
+          'The vaccinated person gets sicker',
+          'Neither makes antibodies',
+        ],
+        answer: 1,
+        explain: 'Memory cells start the antibody response in days instead of a week or more.',
+      },
+      {
+        kind: 'mc',
+        prompt: 'Why is a booster dose given?',
+        options: [
+          'To cure the disease',
+          'To strengthen and refresh immune memory',
+          'To replace your antibodies with new blood',
+          'To make the virus weaker',
+        ],
+        answer: 1,
+        explain: 'Boosters restimulate the immune system so memory is stronger and longer-lasting.',
+      },
+    ],
+    relatedConcepts: ['antibodies'],
+    funFact:
+      'In 1796, Edward Jenner used cowpox to protect against smallpox — the word “vaccine” comes from vacca, Latin for cow.',
+  },
+  {
     id: 'antibodies',
     title: 'Antibodies',
     category: 'immunology',
