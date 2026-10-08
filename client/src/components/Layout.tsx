@@ -70,6 +70,16 @@ export function Layout() {
               <span data-testid="atp-balance">{player?.atp ?? '—'}</span>
               <span className="sr-only">ATP</span>
             </NavLink>
+            {!!player?.streak && (
+              <NavLink
+                to="/profile"
+                className="chip hidden bg-orange-100 py-1 text-base text-orange-800 sm:inline-flex"
+                title={`${player.streak}-day learning streak`}
+              >
+                🔥 {player.streak}
+                <span className="sr-only"> day streak</span>
+              </NavLink>
+            )}
             <span
               className="chip hidden bg-violet-100 py-1 text-base text-violet-900 sm:inline-flex"
               title="Nucleotides"
