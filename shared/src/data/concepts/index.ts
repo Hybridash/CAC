@@ -10,6 +10,7 @@ import { geneticsLibrary } from './genetics-library';
 import { immunology } from './immunology';
 import { microbes } from './microbes';
 import { neuro } from './neuro';
+import { neuroLibrary } from './neuro-library';
 import { physiology } from './physiology';
 import { physiologyLibrary } from './physiology-library';
 
@@ -24,6 +25,7 @@ export const CONCEPTS: Concept[] = [
   ...physiology,
   ...physiologyLibrary,
   ...neuro,
+  ...neuroLibrary,
   ...immunology,
   ...microbes,
   ...evolution,
