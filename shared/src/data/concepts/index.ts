@@ -1,5 +1,6 @@
 import type { Concept } from '../../types';
 import { biochem } from './biochem';
+import { biochemLibrary } from './biochem-library';
 import { cell_ } from './cell';
 import { cellLibrary } from './cell-library';
 import { ecology } from './ecology';
@@ -18,6 +19,7 @@ export const CONCEPTS: Concept[] = [
   ...genetics,
   ...geneticsLibrary,
   ...biochem,
+  ...biochemLibrary,
   ...physiology,
   ...neuro,
   ...immunology,

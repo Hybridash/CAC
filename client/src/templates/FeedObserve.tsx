@@ -228,7 +228,8 @@ function Meter({ meter, value }: { meter: FeedObserveConfig['meters'][number]; v
   const lo = ((meter.healthy[0] - meter.min) / (meter.max - meter.min)) * 100;
   const hi = ((meter.healthy[1] - meter.min) / (meter.max - meter.min)) * 100;
   const healthy = value >= meter.healthy[0] && value <= meter.healthy[1];
-  const shown = value.toFixed(meter.max - meter.min <= 20 ? 1 : 0);
+  const range = meter.max - meter.min;
+  const shown = value.toFixed(range <= 2 ? 2 : range <= 20 ? 1 : 0);
   return (
     <div className="flex flex-col items-center gap-1">
       <div
