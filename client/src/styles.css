@@ -1,0 +1,112 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'Baloo 2', ui-rounded, system-ui, sans-serif;
+  --font-sans: 'Nunito', ui-rounded, system-ui, sans-serif;
+  --color-paper: #fff9ef;
+  --color-ink: #1e1b2e;
+  --color-ink-soft: #4b4763;
+  --color-atp: #f59e0b;
+  --color-atp-dark: #b45309;
+  --color-nuc: #8b5cf6;
+  --color-brand: #10b981;
+  --color-brand-dark: #047857;
+  --color-common: #94a3b8;
+  --color-uncommon: #22c55e;
+  --color-rare: #3b82f6;
+  --color-epic: #a855f7;
+  --color-legendary: #f59e0b;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  line-height: 1.15;
+}
+
+:focus-visible {
+  outline: 3px solid #6366f1;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Dotted "petri dish" texture for scenes. */
+.scene-bg {
+  background-image: radial-gradient(rgba(30, 27, 46, 0.07) 1.2px, transparent 1.2px);
+  background-size: 18px 18px;
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-2.5 font-bold transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply btn bg-brand text-white shadow-[0_4px_0_var(--color-brand-dark)] hover:brightness-105 active:translate-y-0.5 active:shadow-[0_2px_0_var(--color-brand-dark)];
+}
+@utility btn-ghost {
+  @apply btn bg-white text-ink shadow-[0_3px_0_rgba(30,27,46,0.15)] ring-1 ring-black/10 hover:bg-slate-50;
+}
+@utility card {
+  @apply rounded-3xl bg-white shadow-[0_4px_0_rgba(30,27,46,0.08)] ring-1 ring-black/5;
+}
+@utility chip {
+  @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-sm font-bold;
+}
+
+/* Draggable items must not scroll the page while dragged on touch screens. */
+.touch-drag {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.legendary-shimmer {
+  background: linear-gradient(110deg, #fde68a 20%, #fff7d1 40%, #f59e0b 60%, #fde68a 80%);
+  background-size: 200% 100%;
+  animation: shimmer 2.5s linear infinite;
+}
