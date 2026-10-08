@@ -10,6 +10,8 @@ import { ShopPage } from './shop/ShopPage';
 import { CollectionPage } from './shop/CollectionPage';
 import { KnowledgeMapPage } from './map/KnowledgeMapPage';
 import { ProfilePage } from './profile/ProfilePage';
+import { MysteriesPage } from './mysteries/MysteriesPage';
+import { MysteryCasePage } from './mysteries/MysteryCasePage';
 import { usePlayer } from './store/player';
 
 export function App() {
@@ -30,7 +32,8 @@ export function App() {
             <Route path="library" element={<LibraryPage />} />
             <Route path="learn/:id" element={<LessonPage />} />
             <Route path="map" element={<KnowledgeMapPage />} />
-            <Route path="mysteries" element={<Placeholder title="Bio Mysteries" />} />
+            <Route path="mysteries" element={<MysteriesPage />} />
+            <Route path="mysteries/:id" element={<MysteryCasePage />} />
             <Route path="shop" element={<ShopPage />} />
             <Route path="collection" element={<CollectionPage />} />
             <Route path="profile" element={<ProfilePage />} />
