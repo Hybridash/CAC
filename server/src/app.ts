@@ -6,6 +6,7 @@ import { errorHandler, type AppContext } from './http.js';
 import { conceptRoutes } from './routes/concepts.js';
 import { playerRoutes } from './routes/player.js';
 import { shopRoutes } from './routes/shop.js';
+import { mysteryRoutes } from './routes/mysteries.js';
 import { systemClock, type Clock } from './time.js';
 
 export function createApp(db: DB, clock: Clock = systemClock, rng?: Rng) {
@@ -20,6 +21,7 @@ export function createApp(db: DB, clock: Clock = systemClock, rng?: Rng) {
   app.use('/api', playerRoutes(ctx));
   app.use('/api/concepts', conceptRoutes(ctx));
   app.use('/api/shop', shopRoutes(ctx));
+  app.use('/api/mysteries', mysteryRoutes(ctx));
 
   app.use('/api', (_req, res) => {
     res.status(404).json({ error: 'Not found' });
