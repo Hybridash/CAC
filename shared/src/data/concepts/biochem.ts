@@ -2,6 +2,104 @@ import type { Concept } from '../../types';
 
 export const biochem: Concept[] = [
   {
+    id: 'electron-transport-chain',
+    title: 'The Electron Transport Chain',
+    category: 'biochem',
+    flagship: true,
+    tags: [
+      'mitochondria',
+      'ATP synthase',
+      'oxidative phosphorylation',
+      'NADH',
+      'proton gradient',
+      'chemiosmosis',
+      'cyanide',
+    ],
+    aliases: [
+      'ETC',
+      'oxidative phosphorylation',
+      'chemiosmosis',
+      'respiratory chain',
+      'ATP synthase',
+    ],
+    difficulty: 5,
+    rarity: 'common',
+    prerequisites: ['enzymes'],
+    summary:
+      'Your mitochondria pass electrons down a chain to pump protons uphill, then use the flood back down to make ATP.',
+    steps: [
+      {
+        title: 'Where it happens',
+        text: 'In the folded inner membrane of every mitochondrion, the final stage of cellular respiration.',
+      },
+      {
+        title: 'A bucket brigade',
+        text: 'Proteins in the membrane pass electrons along like a bucket brigade: I → Q → III → cyt c → IV.',
+      },
+      {
+        title: 'Energy from food',
+        text: 'NADH and FADH₂, made from breaking down food, drop off high-energy electrons at the start.',
+      },
+      {
+        title: 'Pumping protons',
+        text: 'As electrons pass, Complexes I, III and IV use their energy to pump H⁺ ions into the space outside, building up pressure.',
+      },
+      {
+        title: 'A turbine',
+        text: 'H⁺ ions flow back through ATP synthase, spinning it like a turbine. Each turn makes ATP.',
+      },
+      {
+        title: 'Oxygen at the end',
+        text: 'Oxygen collects the used electrons and becomes water. Block any step and the whole chain fails.',
+      },
+    ],
+    interaction: { template: 'flagship', config: { component: 'electron-transport-chain' } },
+    goDeeper:
+      'Oxidative phosphorylation couples electron transport to ATP synthesis through chemiosmosis (Peter Mitchell, Nobel Prize 1978). Complex I (NADH dehydrogenase) passes electrons from NADH to ubiquinone and pumps 4 H⁺; Complex II (succinate dehydrogenase) passes electrons from FADH₂ to ubiquinone without pumping; Complex III pumps 4 H⁺ (via the Q cycle) and reduces cytochrome c; Complex IV (cytochrome c oxidase) reduces O₂ to water and pumps 2 H⁺. The resulting proton-motive force drives the rotary motor F₀F₁ ATP synthase. The P/O ratio is about 2.5 ATP per NADH and 1.5 per FADH₂.\n\nIn reality, it’s a bit more complicated: the “4 protons per ATP” used here includes the cost of moving phosphate and ATP across the membrane, and actual ratios vary. Electrons move as pairs and Complex IV needs 4 electrons to reduce one O₂. Cyanide and carbon monoxide bind Complex IV; oligomycin blocks the F₀ proton channel; DNP and the natural protein UCP1 in brown fat let protons leak back, releasing energy as heat. DNP was once sold as a diet pill and caused deadly overheating.',
+    quiz: [
+      {
+        kind: 'mc',
+        prompt: 'What directly spins ATP synthase?',
+        options: [
+          'Electrons',
+          'Protons (H⁺) flowing back across the membrane',
+          'Oxygen',
+          'Glucose',
+        ],
+        answer: 1,
+        explain:
+          'The proton gradient built by the chain drives H⁺ back through ATP synthase, turning its rotor.',
+      },
+      {
+        kind: 'predict',
+        scenario: 'Cyanide blocks Complex IV so electrons can’t be passed to oxygen.',
+        prompt: 'What happens to ATP production?',
+        options: [
+          'It increases',
+          'It stops, because the chain backs up and proton pumping stops',
+          'Nothing changes',
+          'Only FADH₂ is affected',
+        ],
+        answer: 1,
+        explain:
+          'With the end blocked, electrons pile up, pumping stops, the gradient fades and ATP synthesis crashes.',
+      },
+      {
+        kind: 'label',
+        prompt: 'Match each part to its role.',
+        pairs: [
+          { term: 'NADH', definition: 'Delivers high-energy electrons' },
+          { term: 'Oxygen', definition: 'Final electron acceptor; becomes water' },
+          { term: 'ATP synthase', definition: 'Turbine that makes ATP from the proton flow' },
+        ],
+        explain: 'Electrons in, oxygen at the end, ATP synthase cashes in the gradient.',
+      },
+    ],
+    relatedConcepts: ['photosynthesis', 'enzymes'],
+    funFact:
+      'Your body makes roughly its own weight in ATP every day — recycling each ATP molecule over a thousand times.',
+  },
+  {
     id: 'photosynthesis',
     title: 'Photosynthesis',
     category: 'biochem',
