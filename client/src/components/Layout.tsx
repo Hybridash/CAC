@@ -6,6 +6,7 @@ import { AtpIcon, NucleotideIcon } from './Atp';
 import { SearchBox } from './SearchBox';
 import { RewardToasts } from './RewardToasts';
 import { PlayerAvatar } from './PlayerAvatar';
+import { ErrorBoundary } from './ErrorBoundary';
 
 const NAV = [
   { to: '/', label: 'Home', emoji: '🏠' },
@@ -112,7 +113,9 @@ export function Layout() {
       </header>
 
       <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 pt-4 pb-28 lg:pb-12">
-        <Outlet />
+        <ErrorBoundary key={pathname}>
+          <Outlet />
+        </ErrorBoundary>
       </main>
 
       {/* Bottom tab bar for phones and tablets. */}

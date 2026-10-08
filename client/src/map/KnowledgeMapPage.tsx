@@ -11,6 +11,7 @@ import {
   type ConceptProgress,
 } from '@bioplay/shared';
 import { computeMapLayout } from './layout';
+import { inkFor } from '../lib/color';
 import { usePlayer } from '../store/player';
 import { AtpAmount } from '../components/Atp';
 import { Stars } from '../components/ConceptBits';
@@ -131,7 +132,7 @@ export function KnowledgeMapPage() {
                     y={r.y + 30}
                     fontSize="17"
                     fontWeight="800"
-                    fill={r.category.color}
+                    fill={inkFor(r.category.color)}
                     style={{ fontFamily: 'var(--font-display)' }}
                   >
                     {r.category.emoji}{' '}
@@ -146,7 +147,7 @@ export function KnowledgeMapPage() {
                     fontSize="13"
                     fontWeight="800"
                     textAnchor="end"
-                    fill={r.category.color}
+                    fill={inkFor(r.category.color)}
                   >
                     {n}/{all.length}
                   </text>

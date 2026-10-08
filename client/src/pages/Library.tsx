@@ -12,6 +12,7 @@ import { ConceptCard } from '../components/ConceptBits';
 import { searchIndex } from '../lib/library';
 import { DEFAULT_FILTERS, filterConcepts, type LibraryFilters, type SortKey } from '../lib/search';
 import { usePlayer } from '../store/player';
+import { inkFor } from '../lib/color';
 
 const toggle = <T,>(list: T[], v: T) =>
   list.includes(v) ? list.filter((x) => x !== v) : [...list, v];
@@ -76,7 +77,7 @@ export function LibraryPage() {
                   className="chip py-1 ring-2 transition"
                   style={{
                     background: on ? c.color : c.tint,
-                    color: on ? 'white' : c.color,
+                    color: on ? 'white' : inkFor(c.color),
                     ['--tw-ring-color' as string]: on ? c.color : 'transparent',
                   }}
                 >

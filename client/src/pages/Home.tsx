@@ -5,6 +5,7 @@ import { ConceptCard } from '../components/ConceptBits';
 import { AtpIcon } from '../components/Atp';
 import { todaysConceptId } from '../lib/library';
 import { usePlayer } from '../store/player';
+import { inkFor } from '../lib/color';
 
 export function HomePage() {
   const player = usePlayer((s) => s.player);
@@ -121,7 +122,10 @@ export function HomePage() {
                   {c.emoji}
                 </span>
                 <span className="min-w-0">
-                  <span className="block truncate font-bold" style={{ color: c.color }}>
+                  <span
+                    className="block leading-tight font-bold"
+                    style={{ color: inkFor(c.color) }}
+                  >
                     {c.name}
                   </span>
                   <span className="text-xs font-semibold text-ink-soft">

@@ -16,6 +16,7 @@ import { AtpAmount } from '../components/Atp';
 import { AvatarCheer } from '../components/AvatarCheer';
 import { InteractionHost } from './InteractionHost';
 import { Quiz } from './Quiz';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import { usePlayer } from '../store/player';
 import { todaysConceptId } from '../lib/library';
 import { sfx } from '../lib/sound';
@@ -139,12 +140,14 @@ function Lesson({ concept }: { concept: Concept }) {
           <AvatarCheer message={cheer} />
         </aside>
         <section aria-label="Interactive" className="card min-w-0 p-4 sm:p-5">
-          <InteractionHost
-            concept={concept}
-            onComplete={onComplete}
-            onStage={onStage}
-            alreadyDone={!!progress?.interactionDoneAt}
-          />
+          <ErrorBoundary label="interaction">
+            <InteractionHost
+              concept={concept}
+              onComplete={onComplete}
+              onStage={onStage}
+              alreadyDone={!!progress?.interactionDoneAt}
+            />
+          </ErrorBoundary>
           <AnimatePresence>
             {interactionDone && (
               <motion.div
