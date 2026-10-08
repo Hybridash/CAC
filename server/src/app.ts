@@ -1,6 +1,9 @@
 import cors from 'cors';
 import type { Rng } from '@bioplay/shared';
 import express from 'express';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { DB } from './db.js';
 import { errorHandler, type AppContext } from './http.js';
 import { conceptRoutes } from './routes/concepts.js';
@@ -26,6 +29,16 @@ export function createApp(db: DB, clock: Clock = systemClock, rng?: Rng) {
   app.use('/api', (_req, res) => {
     res.status(404).json({ error: 'Not found' });
   });
+
+  // In production, serve the built client and let the SPA handle its own routes.
+  const clientDist = path.resolve(
+    path.dirname(fileURLToPath(import.meta.url)),
+    '../../client/dist',
+  );
+  if (process.env.NODE_ENV === 'production' && fs.existsSync(clientDist)) {
+    app.use(express.static(clientDist, { maxAge: '1h', index: false }));
+    app.get(/^\/(?!api\/).*/, (_req, res) => res.sendFile(path.join(clientDist, 'index.html')));
+  }
   app.use(errorHandler);
   return app;
 }

@@ -41,3 +41,6 @@ Thumbs.db
 
 # Local scratch scripts
 *.tmp.mjs
+
+# E2E test database
+.e2e-data/

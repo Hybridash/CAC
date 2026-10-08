@@ -8,6 +8,7 @@ import {
 } from '@bioplay/shared';
 import { AtpAmount } from './Atp';
 import { usePlayer } from '../store/player';
+import { inkFor } from '../lib/color';
 
 export function Stars({ difficulty }: { difficulty: Difficulty }) {
   return (
@@ -28,7 +29,7 @@ export function Stars({ difficulty }: { difficulty: Difficulty }) {
 export function CategoryChip({ id }: { id: Concept['category'] }) {
   const c = CATEGORY_BY_ID[id];
   return (
-    <span className="chip" style={{ background: c.tint, color: c.color }}>
+    <span className="chip" style={{ background: c.tint, color: inkFor(c.color) }}>
       <span aria-hidden>{c.emoji}</span> {c.name}
     </span>
   );
