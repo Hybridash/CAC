@@ -5,6 +5,7 @@ import { cell_ } from './cell';
 import { cellLibrary } from './cell-library';
 import { ecology } from './ecology';
 import { evolution } from './evolution';
+import { evolutionLibrary } from './evolution-library';
 import { genetics } from './genetics';
 import { geneticsLibrary } from './genetics-library';
 import { immunology } from './immunology';
@@ -35,6 +36,7 @@ export const CONCEPTS: Concept[] = [
   ...microbesLibrary,
   ...plants,
   ...evolution,
+  ...evolutionLibrary,
   ...ecology,
 ];
 
