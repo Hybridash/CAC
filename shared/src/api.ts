@@ -55,3 +55,31 @@ export interface QuizSubmitResponse extends RewardResponse {
 export interface ApiError {
   error: string;
 }
+
+export interface PackCard {
+  avatarId: string;
+  duplicate: boolean;
+  /** Nucleotides granted if this was a duplicate. */
+  nucleotides: number;
+}
+
+export interface PackOpenResponse {
+  tier: string;
+  cards: PackCard[];
+  state: PlayerState;
+}
+
+export interface MysterySolveRequest {
+  explanation: number;
+  /** Indices of evidence statements the player selected. */
+  evidence: number[];
+}
+
+export interface MysterySolveResponse extends RewardResponse {
+  correct: boolean;
+  explanationCorrect: boolean;
+  evidenceCorrect: boolean;
+  /** Mystery-exclusive avatar won on this solve, if any. */
+  exclusiveAvatar: string | null;
+  alreadySolved: boolean;
+}

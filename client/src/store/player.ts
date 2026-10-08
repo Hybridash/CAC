@@ -1,0 +1,222 @@
+import { create } from 'zustand';
+import {
+  gradeQuiz,
+  CONCEPT_BY_ID,
+  type MysterySolveRequest,
+  type MysterySolveResponse,
+  type PackOpenResponse,
+  type PackTier,
+  type PlayerState,
+  type QuizAnswer,
+  type QuizSubmitResponse,
+  type RewardLine,
+  type RewardResponse,
+  type SessionResponse,
+} from '@bioplay/shared';
+import { api, clearToken, getToken, RequestError, setToken, storage } from '../lib/api';
+
+const STATE_KEY = 'bioplay.state';
+const QUEUE_KEY = 'bioplay.queue';
+
+type QueuedAction =
+  | { kind: 'interaction'; conceptId: string }
+  | { kind: 'quiz'; conceptId: string; answers: QuizAnswer[] };
+
+export type Connection = 'connecting' | 'online' | 'offline';
+
+interface PlayerStore {
+  player: PlayerState | null;
+  connection: Connection;
+  /** Reward lines waiting to be celebrated by the toast. */
+  toasts: { id: number; lines: RewardLine[] }[];
+  init: () => Promise<void>;
+  refresh: () => Promise<void>;
+  completeInteraction: (conceptId: string) => Promise<RewardResponse | null>;
+  submitQuiz: (conceptId: string, answers: QuizAnswer[]) => Promise<QuizSubmitResponse>;
+  openPack: (tier: PackTier) => Promise<PackOpenResponse>;
+  buyAvatar: (avatarId: string) => Promise<void>;
+  equip: (avatarId: string | null) => Promise<void>;
+  rename: (name: string) => Promise<void>;
+  solveMystery: (id: string, req: MysterySolveRequest) => Promise<MysterySolveResponse>;
+  dismissToast: (id: number) => void;
+}
+
+const loadCached = (): PlayerState | null => {
+  try {
+    return JSON.parse(storage.get(STATE_KEY) ?? 'null');
+  } catch {
+    return null;
+  }
+};
+const loadQueue = (): QueuedAction[] => {
+  try {
+    return JSON.parse(storage.get(QUEUE_KEY) ?? '[]');
+  } catch {
+    return [];
+  }
+};
+const saveQueue = (q: QueuedAction[]) => storage.set(QUEUE_KEY, JSON.stringify(q));
+
+let toastId = 0;
+
+export const usePlayer = create<PlayerStore>((set, get) => {
+  /** Store fresh server state and mirror it to localStorage so the next load is instant. */
+  const accept = (state: PlayerState) => {
+    storage.set(STATE_KEY, JSON.stringify(state));
+    set({ player: state, connection: 'online' });
+  };
+
+  const celebrate = (lines: RewardLine[]) => {
+    if (!lines.length) return;
+    set((s) => ({ toasts: [...s.toasts, { id: ++toastId, lines }] }));
+  };
+
+  const enqueue = (a: QueuedAction) => {
+    saveQueue([...loadQueue(), a]);
+    set({ connection: 'offline' });
+  };
+
+  /** Replay actions made while offline; the server computes the rewards. */
+  const flushQueue = async () => {
+    const queue = loadQueue();
+    while (queue.length) {
+      const a = queue[0];
+      try {
+        const res =
+          a.kind === 'interaction'
+            ? await api<RewardResponse>(`/concepts/${a.conceptId}/interaction`, { body: {} })
+            : await api<QuizSubmitResponse>(`/concepts/${a.conceptId}/quiz`, {
+                body: { answers: a.answers },
+              });
+        celebrate(res.lines);
+        accept(res.state);
+      } catch (e) {
+        if (e instanceof RequestError && e.offline) break;
+        // Rejected by the server (e.g. unknown concept): drop it rather than retry forever.
+      }
+      queue.shift();
+      saveQueue(queue);
+    }
+  };
+
+  /** Optimistically mark local progress while offline so the UI reflects what was done. */
+  const markLocal = (conceptId: string, patch: Partial<PlayerState['progress'][string]>) => {
+    const p = get().player;
+    if (!p) return;
+    const prev = p.progress[conceptId] ?? {
+      interactionDoneAt: null,
+      quizPassedAt: null,
+      quizPerfect: false,
+      bestScore: 0,
+      lastQuizAt: null,
+      completedAt: null,
+    };
+    set({ player: { ...p, progress: { ...p.progress, [conceptId]: { ...prev, ...patch } } } });
+  };
+
+  return {
+    player: loadCached(),
+    connection: 'connecting',
+    toasts: [],
+
+    async init() {
+      try {
+        if (!getToken()) {
+          const s = await api<SessionResponse>('/session', { method: 'POST' });
+          setToken(s.token);
+          accept(s.state);
+        } else {
+          accept(await api<PlayerState>('/state'));
+        }
+        await flushQueue();
+      } catch (e) {
+        if (e instanceof RequestError && e.status === 401) {
+          // Token no longer valid (e.g. database reset) — start a fresh profile.
+          clearToken();
+          storage.remove(STATE_KEY);
+          return get().init();
+        }
+        set({ connection: 'offline' });
+      }
+    },
+
+    async refresh() {
+      accept(await api<PlayerState>('/state'));
+    },
+
+    async completeInteraction(conceptId) {
+      try {
+        const res = await api<RewardResponse>(`/concepts/${conceptId}/interaction`, { body: {} });
+        accept(res.state);
+        celebrate(res.lines);
+        return res;
+      } catch (e) {
+        if (e instanceof RequestError && e.offline) {
+          enqueue({ kind: 'interaction', conceptId });
+          markLocal(conceptId, { interactionDoneAt: new Date().toISOString() });
+          return null;
+        }
+        throw e;
+      }
+    },
+
+    async submitQuiz(conceptId, answers) {
+      try {
+        const res = await api<QuizSubmitResponse>(`/concepts/${conceptId}/quiz`, {
+          body: { answers },
+        });
+        accept(res.state);
+        celebrate(res.lines);
+        return res;
+      } catch (e) {
+        if (!(e instanceof RequestError && e.offline)) throw e;
+        // Offline: grade locally for instant feedback; the server re-grades when we reconnect.
+        const concept = CONCEPT_BY_ID[conceptId];
+        const g = gradeQuiz(concept.quiz, answers);
+        enqueue({ kind: 'quiz', conceptId, answers });
+        const passed = g.score >= 2;
+        if (passed) markLocal(conceptId, { quizPassedAt: new Date().toISOString() });
+        return {
+          ...g,
+          passed,
+          perfect: g.score === g.outOf,
+          lines: [],
+          total: 0,
+          state: get().player!,
+        };
+      }
+    },
+
+    async openPack(tier) {
+      const res = await api<PackOpenResponse>('/shop/packs', { body: { tier } });
+      accept(res.state);
+      return res;
+    },
+
+    async buyAvatar(avatarId) {
+      accept(await api<PlayerState>(`/shop/avatars/${avatarId}`, { method: 'POST' }));
+    },
+
+    async equip(avatarId) {
+      accept(await api<PlayerState>('/equip', { body: { avatarId } }));
+    },
+
+    async rename(displayName) {
+      accept(await api<PlayerState>('/profile', { method: 'PATCH', body: { displayName } }));
+    },
+
+    async solveMystery(id, req) {
+      const res = await api<MysterySolveResponse>(`/mysteries/${id}/solve`, { body: req });
+      accept(res.state);
+      celebrate(res.lines);
+      return res;
+    },
+
+    dismissToast(id) {
+      set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) }));
+    },
+  };
+});
+
+export const isCompleted = (p: PlayerState | null, conceptId: string) =>
+  !!p?.progress[conceptId]?.completedAt;
