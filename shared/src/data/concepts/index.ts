@@ -5,6 +5,7 @@ import { cellLibrary } from './cell-library';
 import { ecology } from './ecology';
 import { evolution } from './evolution';
 import { genetics } from './genetics';
+import { geneticsLibrary } from './genetics-library';
 import { immunology } from './immunology';
 import { microbes } from './microbes';
 import { neuro } from './neuro';
@@ -15,6 +16,7 @@ export const CONCEPTS: Concept[] = [
   ...cell_,
   ...cellLibrary,
   ...genetics,
+  ...geneticsLibrary,
   ...biochem,
   ...physiology,
   ...neuro,
