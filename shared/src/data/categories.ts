@@ -1,0 +1,21 @@
+import type { Category, CategoryId } from '../types';
+
+export const CATEGORIES: Category[] = [
+  { id: 'cell', name: 'Cell Biology', emoji: '🔬', color: '#059669', tint: '#d1fae5', blurb: 'The tiny factories every living thing is built from.' },
+  { id: 'genetics', name: 'Molecular Biology & Genetics', emoji: '🧬', color: '#7c3aed', tint: '#ede9fe', blurb: 'How DNA stores, copies and uses instructions.' },
+  { id: 'biochem', name: 'Biochemistry', emoji: '⚗️', color: '#d97706', tint: '#fef3c7', blurb: 'The chemical reactions that keep life running.' },
+  { id: 'physiology', name: 'Human Physiology', emoji: '🫀', color: '#e11d48', tint: '#ffe4e6', blurb: 'How your organs work together to keep you alive.' },
+  { id: 'neuro', name: 'Neuroscience', emoji: '🧠', color: '#4f46e5', tint: '#e0e7ff', blurb: 'Neurons, senses, memory and the electric brain.' },
+  { id: 'immunology', name: 'Immunology', emoji: '🛡️', color: '#0284c7', tint: '#e0f2fe', blurb: 'Your body’s defense force against invaders.' },
+  { id: 'microbes', name: 'Microbiology & Disease', emoji: '🦠', color: '#65a30d', tint: '#ecfccb', blurb: 'Bacteria, viruses, fungi and how disease spreads.' },
+  { id: 'plants', name: 'Plant Biology', emoji: '🌱', color: '#16a34a', tint: '#dcfce7', blurb: 'How plants eat light, drink water and talk underground.' },
+  { id: 'evolution', name: 'Evolution', emoji: '🦕', color: '#ea580c', tint: '#ffedd5', blurb: 'How life changes over generations.' },
+  { id: 'ecology', name: 'Ecology', emoji: '🌍', color: '#0d9488', tint: '#ccfbf1', blurb: 'How living things connect with each other and their world.' },
+  { id: 'development', name: 'Developmental Biology', emoji: '🥚', color: '#db2777', tint: '#fce7f3', blurb: 'How one cell becomes a whole body.' },
+  { id: 'weird', name: 'Weird & Wonderful', emoji: '🐙', color: '#c026d3', tint: '#fae8ff', blurb: 'Life at its strangest and most surprising.' },
+];
+
+export const CATEGORY_BY_ID = Object.fromEntries(CATEGORIES.map((c) => [c.id, c])) as Record<
+  CategoryId,
+  Category
+>;
