@@ -9,6 +9,7 @@ import { VaccineLesson } from './vaccines/VaccineLesson';
 import { EtcLesson } from './etc/EtcLesson';
 import { SelectionLesson } from './selection/SelectionLesson';
 import { FoodChainLesson } from './foodchain/FoodChainLesson';
+import { ResistanceLesson } from './resistance/ResistanceLesson';
 
 /** Hand-built flagship lessons, keyed by the `component` name in concept data. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,4 +23,5 @@ export const FLAGSHIPS: Record<string, ComponentType<TemplateProps<any>>> = {
   'electron-transport-chain': EtcLesson,
   'natural-selection': SelectionLesson,
   'food-chains': FoodChainLesson,
+  'antibiotic-resistance': ResistanceLesson,
 };

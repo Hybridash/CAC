@@ -2,6 +2,106 @@ import type { Concept } from '../../types';
 
 export const microbes: Concept[] = [
   {
+    id: 'antibiotic-resistance',
+    title: 'Antibiotic Resistance',
+    category: 'microbes',
+    flagship: true,
+    tags: [
+      'bacteria',
+      'antibiotics',
+      'superbugs',
+      'evolution',
+      'MRSA',
+      'plasmids',
+      'natural selection',
+    ],
+    aliases: [
+      'superbugs',
+      'drug resistance',
+      'why finish antibiotics',
+      'MRSA',
+      'antimicrobial resistance',
+    ],
+    difficulty: 3,
+    rarity: 'common',
+    prerequisites: ['bacteria-vs-viruses', 'natural-selection'],
+    summary:
+      'Antibiotics don’t make bacteria stronger — they kill the weak ones and leave the tough ones to multiply.',
+    steps: [
+      {
+        title: 'Not all the same',
+        text: 'In any infection, a few bacteria happen to be tougher against a drug than the rest.',
+      },
+      {
+        title: 'The first doses',
+        text: 'Antibiotics kill the easy ones fast, so you feel better within days.',
+      },
+      {
+        title: 'Feeling better ≠ cured',
+        text: 'The bacteria left behind are the toughest. If you stop early, they survive.',
+      },
+      {
+        title: 'The comeback',
+        text: 'Survivors multiply. Their offspring inherit the toughness, so the next infection is harder to treat.',
+      },
+      {
+        title: 'Resistance',
+        text: 'Repeat this enough and the drug stops working. That’s natural selection in fast-forward.',
+      },
+      {
+        title: 'Finish the course',
+        text: 'Taking every dose (and only using antibiotics when needed) gives the tough ones less chance to win.',
+      },
+    ],
+    interaction: { template: 'flagship', config: { component: 'antibiotic-resistance' } },
+    goDeeper:
+      'Resistance arises from random mutations (for example, a changed drug target or a pump that expels the drug) or from genes picked up from other bacteria by horizontal gene transfer — conjugation (plasmids), transformation (taking up free DNA) and transduction (via bacteriophages). Antibiotics then act as a selective pressure: susceptible cells die, resistant ones survive and multiply. Overuse and misuse of antibiotics in medicine and agriculture speed this up. MRSA (methicillin-resistant Staphylococcus aureus) and carbapenem-resistant Enterobacteriaceae are major threats.\n\nIn reality, it’s a bit more complicated: the guidance on “always finish the course” is being revisited — for some infections, shorter courses work just as well, so follow the prescriber’s instructions rather than a universal rule. The key principle is to use antibiotics only when needed and exactly as prescribed. The game also simplifies resistance into three levels; real resistance ranges continuously and can carry costs that make resistant bacteria grow slower when the drug is absent.',
+    quiz: [
+      {
+        kind: 'mc',
+        prompt: 'How does a population of bacteria become resistant to an antibiotic?',
+        options: [
+          'Each bacterium learns to resist',
+          'The antibiotic kills susceptible bacteria and resistant ones survive and multiply',
+          'Antibiotics turn into bacteria',
+          'The patient becomes resistant',
+        ],
+        answer: 1,
+        explain:
+          'It’s natural selection: the drug removes the susceptible, leaving resistant survivors to multiply.',
+      },
+      {
+        kind: 'predict',
+        scenario: 'A patient stops their antibiotics on day 2 because they feel better.',
+        prompt: 'What is the most likely result?',
+        options: [
+          'The tougher surviving bacteria multiply, and the infection may return harder to treat',
+          'The bacteria all die anyway',
+          'The patient becomes immune to bacteria',
+          'The bacteria turn into viruses',
+        ],
+        answer: 0,
+        explain:
+          'The survivors are the least susceptible ones; their offspring inherit that toughness.',
+      },
+      {
+        kind: 'mc',
+        prompt: 'What are plasmids?',
+        options: [
+          'Antibiotic pills',
+          'Small rings of DNA bacteria can share, sometimes carrying resistance genes',
+          'White blood cells',
+          'Bacterial cell walls',
+        ],
+        answer: 1,
+        explain: 'Plasmids can spread resistance genes between bacteria, even between species.',
+      },
+    ],
+    relatedConcepts: ['bacteria-vs-viruses', 'natural-selection'],
+    funFact:
+      'Penicillin was discovered by accident in 1928 when mold contaminated Alexander Fleming’s bacteria plates.',
+  },
+  {
     id: 'bacteria-vs-viruses',
     title: 'Bacteria vs Viruses',
     category: 'microbes',
