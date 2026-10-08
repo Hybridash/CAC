@@ -10,3 +10,4 @@ export * from './daily';
 export * from './validate';
 export * from './data/categories';
 export * from './data/concepts';
+export * from './data/avatars';

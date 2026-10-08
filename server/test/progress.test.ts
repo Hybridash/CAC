@@ -144,3 +144,31 @@ describe('concept rewards (server-side)', () => {
     expect(total.s).toBe(r.body.state.atp);
   });
 });
+
+describe('category completion', () => {
+  it('pays +150 once and unlocks the category exclusive avatar', async () => {
+    const counts = new Map<string, number>();
+    for (const c of CONCEPTS) counts.set(c.category, (counts.get(c.category) ?? 0) + 1);
+    const [category] = [...counts.entries()].sort((a, b) => a[1] - b[1])[0];
+    const inCat = CONCEPTS.filter((c) => c.category === category);
+    const t = testApp(dayWhere((c) => !inCat.some((x) => x.id === c)));
+    const p = await t.newPlayer();
+    let last: request.Response | undefined;
+    for (const c of inCat) {
+      const answers = c.quiz.map((q) => (q.kind === 'label' ? q.pairs.map((_, i) => i) : q.answer));
+      await request(t.app).post(`/api/concepts/${c.id}/interaction`).set(p.auth).expect(200);
+      last = await request(t.app)
+        .post(`/api/concepts/${c.id}/quiz`)
+        .set(p.auth)
+        .send({ answers })
+        .expect(200);
+    }
+    const bonus = last!.body.lines.find((l: { reason: string }) =>
+      l.reason.includes('Completed all'),
+    );
+    expect(bonus.amount).toBe(150);
+    expect(last!.body.state.achievements).toContain(`category:${category}`);
+    const exclusive = Object.keys(last!.body.state.inventory).find((id) => id !== 'cellby');
+    expect(exclusive).toBeDefined();
+  });
+});
