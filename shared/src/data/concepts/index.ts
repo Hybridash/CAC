@@ -1,25 +1,49 @@
 import type { Concept } from '../../types';
 import { biochem } from './biochem';
+import { biochemLibrary } from './biochem-library';
 import { cell_ } from './cell';
+import { cellLibrary } from './cell-library';
+import { development } from './development';
 import { ecology } from './ecology';
+import { ecologyLibrary } from './ecology-library';
 import { evolution } from './evolution';
+import { evolutionLibrary } from './evolution-library';
 import { genetics } from './genetics';
+import { geneticsLibrary } from './genetics-library';
 import { immunology } from './immunology';
+import { immunologyLibrary } from './immunology-library';
 import { microbes } from './microbes';
+import { microbesLibrary } from './microbes-library';
 import { neuro } from './neuro';
+import { neuroLibrary } from './neuro-library';
 import { physiology } from './physiology';
+import { plants } from './plants';
+import { weird } from './weird';
+import { physiologyLibrary } from './physiology-library';
 
 /** Every concept in the library, assembled from the per-category data files. */
 export const CONCEPTS: Concept[] = [
   ...cell_,
+  ...cellLibrary,
   ...genetics,
+  ...geneticsLibrary,
   ...biochem,
+  ...biochemLibrary,
   ...physiology,
+  ...physiologyLibrary,
   ...neuro,
+  ...neuroLibrary,
   ...immunology,
+  ...immunologyLibrary,
   ...microbes,
+  ...microbesLibrary,
+  ...plants,
   ...evolution,
+  ...evolutionLibrary,
   ...ecology,
+  ...ecologyLibrary,
+  ...development,
+  ...weird,
 ];
 
 export const CONCEPT_BY_ID: Record<string, Concept> = Object.fromEntries(

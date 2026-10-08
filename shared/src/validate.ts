@@ -1,5 +1,5 @@
 /** Structural checks for concept and mystery data. Run by the test suite over the whole library. */
-import { exprVariables } from './expr';
+import { evalExpr, exprVariables } from './expr';
 import { punnett } from './sim';
 import type { Concept, Mystery, QuizQuestion } from './types';
 
@@ -61,6 +61,15 @@ export function validateConcept(c: Concept, allIds: Set<string>): string[] {
       for (const i of it.config.inputs)
         if (i.start < i.min || i.start > i.max) e.push(at(`input ${i.id} start out of range`));
       if (it.config.challenges.length < 1) e.push(at('slider needs a challenge'));
+      else {
+        try {
+          for (const ch of it.config.challenges)
+            if (!sliderTargetReachable(it.config, ch.target))
+              e.push(at(`slider challenge "${ch.prompt}" can't be reached`));
+        } catch (err) {
+          e.push(at(String(err)));
+        }
+      }
       break;
     }
     case 'lock-and-key': {
@@ -118,8 +127,16 @@ export function validateConcept(c: Concept, allIds: Set<string>): string[] {
         e.push(at(String(err)));
       }
       const labels = new Set(Object.values(gene.phenotypes).map((p) => p.label));
-      for (const ch of it.config.challenges)
+      for (const ch of it.config.challenges) {
         if (!labels.has(ch.phenotype)) e.push(at(`challenge phenotype ${ch.phenotype} unknown`));
+        const ok = it.config.mothers.some((m) =>
+          it.config.fathers.some(
+            (f) =>
+              Math.abs((punnett(gene, m, f).phenotypes[ch.phenotype] ?? 0) - ch.probability) < 1e-9,
+          ),
+        );
+        if (!ok) e.push(at(`no cross achieves "${ch.prompt}"`));
+      }
       break;
     }
     case 'timeline': {
@@ -150,4 +167,30 @@ export function validateMystery(m: Mystery, conceptIds: Set<string>): string[] {
     }
   }
   return e;
+}
+
+/** Grid-search the slider inputs to check a challenge target is achievable. */
+function sliderTargetReachable(
+  c: Extract<Concept['interaction'], { template: 'slider-sim' }>['config'],
+  target: { min?: number; max?: number },
+): boolean {
+  const steps = c.inputs.length > 2 ? 12 : 40;
+  const grids = c.inputs.map((i) =>
+    Array.from({ length: steps + 1 }, (_, k) => i.min + ((i.max - i.min) * k) / steps),
+  );
+  const vals: Record<string, number> = {};
+  const search = (d: number): boolean => {
+    if (d === c.inputs.length) {
+      const out = Math.max(0, Math.min(c.output.max, evalExpr(c.output.expr, vals)));
+      return (
+        (target.min === undefined || out >= target.min) &&
+        (target.max === undefined || out <= target.max)
+      );
+    }
+    return grids[d].some((v) => {
+      vals[c.inputs[d].id] = v;
+      return search(d + 1);
+    });
+  };
+  return search(0);
 }

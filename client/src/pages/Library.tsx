@@ -5,6 +5,7 @@ import {
   CONCEPTS,
   DIFFICULTY_LABEL,
   type CategoryId,
+  type ConceptProgress,
   type Difficulty,
 } from '@bioplay/shared';
 import { ConceptCard } from '../components/ConceptBits';
@@ -15,6 +16,9 @@ import { usePlayer } from '../store/player';
 const toggle = <T,>(list: T[], v: T) =>
   list.includes(v) ? list.filter((x) => x !== v) : [...list, v];
 
+/** Stable fallback so the store selector doesn't return a new object every render. */
+const NO_PROGRESS: Record<string, ConceptProgress> = {};
+
 export function LibraryPage() {
   const [params, setParams] = useSearchParams();
   const q = params.get('q') ?? '';
@@ -24,7 +28,7 @@ export function LibraryPage() {
     categories: initialCat ? [initialCat] : [],
     sort: q ? 'relevance' : 'alpha',
   });
-  const progress = usePlayer((s) => s.player?.progress ?? {});
+  const progress = usePlayer((s) => s.player?.progress ?? NO_PROGRESS);
 
   const results = useMemo(() => {
     const base = q.trim().length >= 2 ? searchIndex.search(q, 500) : CONCEPTS;

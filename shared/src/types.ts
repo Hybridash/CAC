@@ -265,6 +265,8 @@ export interface EcoSpecies {
   death?: number;
   /** What it eats: prey id, attack rate, conversion efficiency. */
   eats?: { id: string; rate: number; efficiency: number }[];
+  /** Starts at 0 (e.g. an invasive species the player releases); toggling adds `start`. */
+  initiallyAbsent?: boolean;
 }
 
 export interface EcosystemConfig {
