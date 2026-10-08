@@ -67,7 +67,18 @@ export function Shape({
       body = <path d="M50 10l42 76H8z" {...common} />;
       break;
     case 'ring':
-      body = <circle cx="50" cy="50" r="36" fill="none" stroke={color} strokeWidth="12" />;
+      body = (
+        <circle
+          cx="50"
+          cy="50"
+          r="44"
+          fill={color}
+          fillOpacity={0.12}
+          stroke={color}
+          strokeWidth="5"
+          vectorEffect="non-scaling-stroke"
+        />
+      );
       break;
     case 'helix':
       body = (
