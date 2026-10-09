@@ -6,6 +6,7 @@ import { HomePage } from './pages/Home';
 import { Placeholder } from './pages/Placeholder';
 import { usePlayer } from './store/player';
 import { Icon } from './components/Icon';
+import { WelcomePage } from './pages/Welcome';
 
 const LibraryPage = lazy(() => import('./pages/Library').then((m) => ({ default: m.LibraryPage })));
 const LessonPage = lazy(() =>
@@ -47,6 +48,17 @@ export function App() {
     window.addEventListener('online', onOnline);
     return () => window.removeEventListener('online', onOnline);
   }, [init]);
+  const welcomed = usePlayer((s) => s.welcomed);
+  const signedIn = usePlayer((s) => !!s.player?.account);
+
+  // First launch (or after signing out): choose to sign in or play as a guest.
+  if (!welcomed && !signedIn) {
+    return (
+      <MotionConfig reducedMotion="user">
+        <WelcomePage />
+      </MotionConfig>
+    );
+  }
 
   return (
     <MotionConfig reducedMotion="user">

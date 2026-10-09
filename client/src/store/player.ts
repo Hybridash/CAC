@@ -20,6 +20,7 @@ import { getIdToken, providerSignOut } from '../lib/signIn';
 
 const STATE_KEY = 'bioplay.state';
 const QUEUE_KEY = 'bioplay.queue';
+const WELCOMED_KEY = 'biobites.welcomed';
 
 type QueuedAction =
   | { kind: 'interaction'; conceptId: string }
@@ -30,6 +31,10 @@ export type Connection = 'connecting' | 'online' | 'offline';
 interface PlayerStore {
   player: PlayerState | null;
   connection: Connection;
+  /** Whether this device has chosen how to start (signed in or continued as a guest). */
+  welcomed: boolean;
+  /** Leave the welcome screen; it isn't shown again until the player signs out. */
+  finishWelcome: () => void;
   /** Reward lines waiting to be celebrated by the toast. */
   toasts: { id: number; lines: RewardLine[] }[];
   init: () => Promise<void>;
@@ -124,7 +129,13 @@ export const usePlayer = create<PlayerStore>((set, get) => {
   return {
     player: loadCached(),
     connection: 'connecting',
+    welcomed: storage.get(WELCOMED_KEY) === '1',
     toasts: [],
+
+    finishWelcome() {
+      storage.set(WELCOMED_KEY, '1');
+      set({ welcomed: true });
+    },
 
     async init() {
       try {
@@ -226,6 +237,7 @@ export const usePlayer = create<PlayerStore>((set, get) => {
       const res = await api<SignInResponse>(`/auth/${provider}`, { body: { idToken, name } });
       if (res.token) setToken(res.token);
       accept(res.state);
+      get().finishWelcome();
       return res;
     },
 
@@ -236,7 +248,8 @@ export const usePlayer = create<PlayerStore>((set, get) => {
       clearToken();
       storage.remove(STATE_KEY);
       saveQueue([]);
-      set({ player: null });
+      storage.remove(WELCOMED_KEY);
+      set({ player: null, welcomed: false });
       await get().init();
     },
 

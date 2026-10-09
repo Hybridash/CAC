@@ -1,9 +1,14 @@
 import { expect, test } from '@playwright/test';
 import { atp, completeViaApi } from './helpers';
 
+// These tests start past the welcome screen, as a guest (welcome.spec.ts covers that screen).
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('biobites.welcomed', '1'));
+});
+
 test('home loads and fuzzy search finds insulin from “blood sugar”', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: /Biology you can/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Biology is not hard/ })).toBeVisible();
   const search = page.getByRole('combobox');
   await search.fill('blood sugar');
   await expect(page.getByRole('option', { name: /How Insulin Works/ })).toBeVisible();
