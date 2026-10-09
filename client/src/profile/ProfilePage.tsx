@@ -14,6 +14,7 @@ import {
 import { usePlayer } from '../store/player';
 import { PlayerAvatar } from '../components/PlayerAvatar';
 import { AtpIcon, NucleotideIcon } from '../components/Atp';
+import { InstallApp } from '../components/InstallApp';
 
 export function ProfilePage() {
   const player = usePlayer((s) => s.player);
@@ -79,6 +80,7 @@ export function ProfilePage() {
             <span className="chip bg-violet-100 py-1 text-violet-900">
               <NucleotideIcon /> {player.nucleotides} nucleotides
             </span>
+            <InstallApp className="py-1 text-sm" />
             <span className="chip bg-sky-100 py-1 text-sky-900">
               🃏 {owned}/{AVATARS.length} avatars
             </span>

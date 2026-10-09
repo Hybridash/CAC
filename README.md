@@ -41,6 +41,19 @@ kept in `localStorage`.
 | `npm run build`                   | Typecheck everything and build the client                                                      |
 | `npm start`                       | Production mode: the API also serves `client/dist` (set `PORT`, `DATABASE_PATH`)               |
 
+## Installing BioPlay as an app
+
+BioPlay is a Progressive Web App, so it can be installed and opens full-screen from its own icon:
+
+- **Android / Chrome / Edge (desktop or phone):** tap **📲 Install app** on the home or profile page, or use the
+  browser’s install icon in the address bar.
+- **iPhone / iPad (Safari):** tap **📲 Install app** for the steps — Share ⬆️ → **Add to Home Screen** → Add.
+
+A service worker caches the app shell, so the app opens and lessons work offline; progress made offline syncs when
+you reconnect. Installation needs the app served over **HTTPS** (or `localhost`), so deploy the production server
+(`npm run build && npm start`) to a host with HTTPS for other devices to install it. The icon source is
+`client/public/icon.svg`; PWA settings live in `client/vite.config.ts`.
+
 ## Project layout
 
 ```
