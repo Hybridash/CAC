@@ -3,6 +3,10 @@
  * `npm run ios` — build the Bio Bites iPhone app and run it in the iOS Simulator (Xcode's Device Hub).
  * Also starts the Bio Bites server on http://localhost:3000 if it isn't running, since the app
  * saves progress there. Keep this window open while you use the app; Ctrl+C stops the server.
+ *
+ * `npm run ios:live` — live editing: the app loads its pages from the Vite dev server instead of
+ * from inside the app, so saving any file under client/src updates the simulator in about a second.
+ * Run plain `npm run ios` again afterwards to go back to a normal, self-contained app.
  */
 import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -12,7 +16,9 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const client = path.join(root, 'client');
 const APP_ID = 'com.biobites.app';
-const PORT = 3000;
+const live = process.argv.includes('--live');
+const LIVE_URL = 'http://localhost:5173';
+const PORT = live ? 3001 : 3000;
 const HEALTH = `http://localhost:${PORT}/api/health`;
 
 const run = (cmd, args, opts = {}) => {
@@ -30,19 +36,31 @@ const serverUp = () =>
     .then((r) => r.ok)
     .catch(() => false);
 
-// 1. The server the app saves progress to.
+const liveUp = () =>
+  fetch(LIVE_URL)
+    .then((r) => r.ok)
+    .catch(() => false);
+
+// 1. The server the app saves progress to (in live mode, also the Vite dev server for its pages).
 let server = null;
-if (!(await serverUp())) {
-  step('Starting the Bio Bites server on http://localhost:3000…');
-  server = spawn('node', [path.join(root, 'scripts/app.mjs')], {
-    cwd: root,
-    stdio: 'inherit',
-    env: { ...process.env, BIOPLAY_NO_OPEN: '1', PORT: String(PORT) },
-  });
+if (!(await serverUp()) || (live && !(await liveUp()))) {
+  step(
+    live
+      ? 'Starting the live-editing servers (pages on :5173, data on :3001)…'
+      : 'Starting the Bio Bites server on http://localhost:3000…',
+  );
+  server = live
+    ? spawn('npm', ['run', 'dev'], { cwd: root, stdio: 'inherit' })
+    : spawn('node', [path.join(root, 'scripts/app.mjs')], {
+        cwd: root,
+        stdio: 'inherit',
+        env: { ...process.env, BIOPLAY_NO_OPEN: '1', PORT: String(PORT) },
+      });
   server.on('exit', (code) => process.exit(code ?? 0));
   for (const sig of ['SIGINT', 'SIGTERM']) process.on(sig, () => server.kill(sig));
-  for (let i = 0; i < 240 && !(await serverUp()); i++) await new Promise((r) => setTimeout(r, 500));
-  if (!(await serverUp())) {
+  const ready = async () => (await serverUp()) && (!live || (await liveUp()));
+  for (let i = 0; i < 240 && !(await ready()); i++) await new Promise((r) => setTimeout(r, 500));
+  if (!(await ready())) {
     console.error('The server did not start; see the messages above.');
     process.exit(1);
   }
@@ -72,9 +90,20 @@ if (googleId) {
 }
 
 // 3. Build the app's pages and copy them into the Xcode project.
-step('Building the app’s pages…');
-run('npm', ['run', 'build:native'], { cwd: client });
-run('npx', ['cap', 'sync', 'ios'], { cwd: client });
+if (live) {
+  // Point the app at the dev server; capacitor.config.ts reads this while syncing.
+  step('Pointing the app at the live dev server…');
+  if (!fs.existsSync(path.join(client, 'dist-native')))
+    run('npm', ['run', 'build:native'], { cwd: client });
+  run('npx', ['cap', 'sync', 'ios'], {
+    cwd: client,
+    env: { ...process.env, CAP_LIVE_URL: LIVE_URL },
+  });
+} else {
+  step('Building the app’s pages…');
+  run('npm', ['run', 'build:native'], { cwd: client });
+  run('npx', ['cap', 'sync', 'ios'], { cwd: client });
+}
 
 // 4. Pick a simulator: the one already open in Device Hub, else the newest iPhone.
 const devices = JSON.parse(out('xcrun', ['simctl', 'list', 'devices', 'available', '-j'])).devices;
@@ -119,7 +148,19 @@ const appPath = path.join(derived, 'Build/Products/Debug-iphonesimulator/App.app
 run('xcrun', ['simctl', 'install', sim.udid, appPath]);
 run('xcrun', ['simctl', 'launch', sim.udid, APP_ID], { stdio: 'ignore' });
 
-console.log(`
+if (live) {
+  console.log(`
+  ┌──────────────────────────────────────────────────────────┐
+  │  Live editing is on in the ${sim.name.padEnd(30)}│
+  │  simulator. Save any file in client/src and the app      │
+  │  updates by itself.                                      │
+  │                                                          │
+  │  Keep this window open. Press Ctrl+C to stop, then run   │
+  │  npm run ios to go back to the normal app.               │
+  └──────────────────────────────────────────────────────────┘
+`);
+} else
+  console.log(`
   ┌──────────────────────────────────────────────────────────┐
   │  Bio Bites is installed on the ${sim.name.padEnd(26)}│
   │  simulator. Its icon stays on the home screen.           │

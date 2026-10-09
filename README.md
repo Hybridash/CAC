@@ -89,6 +89,10 @@ installs and opens it in the simulator shown in Xcode's Device Hub. The first bu
 downloads packages. The app stays on the simulator's home screen; keep the terminal open while you use it, because
 the app saves progress to that server.
 
+**Live editing:** `npm run ios:live` runs the app from the Vite dev server instead, so saving any file under
+`client/src` updates the simulator within a second or two, with no rebuild. Run `npm run ios` afterwards to go back to
+the normal, self-contained app.
+
 To open the project in Xcode instead (to run on a real iPhone, for example): `cd client && npx cap open ios`, then
 press Run. A real iPhone can't reach `localhost` on your Mac, so first set `VITE_API_URL` in `client/.env.native` to
 your Mac's Wi-Fi address (e.g. `http://192.168.1.50:3000`) or to a hosted `https://` server, then run `npm run ios`
