@@ -168,7 +168,7 @@ export function AssemblyLine({
                     animate={done ? { x: [0, 4, 0] } : {}}
                     transition={{ repeat: Infinity, duration: 1, delay: i * 0.15 }}
                   >
-                    ➜
+                    →
                   </motion.span>
                 )}
               </div>

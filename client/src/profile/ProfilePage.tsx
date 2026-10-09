@@ -15,6 +15,8 @@ import { usePlayer } from '../store/player';
 import { PlayerAvatar } from '../components/PlayerAvatar';
 import { AtpIcon, NucleotideIcon } from '../components/Atp';
 import { InstallApp } from '../components/InstallApp';
+import { CategoryIcon, Icon, type IconName } from '../components/Icon';
+import type { ReactNode } from 'react';
 
 export function ProfilePage() {
   const player = usePlayer((s) => s.player);
@@ -92,12 +94,10 @@ export function ProfilePage() {
         <Stat
           big={`${completed.length}`}
           label={`of ${CONCEPTS.length} concepts completed`}
-          emoji="📚"
+          icon="book"
         />
         <div className="card flex flex-col gap-1 p-5" data-testid="streak-card">
-          <span className="text-4xl" aria-hidden>
-            🔥
-          </span>
+          <Icon name="flame" size={44} />
           <span className="text-4xl font-extrabold">{player.streak}-day streak</span>
           <span className="text-sm text-ink-soft">
             Longest: {player.longestStreak} day{player.longestStreak === 1 ? '' : 's'}
@@ -111,7 +111,7 @@ export function ProfilePage() {
         <Stat
           big={`${player.mysteriesSolved.length}`}
           label={`of ${MYSTERIES.length || 15} Bio Mysteries solved`}
-          emoji="🕵️"
+          icon="mystery"
           link="/mysteries"
         />
       </div>
@@ -152,7 +152,13 @@ export function ProfilePage() {
                 className="rounded-xl p-1 hover:bg-slate-50"
               >
                 <Bar
-                  label={`${c.emoji} ${c.name}${player.achievements.includes(`category:${c.id}`) ? ' 🏅' : ''}`}
+                  icon={<CategoryIcon id={c.id} size={20} />}
+                  badge={
+                    player.achievements.includes(`category:${c.id}`) ? (
+                      <Icon name="medal" size={20} label="Category complete" />
+                    ) : null
+                  }
+                  label={c.name}
                   n={n}
                   total={all.length}
                   color={c.color}
@@ -169,19 +175,17 @@ export function ProfilePage() {
 function Stat({
   big,
   label,
-  emoji,
+  icon,
   link,
 }: {
   big: string;
   label: string;
-  emoji: string;
+  icon: IconName;
   link?: string;
 }) {
   const inner = (
     <>
-      <span className="text-4xl" aria-hidden>
-        {emoji}
-      </span>
+      <Icon name={icon} size={44} />
       <span className="text-4xl font-extrabold">{big}</span>
       <span className="text-sm text-ink-soft">{label}</span>
     </>
@@ -197,11 +201,15 @@ function Stat({
 
 function Bar({
   label,
+  icon,
+  badge,
   n,
   total,
   color,
 }: {
   label: string;
+  icon?: ReactNode;
+  badge?: ReactNode;
   n: number;
   total: number;
   color: string;
@@ -209,7 +217,11 @@ function Bar({
   return (
     <div>
       <div className="flex justify-between text-sm font-bold">
-        <span>{label}</span>
+        <span className="flex items-center gap-1.5">
+          {icon}
+          {label}
+          {badge}
+        </span>
         <span>
           {n}/{total}
         </span>

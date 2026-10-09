@@ -4,6 +4,7 @@ import { evalExpr, type SliderConfig } from '@bioplay/shared';
 import type { TemplateProps } from './framework/types';
 import { Feedback, Progress, Prompt } from './framework/ui';
 import { sfx } from '../lib/sound';
+import { Icon } from '../components/Icon';
 
 const fmt = (v: number) =>
   Math.abs(v) >= 100 ? Math.round(v).toString() : (Math.round(v * 10) / 10).toString();
@@ -138,7 +139,9 @@ export function SliderSim({
           <p className="text-xs font-extrabold text-amber-800 uppercase">
             Challenge {challenge + 1} of {config.challenges.length}
           </p>
-          <p className="font-bold text-amber-950">🎯 {ch.prompt}</p>
+          <p className="font-bold text-amber-950">
+            <Icon name="target" size={20} className="mr-1" /> {ch.prompt}
+          </p>
           {inTarget && (
             <p className="text-sm font-bold text-emerald-700">That’s it — hold it there…</p>
           )}

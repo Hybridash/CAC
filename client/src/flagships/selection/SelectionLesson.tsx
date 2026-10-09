@@ -14,6 +14,7 @@ import {
   type Bark,
   type Moth,
 } from './model';
+import { GoalItem, Icon } from '../../components/Icon';
 
 const ROUND_SECONDS = 8;
 const MEALS = 12;
@@ -136,21 +137,22 @@ export function SelectionLesson({
       </Prompt>
       <div className="flex flex-wrap items-center gap-2">
         <button className="btn-primary" onClick={startHunt} disabled={hunting}>
-          🐦 {hunting ? `Hunting… ${timeLeft}s` : `Start hunting (generation ${gen})`}
+          <Icon name="hawk" size={20} />{' '}
+          {hunting ? `Hunting… ${timeLeft}s` : `Start hunting (generation ${gen})`}
         </button>
         <button className="btn-ghost" onClick={autoHunt} disabled={hunting}>
-          ⏩ Let the birds hunt
+          Let the birds hunt »
         </button>
         <button
           className={`btn text-sm ${bark === 'soot' ? 'bg-emerald-100 text-emerald-900' : 'bg-zinc-800 text-white'}`}
           onClick={switchBark}
           disabled={hunting}
         >
-          {bark === 'lichen' ? '🏭 Industrial Revolution (soot)' : '🌿 Clean air returns'}
+          {bark === 'lichen' ? 'Industrial Revolution (soot)' : 'Clean air returns'}
         </button>
         {hunting && (
           <span className="chip bg-amber-100 py-1 text-amber-900">
-            🍽️ {eaten}/{MEALS} eaten
+            {eaten}/{MEALS} eaten
           </span>
         )}
       </div>
@@ -205,13 +207,7 @@ export function SelectionLesson({
 }
 
 function Goal({ done, children }: { done: boolean; children: React.ReactNode }) {
-  return (
-    <li
-      className={`chip py-1 ${done ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-ink-soft'}`}
-    >
-      {done ? '✅' : '⬜'} {children}
-    </li>
-  );
+  return <GoalItem done={done}>{children}</GoalItem>;
 }
 
 function MothSvg({ color, rot }: { color: string; rot: number }) {

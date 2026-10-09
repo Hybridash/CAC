@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Icon } from './Icon';
 
 interface InstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -55,7 +56,7 @@ export function InstallApp({ className = '' }: { className?: string }) {
   return (
     <>
       <button className={`btn-ghost ${className}`} onClick={install}>
-        📲 Install app
+        <Icon name="phone" size={20} /> Install app
       </button>
       <AnimatePresence>
         {showIOSHelp && (
@@ -78,10 +79,10 @@ export function InstallApp({ className = '' }: { className?: string }) {
               <h2 className="text-2xl font-extrabold">Install BioPlay</h2>
               <ol className="mt-3 flex flex-col gap-2 font-semibold">
                 <li>
-                  1. Tap the <b>Share</b> button <span aria-hidden>⬆️</span> in Safari’s toolbar.
+                  1. Tap the <b>Share</b> button (the square with an arrow) in Safari’s toolbar.
                 </li>
                 <li>
-                  2. Scroll down and tap <b>Add to Home Screen</b> <span aria-hidden>➕</span>.
+                  2. Scroll down and tap <b>Add to Home Screen</b>.
                 </li>
                 <li>
                   3. Tap <b>Add</b>. BioPlay opens full-screen from its icon!

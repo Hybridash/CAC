@@ -4,6 +4,7 @@ import { punnett, type PunnettConfig } from '@bioplay/shared';
 import type { TemplateProps } from './framework/types';
 import { Feedback, Progress, Prompt } from './framework/ui';
 import { sfx } from '../lib/sound';
+import { Icon } from '../components/Icon';
 
 const pct = (p: number) => `${Math.round(p * 100)}%`;
 
@@ -60,7 +61,7 @@ export function Punnett({
       <Prompt>{config.prompt}</Prompt>
       <div className="grid gap-3 sm:grid-cols-2">
         <ParentPicker
-          title={xl ? '♀ Mother' : '🅰️ Parent 1'}
+          title={xl ? '♀ Mother' : 'Parent 1'}
           options={config.mothers}
           value={mother}
           onChange={(g) => {
@@ -70,7 +71,7 @@ export function Punnett({
           pheno={pheno}
         />
         <ParentPicker
-          title={xl ? '♂ Father' : '🅱️ Parent 2'}
+          title={xl ? '♂ Father' : 'Parent 2'}
           options={config.fathers}
           value={father}
           onChange={(g) => {
@@ -149,7 +150,7 @@ export function Punnett({
             );
           })}
           <button className="btn-primary mt-2 self-start" onClick={breed}>
-            🐣 Breed 8 offspring
+            <Icon name="egg" size={20} /> Breed 8 offspring
           </button>
           <div className="flex min-h-12 flex-wrap gap-1.5" aria-live="polite">
             <AnimatePresence>
@@ -173,8 +174,8 @@ export function Punnett({
       </div>
       {challenge && (
         <p className="rounded-2xl bg-amber-50 p-3 font-bold text-amber-950 ring-1 ring-amber-200">
-          🎯 Challenge {cIndex + 1}: {challenge.prompt}{' '}
-          <span className="font-normal">(choose parents, then breed)</span>
+          <Icon name="target" size={20} className="mr-1" /> Challenge {cIndex + 1}:{' '}
+          {challenge.prompt} <span className="font-normal">(choose parents, then breed)</span>
         </p>
       )}
       <Feedback text={msg} tone={done ? 'good' : 'info'} />

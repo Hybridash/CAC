@@ -4,6 +4,7 @@ import type { TemplateProps } from '../../templates/framework/types';
 import { Feedback, Prompt, type FeedbackTone } from '../../templates/framework/ui';
 import { sfx } from '../../lib/sound';
 import { photosynthesis, type Factor, type LightColor, type PhotoInputs } from './model';
+import { GoalItem, Icon } from '../../components/Icon';
 
 const COLORS: { id: LightColor; label: string; hex: string }[] = [
   { id: 'white', label: 'White', hex: '#fef9c3' },
@@ -354,7 +355,7 @@ export function PhotosynthesisLesson({
           </g>
           {inputs.co2 > 0 && (
             <text x={BEAKER_X + 10} y="132" fontSize="12" fontWeight="800" fill="#334155">
-              🥄×{inputs.co2} baking soda
+              ×{inputs.co2} baking soda
             </text>
           )}
         </svg>
@@ -365,7 +366,7 @@ export function PhotosynthesisLesson({
       <div className="grid gap-3 rounded-2xl bg-white p-3 ring-1 ring-black/10 sm:grid-cols-2">
         <label className="flex flex-col gap-1">
           <span className="flex justify-between text-sm font-bold">
-            💡 Lamp distance <span className="text-indigo-700">{inputs.distance} cm</span>
+            Lamp distance <span className="text-indigo-700">{inputs.distance} cm</span>
           </span>
           <input
             type="range"
@@ -379,7 +380,7 @@ export function PhotosynthesisLesson({
         </label>
         <label className="flex flex-col gap-1">
           <span className="flex justify-between text-sm font-bold">
-            🌡️ Water temperature <span className="text-indigo-700">{inputs.temp} °C</span>
+            Water temperature <span className="text-indigo-700">{inputs.temp} °C</span>
           </span>
           <input
             type="range"
@@ -409,19 +410,19 @@ export function PhotosynthesisLesson({
             aria-pressed={!inputs.lampOn}
             className="chip bg-slate-800 py-1 text-sm text-white"
           >
-            {inputs.lampOn ? '🌙 Lights off' : '💡 Lights on'}
+            <Icon name="bulb" size={18} /> {inputs.lampOn ? 'Lights off' : 'Lights on'}
           </button>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <button className="btn-ghost py-1.5 text-sm" onClick={addSoda} disabled={inputs.co2 >= 4}>
-            🥄 Add baking soda (+CO₂)
+            Add baking soda (+CO₂)
           </button>
           <button
             className="btn-ghost py-1.5 text-sm"
             onClick={() => set({ co2: 0 })}
             disabled={inputs.co2 === 0}
           >
-            🚰 Fresh water
+            <Icon name="refresh" size={18} /> Fresh water
           </button>
         </div>
       </div>
@@ -438,13 +439,7 @@ export function PhotosynthesisLesson({
 }
 
 function Goal({ done, children }: { done: boolean; children: React.ReactNode }) {
-  return (
-    <li
-      className={`chip py-1 ${done ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-ink-soft'}`}
-    >
-      {done ? '✅' : '⬜'} {children}
-    </li>
-  );
+  return <GoalItem done={done}>{children}</GoalItem>;
 }
 
 function Chloroplast({

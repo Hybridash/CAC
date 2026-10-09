@@ -4,6 +4,7 @@ import { stepEcosystem, type EcosystemConfig, type Populations } from '@bioplay/
 import type { TemplateProps } from './framework/types';
 import { Feedback, Progress, Prompt } from './framework/ui';
 import { sfx } from '../lib/sound';
+import { Icon } from '../components/Icon';
 
 const HISTORY = 240;
 
@@ -117,7 +118,7 @@ export function Ecosystem({
       </figure>
       <div className="flex flex-wrap items-center gap-2">
         <button className="btn-ghost" onClick={() => setRunning(!running)}>
-          {running ? '⏸ Pause' : '▶️ Play'}
+          <Icon name={running ? 'pause' : 'play'} size={18} /> {running ? 'Pause' : 'Play'}
         </button>
         <button className="btn-ghost" onClick={reset}>
           ↺ Reset
@@ -131,7 +132,7 @@ export function Ecosystem({
               onClick={() => toggle(id)}
               className={`btn text-sm ${present ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'}`}
             >
-              {present ? '➖ Remove' : '➕ Add'} {s.emoji} {s.label}
+              {present ? '− Remove' : '+ Add'} {s.emoji} {s.label}
             </button>
           );
         })}
@@ -143,8 +144,8 @@ export function Ecosystem({
           <span
             className={`chip ${toggled.has(config.goal.mustToggle) ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-ink-soft'}`}
           >
-            {toggled.has(config.goal.mustToggle) ? '✅' : '⬜'} Try adding/removing{' '}
-            {config.species.find((s) => s.id === config.goal.mustToggle)?.label}
+            <Icon name={toggled.has(config.goal.mustToggle) ? 'check' : 'todo'} size={18} /> Try
+            adding/removing {config.species.find((s) => s.id === config.goal.mustToggle)?.label}
           </span>
         )}
       </div>

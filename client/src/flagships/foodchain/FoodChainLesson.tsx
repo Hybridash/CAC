@@ -5,45 +5,51 @@ import type { TemplateProps } from '../../templates/framework/types';
 import { Feedback, Prompt, type FeedbackTone } from '../../templates/framework/ui';
 import { shuffled } from '../../templates/framework/shuffle';
 import { sfx } from '../../lib/sound';
+import { GoalItem, Icon, type IconName } from '../../components/Icon';
 
 const CHAIN = [
   {
     id: 'grass',
     label: 'Grass',
-    emoji: '🌾',
+    icon: 'grass' as IconName,
     role: 'Producer',
     note: 'Grass makes its own food from sunlight. It’s a producer.',
   },
   {
     id: 'grasshopper',
     label: 'Grasshopper',
-    emoji: '🦗',
+    icon: 'grasshopper' as IconName,
     role: 'Primary consumer',
     note: 'Grasshoppers eat plants: a primary consumer (herbivore).',
   },
   {
     id: 'frog',
     label: 'Frog',
-    emoji: '🐸',
+    icon: 'frog' as IconName,
     role: 'Secondary consumer',
     note: 'Frogs eat insects: a secondary consumer.',
   },
   {
     id: 'snake',
     label: 'Snake',
-    emoji: '🐍',
+    icon: 'snake' as IconName,
     role: 'Tertiary consumer',
     note: 'Snakes eat frogs: a tertiary consumer.',
   },
   {
     id: 'hawk',
     label: 'Hawk',
-    emoji: '🦅',
+    icon: 'hawk' as IconName,
     role: 'Top predator',
     note: 'Hawks eat snakes. Nothing here eats hawks: they’re the top predator.',
   },
 ];
-const DECOMPOSER = { id: 'mushroom', label: 'Mushroom', emoji: '🍄', role: 'Decomposer' };
+const DECOMPOSER = {
+  id: 'mushroom',
+  label: 'Mushroom',
+  icon: 'mushroom' as IconName,
+  role: 'Decomposer',
+};
 
 type Phase = 'build' | 'energy' | 'break' | 'done';
 
@@ -204,12 +210,12 @@ export function FoodChainLesson({
         <div className="scene-bg flex flex-wrap items-center justify-center gap-1.5 rounded-3xl bg-gradient-to-b from-sky-100 to-lime-100 p-3 ring-1 ring-black/10">
           <div className="flex flex-col items-center">
             <motion.span
-              className="text-5xl"
+              className="inline-flex"
               aria-hidden
               animate={{ rotate: 360 }}
               transition={{ repeat: Infinity, duration: 20, ease: 'linear' }}
             >
-              ☀️
+              <Icon name="sun" size={52} />
             </motion.span>
             <span className="text-xs font-bold">Sun</span>
             {energyStep >= 0 && (
@@ -232,10 +238,10 @@ export function FoodChainLesson({
                     <motion.span
                       initial={{ scale: 0 }}
                       animate={{ scale: fx === 'gone' ? 0.6 : 1 }}
-                      className="text-4xl"
+                      className="inline-flex"
                       aria-hidden
                     >
-                      {c.emoji}
+                      <Icon name={c.icon} size={44} />
                     </motion.span>
                     <span className="text-xs font-extrabold">{c.label}</span>
                     <span className="text-[10px] leading-tight text-ink-soft">{c.role}</span>
@@ -246,17 +252,17 @@ export function FoodChainLesson({
                           animate={{ y: 0, opacity: 1 }}
                           className="mt-0.5 rounded-full bg-amber-200 px-1.5 text-[11px] font-extrabold text-amber-900"
                         >
-                          ⚡ {energy[i]}
+                          <Icon name="bolt" size={14} /> {energy[i]}
                         </motion.span>
                       )}
                     </AnimatePresence>
                     {energyStep > i && i > 0 && (
                       <span
-                        className="absolute -top-3 -right-1 text-lg"
+                        className="absolute -top-3 -right-1"
                         title="90% lost as heat"
                         aria-hidden
                       >
-                        🔥
+                        <Icon name="flame" size={22} />
                       </span>
                     )}
                     {fx === 'up' && (
@@ -297,7 +303,7 @@ export function FoodChainLesson({
                 className={`flex items-center gap-2 rounded-2xl p-2 ring-2 ${decomposer ? 'bg-amber-50 ring-amber-300' : isOver ? 'bg-indigo-50 ring-indigo-400' : armed ? 'bg-white ring-indigo-300 ring-dashed' : 'bg-white ring-dashed ring-slate-300'}`}
               >
                 <span className="text-3xl" aria-hidden>
-                  {decomposer ? '🍄' : '♻️'}
+                  <Icon name={decomposer ? 'mushroom' : 'refresh'} size={34} />
                 </span>
                 <span className="text-sm font-bold">
                   {decomposer
@@ -313,9 +319,7 @@ export function FoodChainLesson({
               .map((t) => (
                 <Draggable key={t.id} id={t.id} label={t.label}>
                   <span className="flex flex-col items-center rounded-2xl bg-white px-3 py-1.5 shadow ring-1 ring-black/10">
-                    <span className="text-3xl" aria-hidden>
-                      {t.emoji}
-                    </span>
+                    <Icon name={t.icon} size={38} />
                     <span className="text-xs font-bold">{t.label}</span>
                   </span>
                 </Draggable>
@@ -326,7 +330,7 @@ export function FoodChainLesson({
 
       {phase === 'energy' && (
         <button className="btn-primary self-start" onClick={sendEnergy} disabled={energyStep >= 0}>
-          ☀️ Send 1000 units of sunlight energy
+          <Icon name="sun" size={20} /> Send 1000 units of sunlight energy
         </button>
       )}
       {phase !== 'build' && energyStep >= CHAIN.length && <EnergyPyramid />}
@@ -339,7 +343,7 @@ export function FoodChainLesson({
             say('Meadow restored. Try removing a different link!');
           }}
         >
-          🌱 Restore the meadow
+          <Icon name="sprout" size={20} /> Restore the meadow
         </button>
       )}
       <Feedback text={msg?.text ?? null} tone={msg?.tone} />
@@ -360,19 +364,13 @@ function Arrow({ lit }: { lit: boolean }) {
       animate={lit ? { x: [0, 4, 0] } : {}}
       transition={{ repeat: Infinity, duration: 0.8 }}
     >
-      ➜
+      →
     </motion.span>
   );
 }
 
 function Goal({ done, children }: { done: boolean; children: React.ReactNode }) {
-  return (
-    <li
-      className={`chip py-1 ${done ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-ink-soft'}`}
-    >
-      {done ? '✅' : '⬜'} {children}
-    </li>
-  );
+  return <GoalItem done={done}>{children}</GoalItem>;
 }
 
 function EnergyPyramid() {
@@ -392,7 +390,7 @@ function EnergyPyramid() {
             className="flex items-center justify-center gap-1 rounded-lg py-1 text-xs font-bold text-white"
             style={{ background: ['#7c3aed', '#2563eb', '#0d9488', '#65a30d', '#16a34a'][i] }}
           >
-            {c.emoji} {c.label}
+            <Icon name={c.icon} size={16} /> {c.label}
           </motion.div>
         ))}
       </div>

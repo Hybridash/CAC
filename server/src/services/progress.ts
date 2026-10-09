@@ -70,7 +70,7 @@ function touchStreak(db: DB, userId: string, r: Rewarder, now: Date) {
     'UPDATE users SET streak = ?, longest_streak = MAX(longest_streak, ?), last_active_day = ? WHERE id = ?',
   ).run(streak, streak, today, userId);
   r.atp(
-    streak > 1 ? `🔥 ${streak}-day streak bonus` : '🔥 Daily learning bonus',
+    streak > 1 ? `${streak}-day streak bonus` : 'Daily learning bonus',
     streakBonus(streak),
     `streak:${today}`,
   );
@@ -95,7 +95,7 @@ function maybeComplete(db: DB, userId: string, c: Concept, r: Rewarder, now: Dat
     .get(userId, ...inCategory) as { n: number };
   if (done.n === inCategory.length && grantAchievement(db, userId, `category:${c.category}`, now)) {
     r.atp(
-      `🏅 Completed all of ${CATEGORY_BY_ID[c.category].name}`,
+      `Completed all of ${CATEGORY_BY_ID[c.category].name}`,
       CATEGORY_COMPLETE_BONUS,
       `category:${c.category}`,
     );

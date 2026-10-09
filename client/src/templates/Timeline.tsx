@@ -4,6 +4,7 @@ import type { TemplateProps } from './framework/types';
 import { Feedback, Progress, Prompt, type FeedbackTone } from './framework/ui';
 import { Scene } from './framework/Scene';
 import { sfx } from '../lib/sound';
+import { Icon } from '../components/Icon';
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
@@ -128,7 +129,7 @@ export function Timeline({
           }
           aria-label={playing ? 'Pause' : 'Play'}
         >
-          {playing ? '⏸' : '▶️'}
+          <Icon name={playing ? 'pause' : 'play'} size={22} label={playing ? 'Pause' : 'Play'} />
         </button>
         <label className="flex-1">
           <span className="sr-only">Timeline position</span>
@@ -170,7 +171,9 @@ export function Timeline({
       </div>
       {checkpoint && (
         <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-amber-50 p-3 ring-1 ring-amber-200">
-          <p className="flex-1 font-bold text-amber-950">🎯 {checkpoint.prompt}</p>
+          <p className="flex-1 font-bold text-amber-950">
+            <Icon name="target" size={20} className="mr-1" /> {checkpoint.prompt}
+          </p>
           <button className="btn-primary py-1.5 text-sm" onClick={answer}>
             This moment!
           </button>

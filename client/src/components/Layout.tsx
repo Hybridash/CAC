@@ -7,15 +7,16 @@ import { SearchBox } from './SearchBox';
 import { RewardToasts } from './RewardToasts';
 import { PlayerAvatar } from './PlayerAvatar';
 import { ErrorBoundary } from './ErrorBoundary';
+import { Icon, type IconName } from './Icon';
 
 const NAV = [
-  { to: '/', label: 'Home', emoji: '🏠' },
-  { to: '/library', label: 'Library', emoji: '📚' },
-  { to: '/map', label: 'Map', emoji: '🗺️' },
-  { to: '/mysteries', label: 'Mysteries', emoji: '🕵️' },
-  { to: '/shop', label: 'Shop', emoji: '🛍️' },
-  { to: '/collection', label: 'Collection', emoji: '🃏' },
-];
+  { to: '/', label: 'Home', icon: 'home' },
+  { to: '/library', label: 'Library', icon: 'book' },
+  { to: '/map', label: 'Map', icon: 'map' },
+  { to: '/mysteries', label: 'Mysteries', icon: 'mystery' },
+  { to: '/shop', label: 'Shop', icon: 'bag' },
+  { to: '/collection', label: 'Collection', icon: 'cards' },
+] satisfies { to: string; label: string; icon: IconName }[];
 
 export function Layout() {
   const player = usePlayer((s) => s.player);
@@ -38,9 +39,7 @@ export function Layout() {
       <header className="sticky top-0 z-40 border-b border-black/5 bg-paper/90 pt-[env(safe-area-inset-top)] backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2.5">
           <NavLink to="/" className="flex shrink-0 items-center gap-1.5" aria-label="BioPlay home">
-            <span className="text-2xl" aria-hidden>
-              🧬
-            </span>
+            <img src="/icon.svg" alt="" width={30} height={30} className="rounded-lg" />
             <span className="font-display text-2xl font-extrabold tracking-tight">
               Bio<span className="text-brand">Play</span>
             </span>
@@ -77,7 +76,7 @@ export function Layout() {
                 className="chip hidden bg-orange-100 py-1 text-base text-orange-800 sm:inline-flex"
                 title={`${player.streak}-day learning streak`}
               >
-                🔥 {player.streak}
+                <Icon name="flame" size={20} /> {player.streak}
                 <span className="sr-only"> day streak</span>
               </NavLink>
             )}
@@ -95,7 +94,7 @@ export function Layout() {
               aria-label={muted ? 'Unmute sound effects' : 'Mute sound effects'}
               aria-pressed={muted}
             >
-              <span aria-hidden>{muted ? '🔇' : '🔊'}</span>
+              <Icon name={muted ? 'speakerOff' : 'speaker'} size={22} />
             </button>
             <NavLink to="/profile" aria-label="Your profile and stats" className="shrink-0">
               <PlayerAvatar size={40} />
@@ -133,7 +132,7 @@ export function Layout() {
             }
           >
             <span className="text-xl" aria-hidden>
-              {n.emoji}
+              <Icon name={n.icon} size={26} />
             </span>
             {n.label}
           </NavLink>

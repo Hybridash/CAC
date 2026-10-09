@@ -4,6 +4,7 @@ import type { TemplateProps } from '../../templates/framework/types';
 import { Feedback, Prompt, type FeedbackTone } from '../../templates/framework/ui';
 import { sfx } from '../../lib/sound';
 import { initialNeuron, stepNeuron, stimulate, THRESHOLD, type NeuronState } from './model';
+import { GoalItem, Icon } from '../../components/Icon';
 
 /** Neuron milliseconds that pass per real second (the lesson is in slow motion). */
 const SLOWMO = 4;
@@ -252,11 +253,7 @@ export function ActionPotentialLesson({
         >
           <path d="M120 10 L160 74" stroke="#cbd5e1" strokeWidth="6" strokeLinecap="round" />
           <circle cx="118" cy="8" r="8" fill="#94a3b8" />
-          {Date.now() - zapFlash < 300 && (
-            <text x="150" y="70" fontSize="26">
-              ⚡
-            </text>
-          )}
+          {Date.now() - zapFlash < 300 && <Icon name="bolt" size={28} x={146} y={46} />}
         </motion.g>
       </svg>
 
@@ -281,7 +278,7 @@ export function ActionPotentialLesson({
           />
         </label>
         <button className="btn-primary px-6 text-lg" onClick={zap}>
-          ⚡ Zap!
+          <Icon name="bolt" size={20} /> Zap!
         </button>
         <button
           className={`chip py-1.5 text-sm ${myelin ? 'bg-amber-200 text-amber-950' : 'bg-slate-100 text-ink-soft'}`}
@@ -296,7 +293,7 @@ export function ActionPotentialLesson({
             );
           }}
         >
-          🧈 Myelin {myelin ? 'on' : 'off'}
+          Myelin {myelin ? 'on' : 'off'}
         </button>
         <button
           className={`chip py-1.5 text-sm ${ttx ? 'bg-rose-600 text-white' : 'bg-slate-100 text-ink-soft'}`}
@@ -307,7 +304,7 @@ export function ActionPotentialLesson({
               say('You added pufferfish toxin. It plugs the sodium channels. Try zapping now…');
           }}
         >
-          🐡 Pufferfish toxin {ttx ? 'on' : 'off'}
+          Pufferfish toxin {ttx ? 'on' : 'off'}
         </button>
       </div>
 
@@ -323,13 +320,7 @@ export function ActionPotentialLesson({
 }
 
 function Goal({ done, children }: { done: boolean; children: React.ReactNode }) {
-  return (
-    <li
-      className={`chip py-1 ${done ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-ink-soft'}`}
-    >
-      {done ? '✅' : '⬜'} {children}
-    </li>
-  );
+  return <GoalItem done={done}>{children}</GoalItem>;
 }
 
 function Scope({ history, now }: { history: { t: number; v: number }[]; now: number }) {
@@ -458,8 +449,8 @@ function Membrane({ na, k, time, ttx }: { na: number; k: number; time: number; t
           opacity={na > 0.3 ? 0.4 : 0.9}
         />
         {ttx && (
-          <text x="58" y="76" fontSize="18">
-            🐡
+          <text x="52" y="74" fontSize="11" fontWeight="900" fill="#7c2d12">
+            TTX
           </text>
         )}
         <text x="70" y="140" textAnchor="middle" fontSize="10" fontWeight="800" fill="#9a3412">

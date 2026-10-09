@@ -23,6 +23,10 @@ export default tseslint.config(
     },
   },
   {
+    files: ['scripts/**/*.mjs'],
+    languageOptions: { globals: globals.node },
+  },
+  {
     files: ['client/**/*.{ts,tsx}'],
     plugins: { 'react-hooks': reactHooks },
     rules: {

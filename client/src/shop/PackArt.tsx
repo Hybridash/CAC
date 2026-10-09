@@ -1,10 +1,12 @@
 import type { PackTier } from '@bioplay/shared';
+import { Icon, type IconName } from '../components/Icon';
 
-export const PACK_COLORS: Record<PackTier, { a: string; b: string; ink: string; emoji: string }> = {
-  basic: { a: '#86efac', b: '#22c55e', ink: '#14532d', emoji: '🧫' },
-  rare: { a: '#93c5fd', b: '#3b82f6', ink: '#1e3a8a', emoji: '🔬' },
-  legendary: { a: '#fde68a', b: '#f59e0b', ink: '#78350f', emoji: '👑' },
-};
+export const PACK_COLORS: Record<PackTier, { a: string; b: string; ink: string; icon: IconName }> =
+  {
+    basic: { a: '#86efac', b: '#22c55e', ink: '#14532d', icon: 'microbe' },
+    rare: { a: '#93c5fd', b: '#3b82f6', ink: '#1e3a8a', icon: 'microscope' },
+    legendary: { a: '#fde68a', b: '#f59e0b', ink: '#78350f', icon: 'trophy' },
+  };
 
 /** A pack drawn as a plump cell, so opening it can look like cell division. */
 export function PackArt({
@@ -51,9 +53,7 @@ export function PackArt({
         strokeWidth="2"
         strokeDasharray="4 3"
       />
-      <text x="50" y="72" textAnchor="middle" fontSize="26">
-        {c.emoji}
-      </text>
+      <Icon name={c.icon} x={35} y={47} size={30} />
       <text x="50" y="100" textAnchor="middle" fontSize="11" fontWeight="900" fill={c.ink}>
         BIOPLAY
       </text>

@@ -2,7 +2,7 @@
   "name": "bioplay",
   "version": "0.1.0",
   "private": true,
-  "description": "BioPlay — interactive biology made simple",
+  "description": "BioPlay \u2014 interactive biology made simple",
   "type": "module",
   "engines": {
     "node": ">=24.0.0",
@@ -22,7 +22,8 @@
     "typecheck": "npm run typecheck -w shared && npm run typecheck -w server && npm run typecheck -w client",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "app": "node scripts/app.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -4,6 +4,7 @@ import { DndArena, Draggable, DropZone } from '../../templates/framework/dnd';
 import type { TemplateProps } from '../../templates/framework/types';
 import { Feedback, Prompt, type FeedbackTone } from '../../templates/framework/ui';
 import { sfx } from '../../lib/sound';
+import { Icon } from '../../components/Icon';
 
 type Phase = 'interphase' | 'prophase' | 'metaphase' | 'anaphase' | 'telophase' | 'done';
 
@@ -138,7 +139,7 @@ export function MitosisLesson({
     if (v >= 100 && phase === 'telophase') {
       go(
         'done',
-        'Two daughter cells, each with the exact same 4 chromosomes as the parent. That’s mitosis! 🎉',
+        'Two daughter cells, each with the exact same 4 chromosomes as the parent. That’s mitosis!',
       );
     }
   };
@@ -276,7 +277,7 @@ export function MitosisLesson({
                 className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full px-2 py-1 text-xs font-extrabold shadow ${copied.has(c.id) ? 'bg-emerald-100 text-emerald-800' : 'animate-pulse bg-amber-300 text-amber-950'}`}
                 style={{ left: `${(c.x / W) * 100}%`, top: `${((c.y - 44) / H) * 100}%` }}
               >
-                {copied.has(c.id) ? '✓' : '📋 copy'}
+                {copied.has(c.id) ? '✓' : 'copy'}
               </button>
             ))}
 
@@ -326,12 +327,12 @@ export function MitosisLesson({
             )
           }
         >
-          🧶 Condense chromosomes & dissolve nucleus
+          Condense chromosomes & dissolve nucleus
         </button>
       )}
       {phase === 'anaphase' && (
         <label className="flex flex-col gap-1 rounded-2xl bg-white p-3 ring-1 ring-black/10">
-          <span className="text-sm font-bold">🪢 Pull the spindle fibers ({pull}%)</span>
+          <span className="text-sm font-bold">Pull the spindle fibers ({pull}%)</span>
           <input
             type="range"
             min={0}
@@ -344,7 +345,7 @@ export function MitosisLesson({
       )}
       {phase === 'telophase' && (
         <label className="flex flex-col gap-1 rounded-2xl bg-white p-3 ring-1 ring-black/10">
-          <span className="text-sm font-bold">🤏 Pinch the cell in two ({pinch}%)</span>
+          <span className="text-sm font-bold">Pinch the cell in two ({pinch}%)</span>
           <input
             type="range"
             min={0}
@@ -359,7 +360,9 @@ export function MitosisLesson({
       {phase === 'done' && (
         <div className="grid gap-3 rounded-2xl bg-white p-3 ring-1 ring-black/10 sm:grid-cols-[1fr_auto]">
           <div>
-            <h3 className="font-extrabold">🔬 Checkpoint check</h3>
+            <h3 className="font-extrabold">
+              <Icon name="microscope" size={22} className="mr-1" /> Checkpoint check
+            </h3>
             <p className="text-sm text-ink-soft">
               Parent cell: 2 long + 2 short chromosomes. Each daughter: 2 long + 2 short. Identical
               copies ✓
@@ -377,7 +380,7 @@ export function MitosisLesson({
                   });
                 }}
               >
-                ⚠️ What if the checkpoints break?
+                <Icon name="warning" size={18} /> What if the checkpoints break?
               </button>
             ) : (
               <button
@@ -387,7 +390,7 @@ export function MitosisLesson({
                   setCells(2);
                 }}
               >
-                🩹 Repair the checkpoints
+                <Icon name="refresh" size={18} /> Repair the checkpoints
               </button>
             )}
           </div>

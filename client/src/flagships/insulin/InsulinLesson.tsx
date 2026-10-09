@@ -16,21 +16,22 @@ import {
   type InsulinMode,
   type ModelState,
 } from './model';
+import { GoalItem, Icon } from '../../components/Icon';
 
 const MODES: { id: InsulinMode; label: string; blurb: string }[] = [
   {
     id: 'normal',
-    label: '💚 Normal',
+    label: 'Normal',
     blurb: 'A healthy pancreas makes insulin keys, and cells respond to them.',
   },
   {
     id: 'type1',
-    label: '🩺 Type 1 Diabetes',
+    label: 'Type 1 Diabetes',
     blurb: 'The immune system has destroyed the beta cells, so no insulin keys are made.',
   },
   {
     id: 'type2',
-    label: '🩺 Type 2 Diabetes',
+    label: 'Type 2 Diabetes',
     blurb: 'Insulin is made, but the locks are “rusty”: cells barely respond (insulin resistance).',
   },
 ];
@@ -99,7 +100,7 @@ export function InsulinLesson({
       if (s.glucose > 140) f.peaked = true;
       if (s.rates.absorb > 1 && f.stage < STAGE.insulin && mode !== 'type1' && s.insulin > 6) {
         say(
-          'Beta cells in the pancreas notice the extra sugar and release insulin keys. 🔑',
+          'Beta cells in the pancreas notice the extra sugar and release insulin keys.',
           STAGE.insulin,
         );
       } else if (s.rates.uptake > 1.2 && f.stage === STAGE.insulin) {
@@ -121,7 +122,7 @@ export function InsulinLesson({
         f.stage < STAGE.balance
       ) {
         say(
-          'Back to normal! With less sugar around, the pancreas slows insulin release. Balance restored. ⚖️',
+          'Back to normal! With less sugar around, the pancreas slows insulin release. Balance restored.',
           STAGE.balance,
         );
       }
@@ -130,14 +131,14 @@ export function InsulinLesson({
         setSawGlucagon(true);
         sfx.sparkle();
         say(
-          'Too low! Alpha cells release glucagon, which tells the liver to unpack its glycogen pantry. 🟣',
+          'Too low! Alpha cells release glucagon, which tells the liver to unpack its glycogen pantry.',
           STAGE.glucagon,
         );
       }
       if (mode === 'type1' && s.glucose > 170 && s.rates.uptake < 0.4 && !f.starvingSaid) {
         f.starvingSaid = true;
         say(
-          'Blood is full of sugar, but with no keys the cells can’t get any. They’re starving! 😟',
+          'Blood is full of sugar, but with no keys the cells can’t get any. They’re starving!',
           STAGE.diabetes,
         );
       }
@@ -200,10 +201,10 @@ export function InsulinLesson({
         model.current = eat(model.current, food);
         setFedIn((m) => ({ ...m, [mode]: m[mode] + 1 }));
         f.peaked = false;
-        say(`${food.emoji} ${food.note}`, f.stage < STAGE.food ? STAGE.food : undefined);
+        say(food.note, f.stage < STAGE.food ? STAGE.food : undefined);
       } else if (action) {
         model.current = act(model.current, action.id);
-        say(`${action.emoji} ${action.note}`);
+        say(action.note);
       }
     },
     [mode, say, f],
@@ -278,7 +279,8 @@ export function InsulinLesson({
             )}
           </DropZone>
           <div className="pointer-events-none absolute bottom-2 left-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-bold text-ink-soft shadow-sm">
-            ⏱ {simClock(s.t)} <span className="font-normal">(1 s ≈ 3 min)</span>
+            <Icon name="clock" size={18} /> {simClock(s.t)}{' '}
+            <span className="font-normal">(1 s ≈ 3 min)</span>
           </div>
         </div>
 
@@ -289,9 +291,7 @@ export function InsulinLesson({
               {FOODS.map((food) => (
                 <Draggable key={food.id} id={food.id} label={food.label}>
                   <span className="flex w-[4.6rem] flex-col items-center rounded-2xl bg-white px-1.5 py-1.5 shadow ring-1 ring-black/10">
-                    <span className="text-3xl" aria-hidden>
-                      {food.emoji}
-                    </span>
+                    <Icon name={food.icon} size={38} />
                     <span className="text-[11px] leading-tight font-bold">{food.label}</span>
                     <SpeedTag speed={food.speed} />
                   </span>
@@ -300,9 +300,7 @@ export function InsulinLesson({
               {ACTIONS.map((a) => (
                 <Draggable key={a.id} id={a.id} label={a.label}>
                   <span className="flex w-[4.6rem] flex-col items-center rounded-2xl bg-sky-50 px-1.5 py-1.5 shadow ring-1 ring-sky-200">
-                    <span className="text-3xl" aria-hidden>
-                      {a.emoji}
-                    </span>
+                    <Icon name={a.icon} size={38} />
                     <span className="text-[11px] leading-tight font-bold">{a.label}</span>
                   </span>
                 </Draggable>
@@ -316,33 +314,19 @@ export function InsulinLesson({
       <Feedback text={message} tone={zone === 'low' || zone === 'very-high' ? 'hint' : 'info'} />
 
       <ul className="flex flex-wrap gap-2 text-sm font-bold" aria-label="Goals">
-        <Goal done={goal.feeds >= 3}>🍽️ Feed 3 foods ({Math.min(goal.feeds, 3)}/3)</Goal>
-        <Goal done={goal.t1}>🩺 Feed someone with Type 1</Goal>
-        <Goal done={goal.t2}>🩺 Feed someone with Type 2</Goal>
+        <Goal done={goal.feeds >= 3}>Feed 3 foods ({Math.min(goal.feeds, 3)}/3)</Goal>
+        <Goal done={goal.t1}>Feed someone with Type 1</Goal>
+        <Goal done={goal.t2}>Feed someone with Type 2</Goal>
         <Goal done={sawGlucagon} bonus>
-          ⬇️ Bonus: make sugar drop low enough for glucagon
+          Bonus: make sugar drop low enough for glucagon
         </Goal>
       </ul>
     </div>
   );
 }
 
-function Goal({
-  done,
-  bonus,
-  children,
-}: {
-  done: boolean;
-  bonus?: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <li
-      className={`chip py-1 ${done ? 'bg-emerald-100 text-emerald-800' : bonus ? 'bg-violet-50 text-violet-800' : 'bg-slate-100 text-ink-soft'}`}
-    >
-      {done ? '✅' : '⬜'} {children}
-    </li>
-  );
+function Goal({ done, children }: { done: boolean; bonus?: boolean; children: React.ReactNode }) {
+  return <GoalItem done={done}>{children}</GoalItem>;
 }
 
 function SpeedTag({ speed }: { speed: 'fast' | 'medium' | 'slow' | 'minimal' }) {
@@ -352,7 +336,7 @@ function SpeedTag({ speed }: { speed: 'fast' | 'medium' | 'slow' | 'minimal' }) 
     slow: 'bg-emerald-100 text-emerald-800',
     minimal: 'bg-slate-100 text-slate-600',
   }[speed];
-  const text = { fast: '⚡ fast', medium: 'medium', slow: '🐢 slow', minimal: 'minimal' }[speed];
+  const text = { fast: 'fast', medium: 'medium', slow: 'slow', minimal: 'minimal' }[speed];
   return (
     <span className={`mt-0.5 rounded-full px-1.5 text-[10px] font-extrabold ${style}`}>{text}</span>
   );
@@ -499,9 +483,12 @@ function BodyScene({ s, mode, time }: { s: ModelState; mode: InsulinMode; time: 
           />
         )}
         {zone === 'very-high' && (
-          <text x="215" y="60" fontSize="22">
-            💧
-          </text>
+          <path
+            d="M224 40 q-9 13 -9 19 a9 9 0 0 0 18 0 q0 -6 -9 -19z"
+            fill="#7dd3fc"
+            stroke="#0369a1"
+            strokeWidth="2"
+          />
         )}
         {/* cutaway */}
         <rect
@@ -545,12 +532,12 @@ function BodyScene({ s, mode, time }: { s: ModelState; mode: InsulinMode; time: 
           />
         ))}
         <text x="128" y="300" fontSize="11" textAnchor="middle" fontWeight="800" fill="#78350f">
-          liver{storing ? ' +📦' : ''}
+          liver{storing ? ' (storing)' : ''}
         </text>
         {releasing && (
-          <text x="100" y="232" fontSize="14">
-            🟣
-          </text>
+          <circle cx="106" cy="228" r="6" fill="#a855f7" stroke="#581c87" strokeWidth="2">
+            <animate attributeName="r" values="5;7;5" dur="0.8s" repeatCount="indefinite" />
+          </circle>
         )}
         {/* pancreas */}
         <path
@@ -593,8 +580,8 @@ function BodyScene({ s, mode, time }: { s: ModelState; mode: InsulinMode; time: 
           strokeWidth="2"
         />
         {s.rates.renal > 0.1 && (
-          <text x="196" y="380" fontSize="13">
-            💧🍬
+          <text x="194" y="382" fontSize="10" fontWeight="800" fill="#9f1239">
+            sugar in urine
           </text>
         )}
         {/* intestines */}

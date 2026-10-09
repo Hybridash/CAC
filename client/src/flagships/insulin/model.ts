@@ -1,3 +1,4 @@
+import type { IconName } from '../../components/Icon';
 /**
  * A toy glucose–insulin–glucagon model for the Insulin flagship.
  * Units: glucose in mg/dL; insulin and glucagon in arbitrary "signal" units.
@@ -10,7 +11,7 @@ export type InsulinMode = 'normal' | 'type1' | 'type2';
 export interface Food {
   id: string;
   label: string;
-  emoji: string;
+  icon: IconName;
   /** Total rise in blood glucose (mg/dL) before the body responds. */
   load: number;
   /** Seconds over which it is absorbed — shorter = faster spike. */
@@ -23,7 +24,7 @@ export const FOODS: Food[] = [
   {
     id: 'candy',
     label: 'Candy bar',
-    emoji: '🍫',
+    icon: 'candy',
     load: 110,
     seconds: 9,
     speed: 'fast',
@@ -32,7 +33,7 @@ export const FOODS: Food[] = [
   {
     id: 'soda',
     label: 'Soda',
-    emoji: '🥤',
+    icon: 'soda',
     load: 100,
     seconds: 7,
     speed: 'fast',
@@ -41,7 +42,7 @@ export const FOODS: Food[] = [
   {
     id: 'bread',
     label: 'White bread',
-    emoji: '🍞',
+    icon: 'bread',
     load: 80,
     seconds: 13,
     speed: 'medium',
@@ -50,7 +51,7 @@ export const FOODS: Food[] = [
   {
     id: 'oatmeal',
     label: 'Oatmeal',
-    emoji: '🥣',
+    icon: 'oatmeal',
     load: 55,
     seconds: 26,
     speed: 'slow',
@@ -59,7 +60,7 @@ export const FOODS: Food[] = [
   {
     id: 'apple',
     label: 'Apple',
-    emoji: '🍎',
+    icon: 'apple',
     load: 38,
     seconds: 22,
     speed: 'slow',
@@ -68,7 +69,7 @@ export const FOODS: Food[] = [
   {
     id: 'salad',
     label: 'Salad',
-    emoji: '🥗',
+    icon: 'salad',
     load: 8,
     seconds: 10,
     speed: 'minimal',
@@ -77,7 +78,7 @@ export const FOODS: Food[] = [
   {
     id: 'steak',
     label: 'Steak',
-    emoji: '🥩',
+    icon: 'steak',
     load: 5,
     seconds: 12,
     speed: 'minimal',
@@ -88,7 +89,7 @@ export const FOODS: Food[] = [
 export interface Action {
   id: 'run' | 'shot';
   label: string;
-  emoji: string;
+  icon: IconName;
   note: string;
 }
 
@@ -96,13 +97,13 @@ export const ACTIONS: Action[] = [
   {
     id: 'run',
     label: 'Go for a long run',
-    emoji: '🏃',
+    icon: 'sneaker',
     note: 'Working muscles pull in glucose — they can even open their doors without insulin!',
   },
   {
     id: 'shot',
     label: 'Insulin injection',
-    emoji: '💉',
+    icon: 'syringe',
     note: 'Injected insulin acts like the body’s own keys. People with Type 1 diabetes need it to survive.',
   },
 ];

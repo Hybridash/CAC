@@ -15,6 +15,7 @@ import { inkFor } from '../lib/color';
 import { usePlayer } from '../store/player';
 import { AtpAmount } from '../components/Atp';
 import { Stars } from '../components/ConceptBits';
+import { CATEGORY_ICON, Icon } from '../components/Icon';
 
 const NO_PROGRESS: Record<string, ConceptProgress> = {};
 type Status = 'done' | 'started' | 'new';
@@ -127,15 +128,15 @@ export function KnowledgeMapPage() {
                       />
                     )}
                   </g>
+                  <Icon name={CATEGORY_ICON[r.category.id]} x={r.x + 12} y={r.y + 11} size={26} />
                   <text
-                    x={r.x + 18}
+                    x={r.x + 42}
                     y={r.y + 30}
                     fontSize="17"
                     fontWeight="800"
                     fill={inkFor(r.category.color)}
                     style={{ fontFamily: 'var(--font-display)' }}
                   >
-                    {r.category.emoji}{' '}
                     {r.category.name
                       .replace('Molecular Biology & Genetics', 'Genetics')
                       .replace('Microbiology & Disease', 'Microbes')
@@ -152,9 +153,7 @@ export function KnowledgeMapPage() {
                     {n}/{all.length}
                   </text>
                   {frac === 1 && (
-                    <text x={r.x + r.w - 16} y={r.y + r.h - 12} fontSize="20" textAnchor="end">
-                      🏅
-                    </text>
+                    <Icon name="medal" x={r.x + r.w - 44} y={r.y + r.h - 44} size={32} />
                   )}
                 </g>
               );
@@ -207,9 +206,12 @@ export function KnowledgeMapPage() {
                     stroke="#1e1b2e"
                     strokeWidth="2"
                   />
-                  <text x={x} y={y + 5} fontSize="13" textAnchor="middle">
-                    {isSolved ? '✓' : unlocked ? '🕵️' : '🔒'}
-                  </text>
+                  <Icon
+                    name={isSolved ? 'check' : unlocked ? 'mystery' : 'lock'}
+                    x={x - 8}
+                    y={y - 8}
+                    size={16}
+                  />
                 </a>
               );
             })}
@@ -305,7 +307,7 @@ export function KnowledgeMapPage() {
                   <ul className="text-sm">
                     {focused.prerequisites!.map((p) => (
                       <li key={p}>
-                        {done(p) ? '✅' : '⬜'}{' '}
+                        <Icon name={done(p) ? 'check' : 'todo'} size={16} />{' '}
                         <button
                           className="font-bold text-indigo-700 hover:underline"
                           onClick={() => setFocus(p)}
@@ -346,10 +348,10 @@ export function KnowledgeMapPage() {
                 Flagship lesson
               </li>
               <li className="flex items-center gap-2">
-                <span className="text-xs">✦</span> Obscure concept (bonus ATP)
+                <Icon name="gem" size={18} /> Obscure concept (bonus ATP)
               </li>
               <li className="flex items-center gap-2">
-                <span>🕵️</span> Bio Mystery (unlocks when its concepts are done)
+                <Icon name="mystery" size={18} /> Bio Mystery (unlocks when its concepts are done)
               </li>
               <li className="flex items-center gap-2">
                 <span className="inline-block w-5 border-t-2 border-dashed border-slate-400" />{' '}

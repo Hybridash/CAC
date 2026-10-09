@@ -5,6 +5,7 @@ import type { TemplateProps } from '../../templates/framework/types';
 import { Feedback, Prompt, type FeedbackTone } from '../../templates/framework/ui';
 import { sfx } from '../../lib/sound';
 import { expose, newPerson, SICK_AT, stepPerson, vaccinate, type Person } from './model';
+import { GoalItem, Icon, type IconName } from '../../components/Icon';
 
 const DAYS = 21;
 /** Real milliseconds per simulated day. */
@@ -93,7 +94,7 @@ export function VaccineLesson({
       say(
         p.memory > 0
           ? `Booster! ${who}’s immune system reviews the “wanted poster” and makes even more memory cells.`
-          : `The vaccine shows ${who}’s immune system a harmless piece of the virus. Over 1–2 weeks it makes antibodies and long-lived MEMORY cells. 🧠`,
+          : `The vaccine shows ${who}’s immune system a harmless piece of the virus. Over 1–2 weeks it makes antibodies and long-lived MEMORY cells.`,
         'good',
       );
     } else if (item === 'virus') {
@@ -150,18 +151,14 @@ export function VaccineLesson({
         <div className="flex flex-wrap items-center gap-2 rounded-2xl bg-slate-50 p-2">
           <Draggable id="vaccine" label="Vaccine" disabled={stage === 'running'}>
             <span className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 font-bold shadow ring-1 ring-black/10">
-              <span className="text-2xl" aria-hidden>
-                💉
-              </span>
+              <Icon name="syringe" size={28} />
               Vaccine{' '}
               {doses > 0 && <span className="text-xs text-ink-soft">(drop again = booster)</span>}
             </span>
           </Draggable>
           <Draggable id="virus" label="Real virus" disabled={stage === 'running'}>
             <span className="flex items-center gap-1.5 rounded-xl bg-rose-50 px-3 py-2 font-bold shadow ring-1 ring-rose-200">
-              <span className="text-2xl" aria-hidden>
-                🦠
-              </span>
+              <Icon name="virus" size={28} />
               Real virus
             </span>
           </Draggable>
@@ -170,7 +167,7 @@ export function VaccineLesson({
             onClick={startOutbreak}
             disabled={stage === 'running'}
           >
-            🌍 Start outbreak
+            <Icon name="globe" size={18} /> Start outbreak
           </button>
           <button
             className="btn-ghost py-1.5 text-sm"
@@ -184,7 +181,7 @@ export function VaccineLesson({
           <PersonCard
             id="sam"
             name="Sam"
-            emoji="🧑🏽"
+            icon="kidA"
             p={sam}
             hist={hist.sam}
             running={stage !== 'setup'}
@@ -192,7 +189,7 @@ export function VaccineLesson({
           <PersonCard
             id="alex"
             name="Alex"
-            emoji="🧑🏼‍🦰"
+            icon="kidB"
             p={alex}
             hist={hist.alex}
             running={stage !== 'setup'}
@@ -210,26 +207,20 @@ export function VaccineLesson({
 }
 
 function Goal({ done, children }: { done: boolean; children: React.ReactNode }) {
-  return (
-    <li
-      className={`chip py-1 ${done ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-ink-soft'}`}
-    >
-      {done ? '✅' : '⬜'} {children}
-    </li>
-  );
+  return <GoalItem done={done}>{children}</GoalItem>;
 }
 
 function PersonCard({
   id,
   name,
-  emoji,
+  icon,
   p,
   hist,
   running,
 }: {
   id: string;
   name: string;
-  emoji: string;
+  icon: IconName;
   p: Person;
   hist: Person[];
   running: boolean;
@@ -251,9 +242,9 @@ function PersonCard({
               animate={sick ? { rotate: [0, -4, 4, 0] } : {}}
               transition={{ repeat: Infinity, duration: 1.2 }}
             >
-              {emoji}
-              <span className="absolute -right-2 -bottom-1 text-3xl">
-                {sick ? '🤒' : p.virus > 0 ? '😐' : '😊'}
+              <Icon name={icon} size={64} />
+              <span className="absolute -right-2 -bottom-1">
+                <Icon name={sick ? 'faceSick' : p.virus > 0 ? 'faceOk' : 'faceHappy'} size={30} />
               </span>
             </motion.span>
             <div className="flex-1">
@@ -285,7 +276,9 @@ function PersonCard({
                 {memoryCells === 0 ? (
                   <span className="text-xs text-slate-400">none</span>
                 ) : (
-                  Array.from({ length: memoryCells }, (_, i) => <span key={i}>🧠</span>)
+                  Array.from({ length: memoryCells }, (_, i) => (
+                    <Icon key={i} name="brain" size={18} />
+                  ))
                 )}
               </span>
             </div>
@@ -301,10 +294,10 @@ function PersonCard({
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   exit={{ scale: 0 }}
-                  className="absolute text-lg"
+                  className="absolute"
                   style={{ left: `${(i * 37) % 92}%`, top: `${(i * 23) % 60}%` }}
                 >
-                  🦠
+                  <Icon name="virus" size={22} />
                 </motion.span>
               ))}
               {Array.from({ length: abs }, (_, i) => (

@@ -13,6 +13,7 @@ import { searchIndex } from '../lib/library';
 import { DEFAULT_FILTERS, filterConcepts, type LibraryFilters, type SortKey } from '../lib/search';
 import { usePlayer } from '../store/player';
 import { inkFor } from '../lib/color';
+import { CategoryIcon } from '../components/Icon';
 
 const toggle = <T,>(list: T[], v: T) =>
   list.includes(v) ? list.filter((x) => x !== v) : [...list, v];
@@ -81,7 +82,7 @@ export function LibraryPage() {
                     ['--tw-ring-color' as string]: on ? c.color : 'transparent',
                   }}
                 >
-                  <span aria-hidden>{c.emoji}</span> {c.name}
+                  <CategoryIcon id={c.id} size={18} /> {c.name}
                 </button>
               );
             })}
@@ -125,7 +126,7 @@ export function LibraryPage() {
             options={[
               ['all', 'All'],
               ['common', 'Well-known'],
-              ['obscure', 'Obscure 🔮'],
+              ['obscure', 'Obscure'],
             ]}
           />
           <Select

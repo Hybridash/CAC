@@ -33,6 +33,7 @@ kept in `localStorage`.
 
 | Command                           | What it does                                                                                   |
 | --------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `npm run app`                     | Build and run BioPlay as an installable app on http://localhost:3000                           |
 | `npm run dev`                     | Start API (tsx watch) and client (Vite) together                                               |
 | `npm test`                        | Unit tests in all workspaces (Vitest)                                                          |
 | `npm run test:e2e`                | Playwright smoke tests against a production build (run `npx playwright install chromium` once) |
@@ -43,16 +44,36 @@ kept in `localStorage`.
 
 ## Installing BioPlay as an app
 
-BioPlay is a Progressive Web App, so it can be installed and opens full-screen from its own icon:
+BioPlay is a Progressive Web App: it installs from the browser and then opens in its own window with its own icon,
+like any other app.
 
-- **Android / Chrome / Edge (desktop or phone):** tap **📲 Install app** on the home or profile page, or use the
-  browser’s install icon in the address bar.
-- **iPhone / iPad (Safari):** tap **📲 Install app** for the steps — Share ⬆️ → **Add to Home Screen** → Add.
+1. In a terminal, run:
 
-A service worker caches the app shell, so the app opens and lessons work offline; progress made offline syncs when
-you reconnect. Installation needs the app served over **HTTPS** (or `localhost`), so deploy the production server
-(`npm run build && npm start`) to a host with HTTPS for other devices to install it. The icon source is
-`client/public/icon.svg`; PWA settings live in `client/vite.config.ts`.
+   ```bash
+   cd bioplay
+   npm run app
+   ```
+
+   This builds BioPlay, starts it on <http://localhost:3000> and opens that page. Keep the terminal window open while
+   you use the app (press Ctrl+C to stop it). Next time, `npm run app -- --no-build` starts faster. If port 3000 is
+   busy, use `PORT=3005 npm run app`.
+
+2. Install it:
+   - **Chrome or Edge:** click **Install app** on the BioPlay home page, or the install icon at the right end of the
+     address bar.
+   - **Safari on a Mac:** File → **Add to Dock**.
+
+3. Open BioPlay from your Dock, Start menu or Launchpad. (Start `npm run app` first whenever you use it.)
+
+**Phones and tablets** can install it too (Android: **Install app**; iPhone/iPad: Share → **Add to Home Screen**),
+but they need BioPlay served over **HTTPS**, so deploy the production server (`npm run build && npm start`) to a
+host first.
+
+> Use <http://localhost:3000> (from `npm run app`) for the app. `npm run dev` is for development only — its address is
+> <http://localhost:5173>, and its API port (3001) shows a “use the other address” page if opened directly.
+
+A service worker caches the app shell, so lessons keep working offline and progress syncs when you reconnect. The
+icon source is `client/public/icon.svg`; PWA settings live in `client/vite.config.ts`.
 
 ## Project layout
 

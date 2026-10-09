@@ -19,6 +19,7 @@ import { usePlayer } from '../store/player';
 import { PackArt } from './PackArt';
 import { PackOpening } from './PackOpening';
 import { sfx } from '../lib/sound';
+import { Icon } from '../components/Icon';
 
 export function ShopPage() {
   const player = usePlayer((s) => s.player);
@@ -79,7 +80,8 @@ export function ShopPage() {
           role="alert"
           className="rounded-2xl bg-amber-50 p-3 font-semibold text-amber-900 ring-1 ring-amber-200"
         >
-          💡 {error}.{' '}
+          <Icon name="bulb" size={22} className="mr-1 -mt-0.5" />
+          {error}.{' '}
           <Link to="/library" className="underline">
             Find a lesson to earn more →
           </Link>
@@ -177,7 +179,7 @@ export function ShopPage() {
           </label>
         </div>
         {buyable.length === 0 ? (
-          <p className="mt-4 font-bold text-emerald-700">You own every avatar here. Wow! 🎉</p>
+          <p className="mt-4 font-bold text-emerald-700">You own every avatar here. Wow!</p>
         ) : (
           <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {buyable.map((a) => {

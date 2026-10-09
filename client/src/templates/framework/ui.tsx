@@ -1,11 +1,12 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import type { ReactNode } from 'react';
+import { Icon } from '../../components/Icon';
 
 /** The instruction banner at the top of every interaction. */
 export function Prompt({ children }: { children: ReactNode }) {
   return (
     <p className="rounded-2xl bg-indigo-50 px-4 py-2.5 font-semibold text-indigo-900">
-      <span aria-hidden>👉 </span>
+      <Icon name="pointer" size={20} className="mr-1.5 -mt-0.5" />
       {children}
     </p>
   );
@@ -20,7 +21,7 @@ export function Feedback({ text, tone = 'info' }: { text: string | null; tone?: 
     good: 'bg-emerald-50 text-emerald-900 ring-emerald-200',
     hint: 'bg-amber-50 text-amber-900 ring-amber-200',
   }[tone];
-  const icon = { info: '💬', good: '🎉', hint: '💡' }[tone];
+  const icon = ({ info: 'chat', good: 'party', hint: 'bulb' } as const)[tone];
   return (
     <div aria-live="polite" className="min-h-12">
       <AnimatePresence mode="wait">
@@ -32,7 +33,7 @@ export function Feedback({ text, tone = 'info' }: { text: string | null; tone?: 
             exit={{ opacity: 0 }}
             className={`rounded-2xl px-4 py-2.5 font-semibold ring-1 ${styles}`}
           >
-            <span aria-hidden>{icon} </span>
+            <Icon name={icon} size={20} className="mr-1.5 -mt-0.5" />
             {text}
           </motion.p>
         )}
