@@ -38,10 +38,14 @@ export function Layout() {
       </a>
       <header className="sticky top-0 z-40 border-b border-black/5 bg-paper/90 pt-[env(safe-area-inset-top)] backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2.5">
-          <NavLink to="/" className="flex shrink-0 items-center gap-1.5" aria-label="BioPlay home">
+          <NavLink
+            to="/"
+            className="flex shrink-0 items-center gap-1.5"
+            aria-label="Bio Bites home"
+          >
             <img src="/icon.svg" alt="" width={30} height={30} className="rounded-lg" />
             <span className="font-display text-2xl font-extrabold tracking-tight">
-              Bio<span className="text-brand">Play</span>
+              Bio <span className="text-brand">Bites</span>
             </span>
           </NavLink>
           <nav className="ml-2 hidden gap-1 lg:flex" aria-label="Main">

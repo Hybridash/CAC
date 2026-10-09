@@ -4,6 +4,7 @@ import { SearchBox } from '../components/SearchBox';
 import { ConceptCard } from '../components/ConceptBits';
 import { AtpIcon } from '../components/Atp';
 import { InstallApp } from '../components/InstallApp';
+import { AccountCard } from '../components/AccountCard';
 import { todaysConceptId } from '../lib/library';
 import { usePlayer } from '../store/player';
 import { inkFor } from '../lib/color';
@@ -83,6 +84,11 @@ export function HomePage() {
           )}
         </div>
       </section>
+
+      {/* Once a guest has something worth keeping, offer to save it. */}
+      {player && !player.account && Object.keys(player.progress).length > 0 && (
+        <AccountCard compact />
+      )}
 
       {cotdConcept && (
         <section aria-labelledby="cotd" className="grid items-center gap-4 md:grid-cols-[1fr_2fr]">

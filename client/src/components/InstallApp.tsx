@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Icon } from './Icon';
+import { isNativeApp } from '../lib/platform';
 
 interface InstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -40,7 +41,8 @@ export function InstallApp({ className = '' }: { className?: string }) {
     return () => void listeners.delete(l);
   }, []);
 
-  if (isStandalone()) return null;
+  // Already an app: installed from the browser, or the native iPhone/iPad app.
+  if (isStandalone() || isNativeApp) return null;
   const ios = isIOS();
   if (!deferred && !ios) return null;
 
@@ -68,7 +70,7 @@ export function InstallApp({ className = '' }: { className?: string }) {
             onClick={() => setShowIOSHelp(false)}
             role="dialog"
             aria-modal="true"
-            aria-label="Install BioPlay"
+            aria-label="Install Bio Bites"
           >
             <motion.div
               initial={{ y: 40 }}
@@ -76,7 +78,7 @@ export function InstallApp({ className = '' }: { className?: string }) {
               className="card w-full max-w-sm p-5"
               onClick={(e) => e.stopPropagation()}
             >
-              <h2 className="text-2xl font-extrabold">Install BioPlay</h2>
+              <h2 className="text-2xl font-extrabold">Install Bio Bites</h2>
               <ol className="mt-3 flex flex-col gap-2 font-semibold">
                 <li>
                   1. Tap the <b>Share</b> button (the square with an arrow) in Safari’s toolbar.
@@ -85,7 +87,7 @@ export function InstallApp({ className = '' }: { className?: string }) {
                   2. Scroll down and tap <b>Add to Home Screen</b>.
                 </li>
                 <li>
-                  3. Tap <b>Add</b>. BioPlay opens full-screen from its icon!
+                  3. Tap <b>Add</b>. Bio Bites opens full-screen from its icon!
                 </li>
               </ol>
               <button

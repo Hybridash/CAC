@@ -1,12 +1,16 @@
 import request from 'supertest';
 import { createApp } from '../src/app.js';
 import { openDatabase } from '../src/db.js';
+import type { IdentityVerifier } from '../src/identity.js';
 
 /** Fresh in-memory app with a controllable clock. */
-export function testApp(start = new Date('2026-10-07T12:00:00Z')) {
+export function testApp(
+  start = new Date('2026-10-07T12:00:00Z'),
+  verifyIdentity?: IdentityVerifier,
+) {
   let now = start;
   const db = openDatabase(':memory:');
-  const app = createApp(db, () => now);
+  const app = createApp(db, () => now, undefined, verifyIdentity);
   return {
     db,
     app,

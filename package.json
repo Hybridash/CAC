@@ -23,7 +23,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "app": "node scripts/app.mjs"
+    "app": "node scripts/app.mjs",
+    "ios": "node scripts/ios.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -1,4 +1,5 @@
 import type { ApiError } from '@bioplay/shared';
+import { API_BASE } from './platform';
 
 const TOKEN_KEY = 'bioplay.token';
 
@@ -52,13 +53,13 @@ export async function api<T>(
   if (token) headers.Authorization = `Bearer ${token}`;
   let res: Response;
   try {
-    res = await fetch(`/api${path}`, {
+    res = await fetch(`${API_BASE}/api${path}`, {
       method: init.method ?? (init.body ? 'POST' : 'GET'),
       headers,
       body: init.body ? JSON.stringify(init.body) : undefined,
     });
   } catch {
-    throw new RequestError(0, "Can't reach the BioPlay server");
+    throw new RequestError(0, "Can't reach the Bio Bites server");
   }
   const data = (await res.json().catch(() => ({}))) as T & Partial<ApiError>;
   if (!res.ok) throw new RequestError(res.status, data.error ?? `Request failed (${res.status})`);

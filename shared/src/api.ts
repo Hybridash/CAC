@@ -23,6 +23,29 @@ export interface PlayerState {
   inventory: Record<string, number>;
   mysteriesSolved: string[];
   achievements: string[];
+  /** The Google or Apple account this progress is saved to, or null for a guest. */
+  account: LinkedAccount | null;
+}
+
+export type AuthProvider = 'google' | 'apple';
+
+export interface LinkedAccount {
+  provider: AuthProvider;
+  email: string | null;
+}
+
+export interface SignInRequest {
+  /** The ID token (a signed JWT) returned by Google or Apple sign-in on the device. */
+  idToken: string;
+  /** Apple only shares the person's name on the very first sign-in, so the device passes it along. */
+  name?: string;
+}
+
+/** `token` is set when signing in switched to an existing account; the client must use it from then on. */
+export interface SignInResponse {
+  token?: string;
+  state: PlayerState;
+  switched: boolean;
 }
 
 export interface SessionResponse {

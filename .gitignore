@@ -3,6 +3,7 @@ node_modules/
 
 # Build output
 dist/
+dist-native/
 build/
 *.tsbuildinfo
 coverage/
@@ -11,6 +12,7 @@ coverage/
 .env
 .env.*
 !.env.example
+!client/.env.native
 
 # SQLite databases
 *.db
@@ -44,3 +46,6 @@ Thumbs.db
 
 # E2E test database
 .e2e-data/
+client/ios/build/
+client/ios/App/App/public/
+client/.env.native.local
