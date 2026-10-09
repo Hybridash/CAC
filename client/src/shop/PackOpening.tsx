@@ -1,11 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import {
-  AVATAR_BY_ID,
-  AVATAR_RARITIES,
-  type PackOpenResponse,
-  type PackTier,
-} from '@bioplay/shared';
+import { AVATAR_BY_ID, type PackOpenResponse, type PackTier } from '@bioplay/shared';
 import { AvatarCard, RARITY_STYLE } from '../components/AvatarCard';
 import { NucleotideIcon } from '../components/Atp';
 import { PackArt } from './PackArt';
@@ -29,7 +24,12 @@ export function PackOpening({
   const [stage, setStage] = useState<Stage>('shake');
   const [flipped, setFlipped] = useState<boolean[]>(() => result.cards.map(() => false));
   const equip = usePlayer((s) => s.equip);
+  const equipped = usePlayer((s) => s.player?.equippedAvatar ?? null);
   const allFlipped = flipped.every(Boolean);
+  /** The revealed card the player picked to wear, if any. Nothing is equipped unless they choose. */
+  const [chosen, setChosen] = useState<number | null>(null);
+  const [equipping, setEquipping] = useState(false);
+  const [equipError, setEquipError] = useState<string | null>(null);
 
   useEffect(() => {
     sfx.whoosh();
@@ -63,15 +63,27 @@ export function PackOpening({
     setFlipped((f) => f.map((x, j) => (j === i ? true : x)));
   };
 
-  const best = useMemo(
-    () =>
-      [...result.cards].sort(
-        (a, b) =>
-          AVATAR_RARITIES.indexOf(AVATAR_BY_ID[b.avatarId].rarity) -
-          AVATAR_RARITIES.indexOf(AVATAR_BY_ID[a.avatarId].rarity),
-      )[0],
-    [result.cards],
-  );
+  /** Tap a hidden card to reveal it; tap a revealed one to pick (or un-pick) it to equip. */
+  const tapCard = (i: number) => {
+    if (!flipped[i]) return flip(i);
+    setEquipError(null);
+    setChosen((c) => (c === i ? null : i));
+  };
+
+  const equipChosen = async () => {
+    if (chosen === null) return;
+    setEquipping(true);
+    setEquipError(null);
+    try {
+      await equip(result.cards[chosen].avatarId);
+      onClose();
+    } catch (e) {
+      setEquipError((e as Error).message || 'Couldn’t equip that avatar. Please try again.');
+      setEquipping(false);
+    }
+  };
+  const chosenAvatar = chosen === null ? null : AVATAR_BY_ID[result.cards[chosen].avatarId];
+
   const nucleotides = result.cards.reduce((s, c) => s + c.nucleotides, 0);
 
   return (
@@ -131,23 +143,31 @@ export function PackOpening({
           <h2 className="text-center text-3xl font-extrabold text-white">
             {allFlipped ? 'Your new avatars!' : 'Tap each card to reveal it'}
           </h2>
+          {allFlipped && (
+            <p className="-mt-3 text-center font-bold text-indigo-100">
+              Tap an avatar to choose it, then equip it — or keep your current one.
+            </p>
+          )}
           <div className="flex flex-wrap justify-center gap-4">
             {result.cards.map((card, i) => {
               const av = AVATAR_BY_ID[card.avatarId];
               const r = RARITY_STYLE[av.rarity];
+              const isChosen = chosen === i;
+              const isWorn = equipped === card.avatarId;
               return (
                 <motion.button
                   key={i}
                   initial={{ y: 60, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: i * 0.15 }}
-                  onClick={() => flip(i)}
-                  className="relative h-64 w-44 [perspective:900px]"
+                  onClick={() => tapCard(i)}
+                  className={`relative h-64 w-44 rounded-3xl transition [perspective:900px] ${isChosen ? 'ring-4 ring-emerald-400 ring-offset-4 ring-offset-indigo-950' : ''}`}
                   aria-label={
                     flipped[i]
-                      ? `${av.name}, ${r.label}${card.duplicate ? ', duplicate' : ', new'}`
+                      ? `${av.name}, ${r.label}${card.duplicate ? ', duplicate' : ', new'}${isWorn ? ', equipped' : ''}. Choose to equip`
                       : `Reveal card ${i + 1}`
                   }
+                  aria-pressed={flipped[i] ? isChosen : undefined}
                   data-testid={flipped[i] ? 'revealed-card' : 'hidden-card'}
                 >
                   <motion.div
@@ -193,6 +213,13 @@ export function PackOpening({
                       )}
                     </div>
                   </motion.div>
+                  {flipped[i] && (isChosen || isWorn) && (
+                    <span
+                      className={`absolute -top-3 left-1/2 z-10 -translate-x-1/2 chip py-0.5 text-xs shadow ${isChosen ? 'bg-emerald-400 text-emerald-950' : 'bg-white text-ink'}`}
+                    >
+                      <Icon name="check" size={14} /> {isChosen ? 'Chosen' : 'Wearing'}
+                    </span>
+                  )}
                 </motion.button>
               );
             })}
@@ -216,20 +243,24 @@ export function PackOpening({
                   them on any avatar you want.
                 </p>
               )}
+              {equipError && (
+                <p role="alert" className="font-bold text-rose-300">
+                  {equipError}
+                </p>
+              )}
               <div className="flex flex-wrap justify-center gap-2">
-                <button
-                  className="btn-primary"
-                  onClick={() => void equip(best.avatarId).then(onClose)}
-                >
-                  Equip {AVATAR_BY_ID[best.avatarId].name}
-                </button>
+                {chosenAvatar && (
+                  <button className="btn-primary" onClick={equipChosen} disabled={equipping}>
+                    {equipping ? 'Equipping…' : `Equip ${chosenAvatar.name}`}
+                  </button>
+                )}
                 {onAgain && (
                   <button className="btn-ghost" onClick={onAgain}>
                     Open another
                   </button>
                 )}
                 <button className="btn-ghost" onClick={onClose}>
-                  Done
+                  {chosenAvatar ? 'Don’t equip' : 'Done'}
                 </button>
               </div>
             </motion.div>
