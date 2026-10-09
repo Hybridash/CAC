@@ -24,7 +24,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "app": "node scripts/app.mjs",
-    "ios": "node scripts/ios.mjs"
+    "ios": "node scripts/ios.mjs",
+    "ios:live": "node scripts/ios.mjs --live"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
