@@ -20,7 +20,9 @@ const perfectAnswers = insulin.quiz.map((q) =>
 const passAnswers = [...perfectAnswers.slice(0, 2), -1] as QuizAnswer[];
 const failAnswers = [-1, -1, perfectAnswers[2]] as QuizAnswer[];
 const sum = (lines: { reason: string; amount: number }[], skipStreak = true) =>
-  lines.filter((l) => !(skipStreak && l.reason.includes('🔥'))).reduce((s, l) => s + l.amount, 0);
+  lines
+    .filter((l) => !(skipStreak && /streak|Daily/.test(l.reason)))
+    .reduce((s, l) => s + l.amount, 0);
 
 describe('concept rewards (server-side)', () => {
   const normalDay = dayWhere((c) => c !== 'insulin');
@@ -45,7 +47,9 @@ describe('concept rewards (server-side)', () => {
     const t = testApp(normalDay);
     const p = await t.newPlayer();
     const a = await request(t.app).post('/api/concepts/insulin/interaction').set(p.auth);
-    expect(a.body.lines.find((l: { reason: string }) => l.reason.includes('🔥')).amount).toBe(5);
+    expect(a.body.lines.find((l: { reason: string }) => /streak|Daily/.test(l.reason)).amount).toBe(
+      5,
+    );
     const b = await request(t.app)
       .post('/api/concepts/insulin/quiz')
       .set(p.auth)
@@ -54,7 +58,9 @@ describe('concept rewards (server-side)', () => {
     t.advanceHours(24);
     const c = await request(t.app).post('/api/concepts/thermoregulation/interaction').set(p.auth);
     expect(c.body.state.streak).toBe(2);
-    expect(c.body.lines.find((l: { reason: string }) => l.reason.includes('🔥')).amount).toBe(10);
+    expect(c.body.lines.find((l: { reason: string }) => /streak|Daily/.test(l.reason)).amount).toBe(
+      10,
+    );
   });
 
   it('grades the quiz on the server and never pays for a failed quiz', async () => {

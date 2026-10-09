@@ -5,6 +5,7 @@ import type { TemplateProps } from '../../templates/framework/types';
 import { Feedback, Prompt, type FeedbackTone } from '../../templates/framework/ui';
 import { sfx } from '../../lib/sound';
 import { counts, dose, grow, immune, newInfection, SICK_THRESHOLD, type Bacterium } from './model';
+import { GoalItem, Icon } from '../../components/Icon';
 
 const COURSE = 7;
 const R_COLOR = ['#22c55e', '#facc15', '#ef4444'];
@@ -72,7 +73,7 @@ export function ResistanceLesson({
       );
     } else {
       say(
-        `💊 Killed ${before[0] - ac[0]} easy-to-kill bacteria, but ${ac[1] + ac[2]} tougher ones survived. Notice which colors are left…`,
+        `Killed ${before[0] - ac[0]} easy-to-kill bacteria, but ${ac[1] + ac[2]} tougher ones survived. Notice which colors are left…`,
         'info',
       );
     }
@@ -168,7 +169,7 @@ export function ResistanceLesson({
                 </AnimatePresence>
                 {pop.length === 0 && (
                   <span className="absolute inset-0 grid place-items-center text-2xl font-extrabold text-emerald-700">
-                    ✨ Clear!
+                    <Icon name="sparkle" size={28} /> Clear!
                   </span>
                 )}
               </div>
@@ -179,7 +180,10 @@ export function ResistanceLesson({
               className={`rounded-2xl p-3 text-center ring-2 ${sick ? 'bg-rose-50 ring-rose-300' : 'bg-emerald-50 ring-emerald-300'}`}
             >
               <div className="text-4xl" aria-hidden>
-                {sick ? '🤒' : pop.length > 0 ? '🙂' : '😄'}
+                <Icon
+                  name={sick ? 'faceSick' : pop.length > 0 ? 'faceOk' : 'faceHappy'}
+                  size={48}
+                />
               </div>
               <p className="font-extrabold">
                 {sick ? 'Patient feels sick' : pop.length > 0 ? 'Feels better…' : 'Cured!'}
@@ -213,14 +217,13 @@ export function ResistanceLesson({
             </ul>
             <Draggable id="pill" label="Antibiotic pill" disabled={dosedToday || pop.length === 0}>
               <span className="flex items-center justify-center gap-2 rounded-2xl bg-white px-3 py-2 font-bold shadow ring-1 ring-black/10">
-                <span className="text-2xl" aria-hidden>
-                  💊
-                </span>
+                <Icon name="pill" size={28} />
                 {dosedToday ? 'Taken today ✓' : 'Antibiotic pill'}
               </span>
             </Draggable>
             <button className="btn-primary" onClick={nextDay} disabled={pop.length === 0}>
-              ☀️ Next day {!dosedToday && dosesTaken > 0 && pop.length > 0 ? '(skip pill)' : ''}
+              <Icon name="sun" size={20} /> Next day{' '}
+              {!dosedToday && dosesTaken > 0 && pop.length > 0 ? '(skip pill)' : ''}
             </button>
             <button
               className={`chip justify-center py-1.5 text-sm ${sharing ? 'bg-fuchsia-600 text-white' : 'bg-slate-100 text-ink-soft'}`}
@@ -234,7 +237,7 @@ export function ResistanceLesson({
                   );
               }}
             >
-              🧬 Gene sharing (plasmids) {sharing ? 'on' : 'off'}
+              <Icon name="dna" size={18} /> Gene sharing (plasmids) {sharing ? 'on' : 'off'}
             </button>
           </div>
         </div>
@@ -245,11 +248,11 @@ export function ResistanceLesson({
       <div className="flex flex-wrap gap-2">
         {round === 1 && pop.length > 0 && day >= 3 && (
           <button className="btn-ghost text-sm" onClick={reinfect}>
-            🔁 It came back: start round 2 with the survivors
+            <Icon name="refresh" size={18} /> It came back: start round 2 with the survivors
           </button>
         )}
         <button className="btn-ghost text-sm" onClick={restart}>
-          🧫 New infection
+          <Icon name="microbe" size={18} /> New infection
         </button>
       </div>
       <Feedback text={msg?.text ?? null} tone={msg?.tone} />
@@ -263,13 +266,7 @@ export function ResistanceLesson({
 }
 
 function Goal({ done, children }: { done: boolean; children: React.ReactNode }) {
-  return (
-    <li
-      className={`chip py-1 ${done ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-ink-soft'}`}
-    >
-      {done ? '✅' : '⬜'} {children}
-    </li>
-  );
+  return <GoalItem done={done}>{children}</GoalItem>;
 }
 
 function History({ log }: { log: DayLog[] }) {
@@ -277,7 +274,7 @@ function History({ log }: { log: DayLog[] }) {
   return (
     <figure className="rounded-2xl bg-white p-3 ring-1 ring-black/10">
       <figcaption className="mb-2 text-sm font-bold">
-        Bacteria at the end of each day (💊 = pill taken)
+        Bacteria at the end of each day (● = pill taken)
       </figcaption>
       <div
         className="flex h-28 items-end gap-1.5"
@@ -300,7 +297,7 @@ function History({ log }: { log: DayLog[] }) {
                 />
               ))}
             </div>
-            <span className="text-[10px] font-bold">{l.dosed ? '💊' : '·'}</span>
+            <span className="text-[10px] font-bold">{l.dosed ? '●' : '·'}</span>
             <span className="text-[10px] text-ink-soft">d{l.day}</span>
           </div>
         ))}

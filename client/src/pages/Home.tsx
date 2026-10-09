@@ -7,6 +7,7 @@ import { InstallApp } from '../components/InstallApp';
 import { todaysConceptId } from '../lib/library';
 import { usePlayer } from '../store/player';
 import { inkFor } from '../lib/color';
+import { CategoryIcon, Icon } from '../components/Icon';
 
 export function HomePage() {
   const player = usePlayer((s) => s.player);
@@ -40,15 +41,18 @@ export function HomePage() {
   return (
     <div className="flex flex-col gap-8">
       <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-200 via-teal-100 to-sky-200 px-5 py-10 text-center sm:px-10">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 select-none text-5xl opacity-25"
-        >
-          <span className="animate-float absolute top-4 left-6">🦠</span>
-          <span className="animate-float absolute top-10 right-10 [animation-delay:1s]">🧬</span>
-          <span className="animate-float absolute bottom-6 left-1/4 [animation-delay:.5s]">🌿</span>
+        <div aria-hidden className="pointer-events-none absolute inset-0 select-none opacity-30">
+          <span className="animate-float absolute top-4 left-6">
+            <Icon name="microbe" size={56} />
+          </span>
+          <span className="animate-float absolute top-10 right-10 [animation-delay:1s]">
+            <Icon name="dna" size={56} />
+          </span>
+          <span className="animate-float absolute bottom-6 left-1/4 [animation-delay:.5s]">
+            <Icon name="sprout" size={52} />
+          </span>
           <span className="animate-float absolute right-1/4 bottom-4 [animation-delay:1.5s]">
-            🧠
+            <Icon name="brain" size={52} />
           </span>
         </div>
         <h1 className="relative text-4xl font-extrabold sm:text-6xl">
@@ -63,10 +67,10 @@ export function HomePage() {
         </div>
         <div className="relative mt-4 flex flex-wrap items-center justify-center gap-2">
           <button className="btn-ghost" onClick={random}>
-            🎲 Random concept
+            <Icon name="dice" size={22} /> Random concept
           </button>
           <Link to="/library" className="btn-ghost">
-            📚 Browse all {CONCEPTS.length}
+            <Icon name="book" size={22} /> Browse all {CONCEPTS.length}
           </Link>
           <InstallApp />
           <span className="chip bg-white/80 py-1.5 text-base text-amber-900">
@@ -74,7 +78,7 @@ export function HomePage() {
           </span>
           {!!player?.streak && (
             <span className="chip bg-white/80 py-1.5 text-base text-orange-700">
-              🔥 {player.streak}-day streak
+              <Icon name="flame" size={20} /> {player.streak}-day streak
             </span>
           )}
         </div>
@@ -84,7 +88,8 @@ export function HomePage() {
         <section aria-labelledby="cotd" className="grid items-center gap-4 md:grid-cols-[1fr_2fr]">
           <div>
             <h2 id="cotd" className="text-2xl font-extrabold">
-              ☀️ Concept of the Day
+              <Icon name="sun" size={28} className="-mt-1 mr-1" />
+              Concept of the Day
             </h2>
             <p className="text-ink-soft">All of today’s rewards for this one are worth 1.5× ATP.</p>
           </div>
@@ -96,7 +101,7 @@ export function HomePage() {
 
       <section aria-labelledby="cont">
         <h2 id="cont" className="mb-3 text-2xl font-extrabold">
-          {continueList.length ? '▶️ Continue learning' : '✨ Great places to start'}
+          {continueList.length ? 'Continue learning' : 'Great places to start'}
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {(continueList.length ? continueList : starters).map((c) => (
@@ -120,9 +125,7 @@ export function HomePage() {
                 className="card flex items-center gap-3 p-3 transition hover:-translate-y-0.5"
                 style={{ background: c.tint }}
               >
-                <span className="text-3xl" aria-hidden>
-                  {c.emoji}
-                </span>
+                <CategoryIcon id={c.id} size={36} />
                 <span className="min-w-0">
                   <span
                     className="block leading-tight font-bold"

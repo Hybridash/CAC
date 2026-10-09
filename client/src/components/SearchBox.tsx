@@ -4,6 +4,7 @@ import { CATEGORY_BY_ID, potentialReward } from '@bioplay/shared';
 import { searchIndex } from '../lib/library';
 import { AtpAmount } from './Atp';
 import { Stars } from './ConceptBits';
+import { CategoryIcon, Icon } from './Icon';
 
 /** Accessible combobox with live fuzzy autocomplete. */
 export function SearchBox({
@@ -48,9 +49,9 @@ export function SearchBox({
         </label>
         <span
           aria-hidden
-          className={`pointer-events-none absolute top-1/2 -translate-y-1/2 ${big ? 'left-5 text-2xl' : 'left-3 text-base'}`}
+          className={`pointer-events-none absolute top-1/2 -translate-y-1/2 ${big ? 'left-4' : 'left-2.5'}`}
         >
-          🔎
+          <Icon name="mystery" size={big ? 28 : 18} />
         </span>
         <input
           ref={inputRef}
@@ -114,7 +115,7 @@ export function SearchBox({
                 style={{ background: CATEGORY_BY_ID[c.category].tint }}
                 aria-hidden
               >
-                {CATEGORY_BY_ID[c.category].emoji}
+                <CategoryIcon id={c.category} size={26} />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block truncate font-bold">{c.title}</span>

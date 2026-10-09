@@ -11,6 +11,7 @@ import { NucleotideIcon } from '../components/Atp';
 import { PackArt } from './PackArt';
 import { sfx } from '../lib/sound';
 import { usePlayer } from '../store/player';
+import { Icon } from '../components/Icon';
 
 type Stage = 'shake' | 'split' | 'cards';
 
@@ -155,9 +156,7 @@ export function PackOpening({
                     transition={{ duration: 0.6 }}
                   >
                     <div className="absolute inset-0 grid place-items-center rounded-3xl bg-gradient-to-br from-indigo-500 to-violet-700 ring-4 ring-white/40 [backface-visibility:hidden]">
-                      <span className="text-6xl" aria-hidden>
-                        🧬
-                      </span>
+                      <Icon name="dna" size={72} />
                       <span className="absolute bottom-4 text-sm font-extrabold text-white/80">
                         tap!
                       </span>

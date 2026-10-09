@@ -15,6 +15,7 @@ import { AvatarArt } from '../components/AvatarArt';
 import { NucleotideIcon } from '../components/Atp';
 import { usePlayer } from '../store/player';
 import { sfx } from '../lib/sound';
+import { Icon } from '../components/Icon';
 
 type Show = 'all' | 'owned' | 'locked';
 type Source = 'all' | 'pack' | 'category' | 'mystery';
@@ -214,7 +215,10 @@ function AvatarDetail({ avatar, onClose }: { avatar: Avatar; onClose: () => void
         <h2 className="mt-3 text-2xl font-extrabold">{owned ? avatar.name : '???'}</h2>
         <p className={`text-sm font-extrabold uppercase ${r.text}`}>{r.label}</p>
         {owned ? (
-          <p className="mt-2 text-ink-soft">🔬 {avatar.fact}</p>
+          <p className="mt-2 text-ink-soft">
+            <Icon name="microscope" size={20} className="mr-1 -mt-0.5" />
+            {avatar.fact}
+          </p>
         ) : (
           <p className="mt-2 text-ink-soft">Collect it to unlock its real-biology fact.</p>
         )}

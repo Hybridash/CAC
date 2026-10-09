@@ -18,6 +18,7 @@ import { Stars } from '../components/ConceptBits';
 import { AtpAmount } from '../components/Atp';
 import { AvatarCard } from '../components/AvatarCard';
 import { sfx } from '../lib/sound';
+import { Icon } from '../components/Icon';
 
 export function MysteryCasePage() {
   const { id = '' } = useParams();
@@ -71,9 +72,7 @@ function Case({ m }: { m: Mystery }) {
   if (!unlocked) {
     return (
       <div className="card mx-auto flex max-w-xl flex-col items-center gap-3 p-8 text-center">
-        <span className="text-6xl" aria-hidden>
-          🔒
-        </span>
+        <Icon name="lock" size={72} />
         <h1 className="text-3xl font-extrabold">{m.title}</h1>
         <p className="text-ink-soft">
           This case file is sealed. Complete these concepts to unlock it:
@@ -85,7 +84,7 @@ function Case({ m }: { m: Mystery }) {
                 to={`/learn/${cid}`}
                 className={`chip py-1.5 text-base ${done(cid) ? 'bg-emerald-100 text-emerald-800' : 'bg-white ring-1 ring-black/10'}`}
               >
-                {done(cid) ? '✅' : '⬜'} {CONCEPT_BY_ID[cid]?.title}
+                <Icon name={done(cid) ? 'check' : 'todo'} size={18} /> {CONCEPT_BY_ID[cid]?.title}
               </Link>
             </li>
           ))}
@@ -100,11 +99,11 @@ function Case({ m }: { m: Mystery }) {
   return (
     <article className="flex flex-col gap-5">
       <header className="relative overflow-hidden rounded-[2rem] bg-[#3b2f2a] p-6 text-amber-50">
-        <div className="absolute -top-6 -right-4 text-[9rem] opacity-15" aria-hidden>
-          {m.emoji}
+        <div className="absolute -top-4 -right-4 opacity-20" aria-hidden>
+          <Icon name="mystery" size={170} />
         </div>
         <p className="text-sm font-bold tracking-widest text-amber-300 uppercase">
-          Case file · {cat.emoji} {cat.name}
+          Case file · {cat.name}
         </p>
         <h1 className="text-4xl font-extrabold">{m.title}</h1>
         <div className="mt-1 flex flex-wrap items-center gap-3">
@@ -120,7 +119,7 @@ function Case({ m }: { m: Mystery }) {
       <section aria-labelledby="clues-h">
         <div className="mb-2 flex items-center justify-between">
           <h2 id="clues-h" className="text-2xl font-extrabold">
-            🔎 Clues
+            Clues
           </h2>
           <span className="chip bg-slate-100">
             {examined.size}/{m.clues.length} examined
@@ -140,7 +139,7 @@ function Case({ m }: { m: Mystery }) {
 
       <section aria-labelledby="solve-h" className="card p-5">
         <h2 id="solve-h" className="text-2xl font-extrabold">
-          🧠 Solve the case
+          Solve the case
         </h2>
         {!allExamined && (
           <p className="text-sm font-bold text-amber-800">
@@ -202,7 +201,7 @@ function Case({ m }: { m: Mystery }) {
             onClick={submit}
             disabled={!allExamined || explanation === null || evidence.size === 0 || busy}
           >
-            {busy ? 'Checking…' : '🔏 Close the case'}
+            {busy ? 'Checking…' : 'Close the case'}
           </button>
         )}
         <AnimatePresence>{result && <Verdict m={m} result={result} />}</AnimatePresence>
@@ -223,7 +222,8 @@ function Verdict({ m, result }: { m: Mystery; result: MysterySolveResponse }) {
         className="mt-4 rounded-2xl bg-amber-50 p-4 font-semibold text-amber-900 ring-1 ring-amber-200"
         role="status"
       >
-        💡 {hint} No penalty — try again!
+        <Icon name="bulb" size={22} className="mr-1 -mt-0.5" />
+        {hint} No penalty — try again!
       </motion.p>
     );
   }
@@ -236,7 +236,9 @@ function Verdict({ m, result }: { m: Mystery; result: MysterySolveResponse }) {
       role="status"
       data-testid="case-solved"
     >
-      <h3 className="text-2xl font-extrabold text-emerald-900">🎉 Case closed!</h3>
+      <h3 className="flex items-center gap-2 text-2xl font-extrabold text-emerald-900">
+        <Icon name="party" size={34} /> Case closed!
+      </h3>
       <p className="leading-relaxed text-emerald-950">{m.resolution}</p>
       {result.total > 0 ? (
         <p className="font-bold">
@@ -330,7 +332,7 @@ function TestClue({
               onClick={() => start(i)}
               aria-expanded={run[i] === 'done'}
             >
-              <span aria-hidden>{t.emoji}</span> {t.label}
+              <Icon name="flask" size={22} /> {t.label}
               {!run[i] && (
                 <span className="ml-auto chip bg-indigo-600 text-xs text-white">Run test</span>
               )}
@@ -340,7 +342,7 @@ function TestClue({
                   animate={{ opacity: [0.3, 1, 0.3] }}
                   transition={{ repeat: Infinity, duration: 0.6 }}
                 >
-                  ⏳ testing…
+                  testing…
                 </motion.span>
               )}
             </button>
@@ -399,7 +401,7 @@ function ZoomClue({
           disabled={level === 0}
           onClick={() => setLevel(level - 1)}
         >
-          🔭 Zoom out
+          Zoom out
         </button>
         <button
           className="btn-primary py-1 text-sm"
@@ -411,7 +413,7 @@ function ZoomClue({
             if (n === clue.levels.length - 1) onExamined();
           }}
         >
-          🔍 Zoom in
+          <Icon name="mystery" size={18} /> Zoom in
         </button>
       </div>
     </>
@@ -473,9 +475,7 @@ function ObserveClue({
   const [open, setOpen] = useState(false);
   return open ? (
     <p className="flex gap-3 rounded-2xl bg-amber-50 p-3 font-semibold">
-      <span className="text-3xl" aria-hidden>
-        {clue.emoji}
-      </span>
+      <Icon name="clipboard" size={36} />
       {clue.text}
     </p>
   ) : (
@@ -487,7 +487,7 @@ function ObserveClue({
         onExamined();
       }}
     >
-      {clue.emoji} Read the note
+      <Icon name="clipboard" size={20} /> Read the note
     </button>
   );
 }

@@ -11,6 +11,7 @@ import { DndArena, Draggable, DropZone } from '../templates/framework/dnd';
 import { usePlayer } from '../store/player';
 import { sfx } from '../lib/sound';
 import { AtpIcon } from '../components/Atp';
+import { Icon } from '../components/Icon';
 
 /** Three-question quiz: answer, check (instant gentle feedback), then the server grades & rewards. */
 export function Quiz({
@@ -84,13 +85,8 @@ export function Quiz({
         className="card flex flex-col items-center gap-3 p-6 text-center"
         data-testid="quiz-result"
       >
-        <motion.div
-          initial={{ scale: 0.5 }}
-          animate={{ scale: 1 }}
-          className="text-6xl"
-          aria-hidden
-        >
-          {result.perfect ? '🏆' : result.passed ? '🎉' : '🌱'}
+        <motion.div initial={{ scale: 0.5 }} animate={{ scale: 1 }} aria-hidden>
+          <Icon name={result.perfect ? 'trophy' : result.passed ? 'party' : 'sprout'} size={72} />
         </motion.div>
         <h3 className="text-2xl font-extrabold">
           {result.score} / {result.outOf} correct
@@ -130,8 +126,8 @@ export function Quiz({
           {q.kind === 'mc'
             ? 'Multiple choice'
             : q.kind === 'predict'
-              ? '🔮 Predict the outcome'
-              : '🏷️ Drag to label'}
+              ? 'Predict the outcome'
+              : 'Drag to label'}
         </span>
       </div>
       {q.kind === 'predict' && (
@@ -169,8 +165,8 @@ export function Quiz({
                         : 'bg-white ring-black/10 hover:ring-indigo-200'
                 }`}
               >
-                {showRight && <span aria-hidden>✅ </span>}
-                {showWrong && <span aria-hidden>🤔 </span>}
+                {showRight && <Icon name="check" size={20} className="mr-1.5 -mt-0.5" />}
+                {showWrong && <Icon name="bulb" size={20} className="mr-1.5 -mt-0.5" />}
                 {opt}
               </button>
             );
@@ -183,7 +179,8 @@ export function Quiz({
           role="status"
           className={`rounded-2xl p-3 font-semibold ${correct ? 'bg-emerald-50 text-emerald-900' : 'bg-amber-50 text-amber-900'}`}
         >
-          {correct ? '🎉 Correct! ' : '💡 Not quite. '}
+          <Icon name={correct ? 'party' : 'bulb'} size={20} className="mr-1.5 -mt-0.5" />
+          {correct ? 'Correct! ' : 'Not quite. '}
           {q.explain}
         </p>
       )}

@@ -5,6 +5,7 @@ import { Layout } from './components/Layout';
 import { HomePage } from './pages/Home';
 import { Placeholder } from './pages/Placeholder';
 import { usePlayer } from './store/player';
+import { Icon } from './components/Icon';
 
 const LibraryPage = lazy(() => import('./pages/Library').then((m) => ({ default: m.LibraryPage })));
 const LessonPage = lazy(() =>
@@ -30,8 +31,8 @@ const MysteryCasePage = lazy(() =>
 function Loading() {
   return (
     <div className="grid min-h-[50vh] place-items-center" role="status">
-      <span className="animate-float text-5xl" aria-hidden>
-        🧫
+      <span className="animate-float">
+        <Icon name="microbe" size={64} />
       </span>
       <span className="sr-only">Loading…</span>
     </div>

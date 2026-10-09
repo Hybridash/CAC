@@ -6,6 +6,7 @@ import type { TemplateProps } from './framework/types';
 import { Feedback, Progress, Prompt, type FeedbackTone } from './framework/ui';
 import { shuffled } from './framework/shuffle';
 import { sfx } from '../lib/sound';
+import { Icon } from '../components/Icon';
 
 /** Drag each item into the right category. */
 export function Sorting({
@@ -79,7 +80,11 @@ export function Sorting({
                 </Draggable>
               </motion.div>
             ))}
-          {done && <span className="p-2 font-bold text-emerald-700">🎉 Everything sorted!</span>}
+          {done && (
+            <span className="p-2 font-bold text-emerald-700">
+              <Icon name="party" size={20} className="mr-1" /> Everything sorted!
+            </span>
+          )}
         </div>
         <div
           className={`grid gap-3 ${config.bins.length === 2 ? 'sm:grid-cols-2' : config.bins.length === 4 ? 'sm:grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-3'}`}

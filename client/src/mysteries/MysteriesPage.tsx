@@ -9,6 +9,7 @@ import {
 import { usePlayer } from '../store/player';
 import { Stars } from '../components/ConceptBits';
 import { AtpAmount } from '../components/Atp';
+import { CategoryIcon, Icon } from '../components/Icon';
 
 export function MysteriesPage() {
   const player = usePlayer((s) => s.player);
@@ -18,7 +19,9 @@ export function MysteriesPage() {
   return (
     <div className="flex flex-col gap-5">
       <header>
-        <h1 className="text-4xl font-extrabold">🕵️ Bio Mysteries</h1>
+        <h1 className="flex items-center gap-2 text-4xl font-extrabold">
+          <Icon name="mystery" size={44} /> Bio Mysteries
+        </h1>
         <p className="max-w-2xl text-ink-soft">
           Real-world puzzles that combine what you’ve learned. Examine the clues, pick an
           explanation and back it up with evidence. Cases unlock when you’ve completed their
@@ -42,11 +45,15 @@ export function MysteriesPage() {
               >
                 <div className="flex items-start justify-between">
                   <span
-                    className="grid h-14 w-14 place-items-center rounded-2xl text-3xl"
+                    className="grid h-14 w-14 place-items-center rounded-2xl"
                     style={{ background: cat.tint }}
                     aria-hidden
                   >
-                    {unlocked ? m.emoji : '🔒'}
+                    {unlocked ? (
+                      <CategoryIcon id={m.category} size={38} />
+                    ) : (
+                      <Icon name="lock" size={34} />
+                    )}
                   </span>
                   <span
                     className={`chip ${isSolved ? 'bg-amber-300 text-amber-950' : unlocked ? 'bg-violet-100 text-violet-900' : 'bg-slate-100 text-slate-600'}`}

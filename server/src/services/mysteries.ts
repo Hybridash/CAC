@@ -64,8 +64,8 @@ export function solveMystery(
     ).run(now.toISOString(), userId, m.id);
     grantAchievement(db, userId, `mystery:${m.id}`, now);
     const atp = mysteryReward(m.difficulty);
-    credit(db, userId, 'atp', atp, `🕵️ Solved: ${m.title}`, m.id, now);
-    lines.push({ reason: `🕵️ Case solved: ${m.title}`, amount: atp, currency: 'atp' });
+    credit(db, userId, 'atp', atp, `Solved: ${m.title}`, m.id, now);
+    lines.push({ reason: `Case solved: ${m.title}`, amount: atp, currency: 'atp' });
 
     // A chance at a mystery-exclusive avatar (guaranteed on your very first solve).
     const owned = new Set(

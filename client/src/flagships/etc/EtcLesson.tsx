@@ -6,6 +6,7 @@ import { Feedback, Prompt, type FeedbackTone } from '../../templates/framework/u
 import { shuffled } from '../../templates/framework/shuffle';
 import { sfx } from '../../lib/sound';
 import { feed, initialEtc, MAX_GRADIENT, stepEtc, type EtcState, type Poisons } from './model';
+import { GoalItem, Icon } from '../../components/Icon';
 
 /** Electron-path stations in order, with x positions in the 900×430 viewBox. */
 const PARTS = [
@@ -336,9 +337,7 @@ export function EtcLesson({
                     {p.short}
                   </text>
                   {poisons.cyanide && p.id === 'c4' && (
-                    <text x={p.x + 18} y="150" fontSize="22">
-                      ☠️
-                    </text>
+                    <Icon name="skull" size={26} x={p.x + 14} y={128} />
                   )}
                 </motion.g>
               ) : (
@@ -378,7 +377,7 @@ export function EtcLesson({
             {/* water at IV */}
             {phase === 'run' && (
               <text x="600" y="300" fontSize="13" fontWeight="800" fill="#1d4ed8">
-                ½O₂ + 2H⁺ → H₂O 💧×{s.water}
+                ½O₂ + 2H⁺ → H₂O ×{s.water}
               </text>
             )}
             {/* ATP synthase */}
@@ -435,11 +434,7 @@ export function EtcLesson({
               >
                 synthase
               </text>
-              {poisons.oligomycin && (
-                <text x={SYNTHASE_X + 22} y="160" fontSize="22">
-                  🚫
-                </text>
-              )}
+              {poisons.oligomycin && <Icon name="noEntry" size={26} x={SYNTHASE_X + 18} y={138} />}
               {/* protons flowing down through it */}
               {phase === 'run' &&
                 !poisons.oligomycin &&
@@ -473,9 +468,7 @@ export function EtcLesson({
                     fill="#fecaca"
                     opacity="0.8"
                   />
-                  <text x={x - 10} y={MEM_BOT + 24} fontSize="18">
-                    🔥
-                  </text>
+                  <Icon name="flame" size={22} x={x - 11} y={MEM_BOT + 6} />
                 </g>
               ))}
             {/* electrons */}
@@ -581,12 +574,12 @@ export function EtcLesson({
             <>
               <Draggable id="nadh" label="NADH">
                 <span className="flex items-center gap-1 rounded-xl bg-white px-3 py-2 font-bold shadow ring-1 ring-black/10">
-                  🔋 NADH
+                  <Icon name="battery" size={18} /> NADH
                 </span>
               </Draggable>
               <Draggable id="fadh2" label="FADH2">
                 <span className="flex items-center gap-1 rounded-xl bg-white px-3 py-2 font-bold shadow ring-1 ring-black/10">
-                  🪫 FADH₂
+                  <Icon name="battery" size={18} /> FADH₂
                 </span>
               </Draggable>
               <button
@@ -594,17 +587,17 @@ export function EtcLesson({
                 aria-pressed={auto}
                 onClick={() => setAuto(!auto)}
               >
-                🔄 Krebs cycle auto-feed {auto ? 'on' : 'off'}
+                Krebs cycle auto-feed {auto ? 'on' : 'off'}
               </button>
               <span className="ml-auto flex flex-wrap gap-2">
                 <PoisonBtn on={poisons.cyanide} onClick={() => togglePoison('cyanide')}>
-                  ☠️ Cyanide
+                  Cyanide
                 </PoisonBtn>
                 <PoisonBtn on={poisons.oligomycin} onClick={() => togglePoison('oligomycin')}>
-                  🚫 Oligomycin
+                  Oligomycin
                 </PoisonBtn>
                 <PoisonBtn on={poisons.dnp} onClick={() => togglePoison('dnp')}>
-                  🔥 DNP
+                  DNP
                 </PoisonBtn>
               </span>
             </>
@@ -687,11 +680,5 @@ function Stat({
 }
 
 function Goal({ done, children }: { done: boolean; children: React.ReactNode }) {
-  return (
-    <li
-      className={`chip py-1 ${done ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-ink-soft'}`}
-    >
-      {done ? '✅' : '⬜'} {children}
-    </li>
-  );
+  return <GoalItem done={done}>{children}</GoalItem>;
 }

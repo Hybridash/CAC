@@ -6,6 +6,7 @@ import type { TemplateProps } from './framework/types';
 import { Feedback, Progress, Prompt, type FeedbackTone } from './framework/ui';
 import { LockGlyph } from '../components/LockGlyph';
 import { sfx } from '../lib/sound';
+import { Icon } from '../components/Icon';
 
 /** Match molecules to their receptors. Wrong shapes bounce off. */
 export function LockKey({
@@ -87,7 +88,7 @@ export function LockKey({
                           className="absolute -top-2 -right-2 text-xl"
                           aria-hidden
                         >
-                          {m.effect === 'block' ? '⛔' : '✨'}
+                          <Icon name={m.effect === 'block' ? 'noEntry' : 'sparkle'} size={20} />
                         </motion.span>
                       )}
                     </div>

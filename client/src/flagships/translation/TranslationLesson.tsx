@@ -15,6 +15,7 @@ import {
   translate,
   type AminoAcid,
 } from './genetics';
+import { GoalItem, Icon } from '../../components/Icon';
 
 const BASE_COLOR: Record<string, string> = {
   A: '#4ade80',
@@ -169,7 +170,7 @@ export function TranslationLesson({
           className="rounded-3xl bg-violet-50 p-3 ring-2 ring-violet-200"
           aria-label="Nucleus"
         >
-          <h3 className="mb-2 text-sm font-extrabold text-violet-900">🟣 Nucleus</h3>
+          <h3 className="mb-2 text-sm font-extrabold text-violet-900">Nucleus</h3>
           <div className="overflow-x-auto pb-1">
             <div className="flex w-max flex-col gap-1">
               <Strand
@@ -241,7 +242,7 @@ export function TranslationLesson({
             className="rounded-3xl bg-sky-50 p-3 ring-2 ring-sky-200"
             aria-label="Cytoplasm"
           >
-            <h3 className="mb-2 text-sm font-extrabold text-sky-900">🔵 Cytoplasm · ribosome</h3>
+            <h3 className="mb-2 text-sm font-extrabold text-sky-900">Cytoplasm · ribosome</h3>
             <div className="flex flex-wrap items-center gap-2">
               {codons.map((c, i) => (
                 <div key={i} className="relative">
@@ -321,9 +322,7 @@ export function TranslationLesson({
                 ))}
                 <Draggable id="release" label="Release factor for stop codons">
                   <span className="flex h-full flex-col items-center justify-center rounded-2xl bg-rose-50 px-3 py-1.5 shadow ring-1 ring-rose-200">
-                    <span className="text-xl" aria-hidden>
-                      🛑
-                    </span>
+                    <Icon name="stop" size={24} />
                     <span className="text-xs font-extrabold text-rose-800">Release factor</span>
                   </span>
                 </Draggable>
@@ -338,7 +337,9 @@ export function TranslationLesson({
           className="rounded-3xl bg-white p-3 ring-2 ring-rose-200"
           aria-label="Mutation lab"
         >
-          <h3 className="font-extrabold">🧪 Mutation lab</h3>
+          <h3 className="font-extrabold">
+            <Icon name="flask" size={22} className="mr-1" /> Mutation lab
+          </h3>
           {!mutated ? (
             <>
               <p className="text-sm text-ink-soft">
@@ -357,7 +358,7 @@ export function TranslationLesson({
                   );
                 }}
               >
-                🧬 Mutate one letter
+                <Icon name="dna" size={18} /> Mutate one letter
               </button>
             </>
           ) : (
@@ -381,13 +382,7 @@ export function TranslationLesson({
 }
 
 function Goal({ done, children }: { done: boolean; children: React.ReactNode }) {
-  return (
-    <li
-      className={`chip py-1 ${done ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-ink-soft'}`}
-    >
-      {done ? '✅' : '⬜'} {children}
-    </li>
-  );
+  return <GoalItem done={done}>{children}</GoalItem>;
 }
 
 function Tile({ b, big }: { b: string; big?: boolean }) {
@@ -472,7 +467,7 @@ function CodonChart() {
   return (
     <details className="rounded-2xl bg-white p-3 ring-1 ring-black/10">
       <summary className="cursor-pointer text-sm font-extrabold">
-        📖 Codon chart (part of the genetic code)
+        <Icon name="book" size={20} className="mr-1" /> Codon chart (part of the genetic code)
       </summary>
       <div className="mt-2 grid grid-cols-2 gap-1 text-sm sm:grid-cols-5">
         {Object.entries(CODONS).map(([codon, aa]) => (

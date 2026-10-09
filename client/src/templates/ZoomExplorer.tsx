@@ -5,6 +5,7 @@ import type { TemplateProps } from './framework/types';
 import { Prompt } from './framework/ui';
 import { Scene } from './framework/Scene';
 import { sfx } from '../lib/sound';
+import { Icon } from '../components/Icon';
 
 /** Click hotspots and zoom from organism → organ → tissue → cell → molecule. */
 export function ZoomExplorer({
@@ -99,7 +100,7 @@ export function ZoomExplorer({
                   style={{ left: `${h.x}%`, top: `${h.y}%` }}
                   aria-pressed={hotspot === h.id}
                 >
-                  {h.zoomTo ? '🔍' : '＋'} {h.label}
+                  {h.zoomTo ? <Icon name="mystery" size={16} /> : '＋'} {h.label}
                 </button>
               );
             })}
@@ -113,7 +114,8 @@ export function ZoomExplorer({
             <p className="text-ink-soft">{hs.text}</p>
             {hs.zoomTo && (
               <button className="btn-primary mt-2" onClick={() => go(hs.zoomTo!)}>
-                🔍 Zoom in to {levels.find((l) => l.id === hs.zoomTo)?.label}
+                <Icon name="mystery" size={18} /> Zoom in to{' '}
+                {levels.find((l) => l.id === hs.zoomTo)?.label}
               </button>
             )}
           </>
@@ -129,7 +131,7 @@ export function ZoomExplorer({
       </div>
       {index > 0 && (
         <button className="btn-ghost self-start text-sm" onClick={() => go(levels[index - 1].id)}>
-          🔭 Zoom out to {levels[index - 1].label}
+          ← Zoom out to {levels[index - 1].label}
         </button>
       )}
       <p className="text-sm font-bold text-ink-soft">

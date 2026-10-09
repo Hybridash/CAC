@@ -20,6 +20,7 @@ import { ErrorBoundary } from '../components/ErrorBoundary';
 import { usePlayer } from '../store/player';
 import { todaysConceptId } from '../lib/library';
 import { sfx } from '../lib/sound';
+import { Icon } from '../components/Icon';
 
 export function LessonPage() {
   const { id = '' } = useParams();
@@ -27,7 +28,7 @@ export function LessonPage() {
   if (!concept) {
     return (
       <div className="card p-10 text-center">
-        <h1 className="text-3xl font-extrabold">Concept not found 🔍</h1>
+        <h1 className="text-3xl font-extrabold">Concept not found</h1>
         <Link to="/library" className="btn-primary mt-4">
           Browse the library
         </Link>
@@ -88,12 +89,20 @@ function Lesson({ concept }: { concept: Concept }) {
           <div className="max-w-2xl">
             <div className="mb-2 flex flex-wrap gap-2">
               <CategoryChip id={concept.category} />
-              {concept.flagship && <span className="chip bg-white text-ink">✨ Flagship</span>}
+              {concept.flagship && (
+                <span className="chip bg-white text-ink">
+                  <Icon name="sparkle" size={16} /> Flagship
+                </span>
+              )}
               {concept.rarity === 'obscure' && (
-                <span className="chip bg-fuchsia-100 text-fuchsia-800">🔮 Obscure</span>
+                <span className="chip bg-fuchsia-100 text-fuchsia-800">
+                  <Icon name="gem" size={16} /> Obscure
+                </span>
               )}
               {isCotd && (
-                <span className="chip bg-amber-300 text-amber-950">☀️ Concept of the Day ×1.5</span>
+                <span className="chip bg-amber-300 text-amber-950">
+                  <Icon name="sun" size={16} /> Concept of the Day ×1.5
+                </span>
               )}
             </div>
             <h1 className="text-4xl font-extrabold sm:text-5xl">{concept.title}</h1>
@@ -157,7 +166,8 @@ function Lesson({ concept }: { concept: Concept }) {
                 data-testid="interaction-complete"
               >
                 <span className="font-bold text-emerald-900">
-                  ✅ Interaction complete! Keep playing, or test yourself.
+                  <Icon name="check" size={22} className="mr-1 -mt-0.5" />
+                  Interaction complete! Keep playing, or test yourself.
                 </span>
                 <button
                   className="btn-primary"
@@ -174,7 +184,9 @@ function Lesson({ concept }: { concept: Concept }) {
       <div className="grid gap-5 md:grid-cols-2">
         <details className="card group p-5" data-testid="go-deeper">
           <summary className="flex cursor-pointer list-none items-center justify-between text-xl font-extrabold">
-            <span>🔬 Go Deeper</span>
+            <span className="flex items-center gap-2">
+              <Icon name="microscope" size={28} /> Go Deeper
+            </span>
             <span className="transition group-open:rotate-180" aria-hidden>
               ⌄
             </span>
@@ -186,9 +198,7 @@ function Lesson({ concept }: { concept: Concept }) {
           </div>
         </details>
         <div className="card flex gap-3 p-5" style={{ background: cat.tint }}>
-          <span className="text-4xl" aria-hidden>
-            🤯
-          </span>
+          <Icon name="bulb" size={44} />
           <div>
             <h2 className="text-xl font-extrabold">Fun fact</h2>
             <p className="text-ink-soft">{concept.funFact}</p>
@@ -202,7 +212,7 @@ function Lesson({ concept }: { concept: Concept }) {
         </h2>
         <Quiz
           concept={concept}
-          onDone={(r) => setCheer(r.passed ? 'Brilliant! 🎉' : 'So close — you’ve got this!')}
+          onDone={(r) => setCheer(r.passed ? 'Brilliant!' : 'So close — you’ve got this!')}
         />
       </section>
 

@@ -4,6 +4,7 @@ import type { CauseEffectConfig } from '@bioplay/shared';
 import type { TemplateProps } from './framework/types';
 import { Feedback, Prompt } from './framework/ui';
 import { sfx } from '../lib/sound';
+import { Icon } from '../components/Icon';
 
 /** Trigger a cascade; break a link to see what goes wrong. */
 export function CauseEffect({
@@ -79,7 +80,7 @@ export function CauseEffect({
         </button>
         {broken && (
           <button className="btn-ghost text-sm" onClick={() => setBroken(null)} disabled={running}>
-            🔧 Repair all links
+            <Icon name="refresh" size={18} /> Repair all links
           </button>
         )}
       </div>
@@ -127,7 +128,13 @@ export function CauseEffect({
                     aria-pressed={isBroken}
                     className={`chip shrink-0 py-1 text-xs ${isBroken ? 'bg-rose-600 text-white' : 'bg-slate-100 text-ink-soft hover:bg-rose-100'}`}
                   >
-                    {isBroken ? '💥 Broken' : '✂️ Break'}
+                    {isBroken ? (
+                      'Broken'
+                    ) : (
+                      <>
+                        <Icon name="scissors" size={16} /> Break
+                      </>
+                    )}
                   </button>
                 )}
               </motion.div>
@@ -136,7 +143,7 @@ export function CauseEffect({
                   aria-hidden
                   className={`self-center text-lg ${i < lit ? 'text-amber-500' : 'text-slate-300'}`}
                 >
-                  {isBroken ? '✖' : '⬇'}
+                  {isBroken ? '×' : '↓'}
                 </span>
               )}
             </li>
@@ -148,12 +155,12 @@ export function CauseEffect({
         <li
           className={`chip py-1 ${ranNormal ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-ink-soft'}`}
         >
-          {ranNormal ? '✅' : '⬜'} Run the healthy cascade
+          <Icon name={ranNormal ? 'check' : 'todo'} size={18} /> Run the healthy cascade
         </li>
         <li
           className={`chip py-1 ${ranBroken ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-ink-soft'}`}
         >
-          {ranBroken ? '✅' : '⬜'} Break a link and run it again
+          <Icon name={ranBroken ? 'check' : 'todo'} size={18} /> Break a link and run it again
         </li>
       </ul>
     </div>

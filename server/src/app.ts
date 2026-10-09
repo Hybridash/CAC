@@ -48,6 +48,19 @@ export function createApp(db: DB, clock: Clock = systemClock, rng?: Rng) {
       }),
     );
     app.get(/^\/(?!api\/).*/, (_req, res) => res.sendFile(path.join(clientDist, 'index.html')));
+  } else {
+    // Development: pages are served by Vite. Point lost visitors there instead of a bare 404.
+    app.get(/^\/(?!api\/).*/, (req, res) => {
+      const client = process.env.CLIENT_ORIGIN ?? 'http://localhost:5173';
+      res
+        .status(200)
+        .type('html')
+        .send(
+          `<!doctype html><meta charset="utf-8"><title>BioPlay</title><body style="font-family:system-ui;padding:3rem;max-width:36rem;margin:auto;line-height:1.5">` +
+            `<h1>This is BioPlay’s data server</h1><p>In development mode the app itself runs at <a href="${client}${req.path}">${client}</a>.</p>` +
+            `<p>To run BioPlay as an installable app instead, stop this and run <code>npm run app</code>, then open <a href="http://localhost:3000">http://localhost:3000</a>.</p>`,
+        );
+    });
   }
   app.use(errorHandler);
   return app;
