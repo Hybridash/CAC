@@ -57,7 +57,7 @@ export function HomePage() {
           </span>
         </div>
         <h1 className="relative text-4xl font-extrabold sm:text-6xl">
-          Biology you can <span className="text-brand-dark">play with</span>.
+          Biology is not hard, you just have to <span className="text-brand-dark">learn it</span>.
         </h1>
         <p className="relative mx-auto mt-3 max-w-xl text-lg text-ink-soft">
           Drag, drop, poke and break living systems to see how they really work. Earn ATP, open
