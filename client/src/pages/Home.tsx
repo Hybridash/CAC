@@ -3,6 +3,7 @@ import { CATEGORIES, CONCEPT_BY_ID, CONCEPTS } from '@bioplay/shared';
 import { SearchBox } from '../components/SearchBox';
 import { ConceptCard } from '../components/ConceptBits';
 import { AtpIcon } from '../components/Atp';
+import { InstallApp } from '../components/InstallApp';
 import { todaysConceptId } from '../lib/library';
 import { usePlayer } from '../store/player';
 import { inkFor } from '../lib/color';
@@ -67,6 +68,7 @@ export function HomePage() {
           <Link to="/library" className="btn-ghost">
             📚 Browse all {CONCEPTS.length}
           </Link>
+          <InstallApp />
           <span className="chip bg-white/80 py-1.5 text-base text-amber-900">
             <AtpIcon /> {player?.atp ?? 0} ATP
           </span>

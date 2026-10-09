@@ -36,7 +36,17 @@ export function createApp(db: DB, clock: Clock = systemClock, rng?: Rng) {
     '../../client/dist',
   );
   if (process.env.NODE_ENV === 'production' && fs.existsSync(clientDist)) {
-    app.use(express.static(clientDist, { maxAge: '1h', index: false }));
+    app.use(
+      express.static(clientDist, {
+        maxAge: '1h',
+        index: false,
+        // The service worker and manifest must always be fresh so app updates roll out.
+        setHeaders: (res, file) => {
+          if (/(sw\.js|workbox-.*\.js|registerSW\.js|manifest\.webmanifest)$/.test(file))
+            res.setHeader('Cache-Control', 'no-cache');
+        },
+      }),
+    );
     app.get(/^\/(?!api\/).*/, (_req, res) => res.sendFile(path.join(clientDist, 'index.html')));
   }
   app.use(errorHandler);
