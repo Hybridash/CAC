@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { AVATAR_BY_ID } from '@bioplay/shared';
 import { atp, completeViaApi } from './helpers';
 
 // These tests start past the welcome screen, as a guest (welcome.spec.ts covers that screen).
@@ -71,8 +72,22 @@ test('earn ATP, open a pack, see the avatars in the collection', async ({ page }
   await page.getByTestId('open-basic').click();
   await expect(page.getByTestId('pack-opening')).toBeVisible();
   await page.getByRole('button', { name: 'Reveal all' }).click();
-  await expect(page.getByTestId('revealed-card')).toHaveCount(3);
-  await page.getByRole('button', { name: 'Done' }).click();
+  const cards = page.getByTestId('revealed-card');
+  await expect(cards).toHaveCount(3);
+  // Nothing is equipped automatically: pick the second card, then equip it.
+  await expect(page.getByRole('button', { name: /^Equip / })).toHaveCount(0);
+  await cards.nth(1).click();
+  await expect(cards.nth(1)).toHaveAttribute('aria-pressed', 'true');
+  const label = (await cards.nth(1).getAttribute('aria-label'))!;
+  const name = label.split(',')[0];
+  await page.getByRole('button', { name: `Equip ${name}` }).click();
+  await expect(page.getByTestId('pack-opening')).toHaveCount(0);
+  const equipped = await page.evaluate(async () => {
+    const token = localStorage.getItem('bioplay.token');
+    const s = await fetch('/api/state', { headers: { Authorization: `Bearer ${token}` } });
+    return (await s.json()).equippedAvatar as string;
+  });
+  expect(AVATAR_BY_ID[equipped]?.name).toBe(name);
   await page.goto('/collection');
   await expect(page.getByText(/of 72 avatars collected/)).toBeVisible();
   await expect(page.getByText(/^[2-4] of 72 avatars collected/)).toBeVisible();
