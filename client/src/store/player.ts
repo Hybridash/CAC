@@ -12,8 +12,11 @@ import {
   type RewardLine,
   type RewardResponse,
   type SessionResponse,
+  type AuthProvider,
+  type SignInResponse,
 } from '@bioplay/shared';
 import { api, clearToken, getToken, RequestError, setToken, storage } from '../lib/api';
+import { getIdToken, providerSignOut } from '../lib/signIn';
 
 const STATE_KEY = 'bioplay.state';
 const QUEUE_KEY = 'bioplay.queue';
@@ -38,6 +41,10 @@ interface PlayerStore {
   equip: (avatarId: string | null) => Promise<void>;
   rename: (name: string) => Promise<void>;
   solveMystery: (id: string, req: MysterySolveRequest) => Promise<MysterySolveResponse>;
+  /** Save progress to a Google/Apple account (or switch to the one saved there). */
+  signIn: (provider: AuthProvider) => Promise<SignInResponse>;
+  /** Sign this device out; it carries on as a fresh guest. The account stays saved. */
+  signOut: () => Promise<void>;
   dismissToast: (id: number) => void;
 }
 
@@ -210,6 +217,27 @@ export const usePlayer = create<PlayerStore>((set, get) => {
       accept(res.state);
       celebrate(res.lines);
       return res;
+    },
+
+    async signIn(provider) {
+      const { idToken, name } = await getIdToken(provider);
+      // Send anything done offline first, so it lands on the guest profile before linking.
+      await flushQueue();
+      const res = await api<SignInResponse>(`/auth/${provider}`, { body: { idToken, name } });
+      if (res.token) setToken(res.token);
+      accept(res.state);
+      return res;
+    },
+
+    async signOut() {
+      const provider = get().player?.account?.provider;
+      await api('/auth/sign-out', { method: 'POST' }).catch(() => undefined);
+      if (provider) await providerSignOut(provider);
+      clearToken();
+      storage.remove(STATE_KEY);
+      saveQueue([]);
+      set({ player: null });
+      await get().init();
     },
 
     dismissToast(id) {

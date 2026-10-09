@@ -8,20 +8,36 @@ import type { DB } from './db.js';
 import { errorHandler, type AppContext } from './http.js';
 import { conceptRoutes } from './routes/concepts.js';
 import { playerRoutes } from './routes/player.js';
+import { authRoutes } from './routes/auth.js';
+import { providerVerifier, type IdentityVerifier } from './identity.js';
 import { shopRoutes } from './routes/shop.js';
 import { mysteryRoutes } from './routes/mysteries.js';
 import { systemClock, type Clock } from './time.js';
 
-export function createApp(db: DB, clock: Clock = systemClock, rng?: Rng) {
-  const ctx: AppContext = { db, clock, rng };
+export function createApp(
+  db: DB,
+  clock: Clock = systemClock,
+  rng?: Rng,
+  verifyIdentity: IdentityVerifier = providerVerifier(),
+) {
+  const ctx: AppContext = { db, clock, rng, verifyIdentity };
   const app = express();
-  app.use(cors({ origin: process.env.CLIENT_ORIGIN ?? 'http://localhost:5173' }));
+  app.use(
+    cors({
+      origin: [
+        process.env.CLIENT_ORIGIN ?? 'http://localhost:5173',
+        // The Bio Bites iPhone/iPad app loads its pages from this origin.
+        'capacitor://localhost',
+      ],
+    }),
+  );
   app.use(express.json({ limit: '64kb' }));
 
   app.get('/api/health', (_req, res) => {
     res.json({ ok: true });
   });
   app.use('/api', playerRoutes(ctx));
+  app.use('/api', authRoutes(ctx));
   app.use('/api/concepts', conceptRoutes(ctx));
   app.use('/api/shop', shopRoutes(ctx));
   app.use('/api/mysteries', mysteryRoutes(ctx));

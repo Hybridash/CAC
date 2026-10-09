@@ -12,7 +12,7 @@ export class ErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error('BioPlay error boundary caught:', error, info.componentStack);
+    console.error('Bio Bites error boundary caught:', error, info.componentStack);
   }
 
   render() {

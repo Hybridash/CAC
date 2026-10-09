@@ -50,9 +50,9 @@ function Lesson({ concept }: { concept: Concept }) {
   const isCotd = todaysConceptId() === concept.id;
 
   useEffect(() => {
-    document.title = `${concept.title} · BioPlay`;
+    document.title = `${concept.title} · Bio Bites`;
     return () => {
-      document.title = 'BioPlay';
+      document.title = 'Bio Bites';
     };
   }, [concept.title]);
 

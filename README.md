@@ -1,4 +1,4 @@
-# BioPlay — Interactive Biology Made Simple
+# Bio Bites — Interactive Biology Made Simple
 
 Learn biology by _doing_: drag, drop, toggle, build, and watch living systems react. Every lesson is a short
 hands-on interaction plus a three-question quiz. Completing lessons earns **ATP** (the in-game currency), which buys
@@ -74,6 +74,53 @@ host first.
 
 A service worker caches the app shell, so lessons keep working offline and progress syncs when you reconnect. The
 icon source is `client/public/icon.svg`; PWA settings live in `client/vite.config.ts`.
+
+## The Bio Bites iPhone app (Xcode Device Hub / Simulator)
+
+Bio Bites is also a native iPhone/iPad app, built with [Capacitor](https://capacitorjs.com) from the same code.
+Its Xcode project is in `client/ios`.
+
+```bash
+npm run ios
+```
+
+This starts the Bio Bites server on <http://localhost:3000> (if it isn't already running), builds the app, and
+installs and opens it in the simulator shown in Xcode's Device Hub. The first build takes a few minutes while Xcode
+downloads packages. The app stays on the simulator's home screen; keep the terminal open while you use it, because
+the app saves progress to that server.
+
+To open the project in Xcode instead (to run on a real iPhone, for example): `cd client && npx cap open ios`, then
+press Run. A real iPhone can't reach `localhost` on your Mac, so first set `VITE_API_URL` in `client/.env.native` to
+your Mac's Wi-Fi address (e.g. `http://192.168.1.50:3000`) or to a hosted `https://` server, then run `npm run ios`
+again to rebuild.
+
+## Sign in with Google or Apple
+
+Players start as guests. Signing in saves their progress to that Google or Apple account: everything earned as a
+guest is kept, and signing in on another device loads the same progress. **Firebase isn't needed.** The server checks
+each sign-in itself (the token's signature against Google's or Apple's public keys, plus who it was issued to and when
+it expires), and progress lives in the server's SQLite database.
+
+What you need to provide:
+
+**Google** (free)
+
+1. In [Google Cloud Console](https://console.cloud.google.com/apis/credentials), create a project, set up the OAuth
+   consent screen, then **Create credentials → OAuth client ID → iOS** with bundle ID `com.biobites.app`.
+2. Put that client ID in `client/.env.native` as `VITE_GOOGLE_IOS_CLIENT_ID=…` (the app), and in `server/.env` as
+   `GOOGLE_CLIENT_IDS=…` (the server). For the website too, also create a **Web application** client ID, set it as
+   `VITE_GOOGLE_WEB_CLIENT_ID` in `client/.env`, and add it to `GOOGLE_CLIENT_IDS`, separated by a comma.
+3. Run `npm run ios` again. It registers the URL scheme Google needs.
+
+**Apple** (needs an [Apple Developer Program](https://developer.apple.com/programs/) membership, $99/year)
+
+1. Open the project in Xcode (`cd client && npx cap open ios`) → **App** target → **Signing & Capabilities**: choose
+   your team, set a bundle ID you own if `com.biobites.app` is taken, and add **Sign in with Apple**.
+2. Put the bundle ID in `server/.env` as `APPLE_CLIENT_IDS=com.biobites.app`.
+3. In the simulator, sign in to an Apple Account in **Settings** first.
+
+To keep progress safe when your Mac is off, and to let real phones sign in from anywhere, host the server somewhere
+with `https://` and point `VITE_API_URL` at it.
 
 ## Project layout
 

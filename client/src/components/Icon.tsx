@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import type { CategoryId } from '@bioplay/shared';
 
 /**
- * BioPlay's cartoon icon set: chunky dark outlines, flat bright fills, a small highlight.
+ * Bio Bites' cartoon icon set: chunky dark outlines, flat bright fills, a small highlight.
  * Drawn in a 48×48 box so every icon lines up and matches the avatar art style.
  */
 const O = '#1e1b2e';

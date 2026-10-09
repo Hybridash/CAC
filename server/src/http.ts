@@ -3,12 +3,15 @@ import type { DB } from './db.js';
 import { getUserByToken, type UserRow } from './repo.js';
 import type { Rng } from '@bioplay/shared';
 import type { Clock } from './time.js';
+import type { IdentityVerifier } from './identity.js';
 
 export interface AppContext {
   db: DB;
   clock: Clock;
   /** Randomness for pack rolls; injectable so tests can be deterministic. */
   rng?: Rng;
+  /** Checks Google/Apple ID tokens; injectable so tests don't call the real providers. */
+  verifyIdentity?: IdentityVerifier;
 }
 
 export class HttpError extends Error {

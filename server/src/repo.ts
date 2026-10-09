@@ -1,5 +1,11 @@
 import crypto from 'node:crypto';
-import { STARTER_AVATAR, type ConceptProgress, type PlayerState } from '@bioplay/shared';
+import {
+  STARTER_AVATAR,
+  type AuthProvider,
+  type ConceptProgress,
+  type LinkedAccount,
+  type PlayerState,
+} from '@bioplay/shared';
 import type { DB } from './db.js';
 
 export interface UserRow {
@@ -36,6 +42,11 @@ export function createUser(db: DB, now: Date): { user: UserRow; token: string } 
     db.prepare(
       'INSERT INTO users (id, token_hash, created_at, equipped_avatar) VALUES (?, ?, ?, ?)',
     ).run(id, hashToken(token), now.toISOString(), STARTER_AVATAR);
+    db.prepare('INSERT INTO sessions (token_hash, user_id, created_at) VALUES (?, ?, ?)').run(
+      hashToken(token),
+      id,
+      now.toISOString(),
+    );
     // Everyone starts with one friendly avatar so the header isn't empty.
     db.prepare(
       'INSERT INTO inventory (user_id, avatar_id, count, acquired_at) VALUES (?, ?, 1, ?)',
@@ -49,8 +60,42 @@ export function getUser(db: DB, id: string): UserRow | undefined {
 }
 
 export function getUserByToken(db: DB, token: string): UserRow | undefined {
-  return db.prepare('SELECT * FROM users WHERE token_hash = ?').get(hashToken(token)) as
-    UserRow | undefined;
+  return db
+    .prepare(
+      'SELECT users.* FROM sessions JOIN users ON users.id = sessions.user_id WHERE sessions.token_hash = ?',
+    )
+    .get(hashToken(token)) as UserRow | undefined;
+}
+
+/** A new sign-in token for an existing player (another device, or after switching accounts). */
+export function createSession(db: DB, userId: string, now: Date): string {
+  const token = crypto.randomBytes(32).toString('base64url');
+  db.prepare('INSERT INTO sessions (token_hash, user_id, created_at) VALUES (?, ?, ?)').run(
+    hashToken(token),
+    userId,
+    now.toISOString(),
+  );
+  return token;
+}
+
+export function deleteSession(db: DB, token: string) {
+  db.prepare('DELETE FROM sessions WHERE token_hash = ?').run(hashToken(token));
+}
+
+export function findIdentity(db: DB, provider: AuthProvider, subject: string) {
+  return db
+    .prepare('SELECT user_id, email FROM identities WHERE provider = ? AND subject = ?')
+    .get(provider, subject) as { user_id: string; email: string | null } | undefined;
+}
+
+export function linkedAccount(db: DB, userId: string): LinkedAccount | null {
+  return (
+    (db
+      .prepare(
+        'SELECT provider, email FROM identities WHERE user_id = ? ORDER BY created_at LIMIT 1',
+      )
+      .get(userId) as LinkedAccount | undefined) ?? null
+  );
 }
 
 export function getProgress(db: DB, userId: string, conceptId: string): ProgressRow | undefined {
@@ -145,5 +190,6 @@ export function playerState(db: DB, userId: string): PlayerState {
     inventory,
     mysteriesSolved,
     achievements,
+    account: linkedAccount(db, userId),
   };
 }

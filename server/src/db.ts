@@ -74,6 +74,26 @@ const MIGRATIONS: string[] = [
     created_at TEXT NOT NULL
   );
   `,
+  `
+  -- Several devices can be signed in to one account, so tokens move to their own table.
+  CREATE TABLE sessions (
+    token_hash TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TEXT NOT NULL
+  );
+  INSERT INTO sessions (token_hash, user_id, created_at) SELECT token_hash, id, created_at FROM users;
+
+  -- A Google or Apple account linked to a player; subject is the provider's stable user id.
+  CREATE TABLE identities (
+    provider TEXT NOT NULL CHECK (provider IN ('google', 'apple')),
+    subject TEXT NOT NULL,
+    user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    email TEXT,
+    created_at TEXT NOT NULL,
+    PRIMARY KEY (provider, subject)
+  );
+  CREATE INDEX identities_user ON identities(user_id);
+  `,
 ];
 
 export function openDatabase(file: string): DB {

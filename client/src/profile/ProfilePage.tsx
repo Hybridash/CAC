@@ -15,6 +15,7 @@ import { usePlayer } from '../store/player';
 import { PlayerAvatar } from '../components/PlayerAvatar';
 import { AtpIcon, NucleotideIcon } from '../components/Atp';
 import { InstallApp } from '../components/InstallApp';
+import { AccountCard } from '../components/AccountCard';
 import { CategoryIcon, Icon, type IconName } from '../components/Icon';
 import type { ReactNode } from 'react';
 
@@ -84,11 +85,13 @@ export function ProfilePage() {
             </span>
             <InstallApp className="py-1 text-sm" />
             <span className="chip bg-sky-100 py-1 text-sky-900">
-              🃏 {owned}/{AVATARS.length} avatars
+              <Icon name="cards" size={18} /> {owned}/{AVATARS.length} avatars
             </span>
           </div>
         </div>
       </header>
+
+      <AccountCard />
 
       <div className="grid gap-4 md:grid-cols-3">
         <Stat
