@@ -1,0 +1,258 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  SUBSTITUTE
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  DISABLED
+}
+
+/// How a teacher's day is organized. Chosen by the teacher on first sign-in.
+enum TeachingLevel {
+  ELEMENTARY // one class all day, one substitute for the whole day
+  SECONDARY  // middle/high school: classes by period, a substitute per period
+}
+
+enum FileKind {
+  FILE
+  SEATING_CHART
+}
+
+/// When a substitute's access opens relative to the first assigned day.
+enum AccessOpens {
+  MORNING_OF    // 6:00 AM on the first day (school timezone)
+  EVENING_BEFORE // 6:00 PM the evening before
+}
+
+model School {
+  id                 String       @id @default(cuid())
+  name               String
+  timezone           String       @default("America/New_York")
+  joinCode           String       @unique
+  defaultAccessOpens AccessOpens  @default(MORNING_OF)
+  createdAt          DateTime     @default(now())
+  users              User[]
+  assignments        Assignment[]
+  periods            Period[]
+}
+
+/// A period in the school's bell schedule (e.g. "Period 2", 9:00-9:50).
+/// Archived instead of deleted so existing assignments and plans keep their links.
+model Period {
+  id          String           @id @default(cuid())
+  schoolId    String
+  school      School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  name        String
+  startTime   String           @default("")
+  endTime     String           @default("")
+  order       Int
+  archived    Boolean          @default(false)
+  assignments Assignment[]
+  blocks      PlanBlock[]
+  attachments FileAttachment[]
+
+  @@index([schoolId, order])
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String
+  name         String
+  role         Role
+  status       UserStatus @default(PENDING)
+  schoolId     String
+  school       School     @relation(fields: [schoolId], references: [id])
+  room         String?
+  subject      String?
+  /// Teachers only. Null until the teacher picks it on first sign-in.
+  teachingLevel TeachingLevel?
+  phone        String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  sessions              Session[]
+  teachingAssignments   Assignment[]    @relation("TeacherAssignments")
+  substituteAssignments Assignment[]    @relation("SubstituteAssignments")
+  createdAssignments    Assignment[]    @relation("CreatedAssignments")
+  plans                 SubDayPlan[]
+  templates             Template[]
+  messages              ChatMessage[]
+  readStates            ChatReadState[]
+  notifications         Notification[]
+  uploads               FileAttachment[]
+  auditLogs             AuditLog[]
+
+  @@index([schoolId, role])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  /// SHA-256 of the session token. The raw token only lives in the user's cookie.
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Assignment {
+  id             String    @id @default(cuid())
+  schoolId       String
+  school         School    @relation(fields: [schoolId], references: [id])
+  teacherId      String
+  teacher        User      @relation("TeacherAssignments", fields: [teacherId], references: [id])
+  substituteId   String
+  substitute     User      @relation("SubstituteAssignments", fields: [substituteId], references: [id])
+  createdById    String
+  createdBy      User      @relation("CreatedAssignments", fields: [createdById], references: [id])
+  /// Calendar dates (school timezone), inclusive.
+  startDate      DateTime  @db.Date
+  endDate        DateTime  @db.Date
+  /// The exact window in which the substitute has access. Computed from the dates + school timezone.
+  accessStartsAt DateTime
+  accessEndsAt   DateTime
+  /// Periods this substitute covers. Empty = the full day.
+  periods        Period[]
+  notes          String?
+  cancelledAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  messages   ChatMessage[]
+  readStates ChatReadState[]
+
+  @@index([teacherId, accessEndsAt])
+  @@index([substituteId, accessEndsAt])
+  @@index([schoolId, startDate])
+}
+
+model SubDayPlan {
+  id                String           @id @default(cuid())
+  teacherId         String
+  teacher           User             @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  date              DateTime         @db.Date
+  title             String           @default("")
+  /// Sanitized HTML
+  directionsHtml    String           @default("")
+  /// Elementary sections: { arrivalHtml, dismissalHtml, managementHtml } (sanitized HTML)
+  sections          Json             @default("{}")
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  blocks            PlanBlock[]
+  attachments       FileAttachment[]
+
+  @@unique([teacherId, date])
+}
+
+model PlanBlock {
+  id         String     @id @default(cuid())
+  planId     String
+  plan       SubDayPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  order      Int
+  /// The bell-schedule period this block is for. Null = not a class period (only full-day subs see it).
+  periodId   String?
+  period     Period?    @relation(fields: [periodId], references: [id])
+  label      String
+  startTime  String     @default("")
+  endTime    String     @default("")
+  location   String     @default("")
+  /// Sanitized HTML
+  lessonHtml String     @default("")
+
+  @@index([planId, order])
+}
+
+model FileAttachment {
+  id           String     @id @default(cuid())
+  planId       String
+  plan         SubDayPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  uploaderId   String
+  uploader     User       @relation(fields: [uploaderId], references: [id])
+  originalName String
+  mimeType     String
+  size         Int
+  /// Opaque key in private storage. Never exposed to clients.
+  storageKey   String     @unique
+  kind         FileKind   @default(FILE)
+  /// Null = every substitute covering this day; otherwise only the sub covering this period.
+  periodId     String?
+  period       Period?    @relation(fields: [periodId], references: [id])
+  createdAt    DateTime   @default(now())
+}
+
+model Template {
+  id             String   @id @default(cuid())
+  teacherId      String
+  teacher        User     @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  name           String
+  directionsHtml String   @default("")
+  sections       Json     @default("{}")
+  /// Array of { label, startTime, endTime, location, lessonHtml }
+  blocks         Json     @default("[]")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model ChatMessage {
+  id           String     @id @default(cuid())
+  assignmentId String
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  senderId     String
+  sender       User       @relation(fields: [senderId], references: [id])
+  /// Already filtered on the server before saving.
+  body         String
+  createdAt    DateTime   @default(now())
+
+  @@index([assignmentId, createdAt])
+}
+
+model ChatReadState {
+  assignmentId String
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastReadAt   DateTime
+
+  @@id([assignmentId, userId])
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  body      String
+  link      String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, readAt])
+}
+
+/// Records who accessed private student-related content (FERPA-aware record keeping).
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action     String
+  targetType String
+  targetId   String
+  createdAt  DateTime @default(now())
+
+  @@index([targetType, targetId])
+}
