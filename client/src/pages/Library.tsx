@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { LibraryTabs } from '../highschool/LibraryTabs';
 import {
   CATEGORIES,
   CONCEPTS,
@@ -42,6 +43,7 @@ export function LibraryPage() {
 
   return (
     <div className="flex flex-col gap-5">
+      <LibraryTabs />
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-4xl font-extrabold">Library</h1>

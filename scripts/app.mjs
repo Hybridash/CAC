@@ -7,6 +7,7 @@ import { spawn, spawnSync } from 'node:child_process';
 import net from 'node:net';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { stopStaleServer } from './server-freshness.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = Number(process.env.PORT ?? 3000);
@@ -59,7 +60,7 @@ function banner() {
 `);
 }
 
-if (!(await portFree(PORT))) {
+if (!(await portFree(PORT)) && !(await stopStaleServer(URL, root))) {
   if (await isBioPlayRunning()) {
     console.log(`BioPlay is already running at ${URL} — opening it.`);
     openBrowser();

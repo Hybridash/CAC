@@ -340,6 +340,95 @@ export interface Concept {
   funFact: string;
   /** Flagship lessons get extra polish and a badge. */
   flagship?: boolean;
+  /** Present only on High School lessons: the deeper version of a library concept. */
+  highSchool?: HighSchoolInfo;
+  /** Labeled diagrams for a library lesson (High School lessons keep theirs in highSchool). */
+  diagrams?: Diagram[];
+}
+
+/** Fuller explanations (and optionally diagrams) layered onto a library concept. */
+export interface LibraryUpgrade {
+  /** Replaces the concept's steps; must keep the same number (they track the interaction). */
+  steps: [title: string, text: string][];
+  /** Extra Go Deeper paragraphs, added after the existing ones. */
+  goDeeperMore: string;
+  /** Labeled diagrams. Omit to reuse the High School version's main diagram, if there is one. */
+  diagrams?: Diagram[];
+}
+
+// ---------------------------------------------------------------- high school
+
+export type HsUnitId =
+  | 'chemistry'
+  | 'cells'
+  | 'energy'
+  | 'division'
+  | 'dna'
+  | 'heredity'
+  | 'evolution'
+  | 'ecology'
+  | 'body';
+
+export interface HsUnit {
+  id: HsUnitId;
+  name: string;
+  blurb: string;
+  /** Category whose colors the unit borrows. */
+  category: CategoryId;
+}
+
+/** Shared styling for diagram shapes. `part` links the shape to a labeled part for highlighting. */
+export interface DiagramStyle {
+  fill?: string;
+  stroke?: string;
+  strokeWidth?: number;
+  dash?: boolean;
+  opacity?: number;
+  part?: string;
+}
+
+export type DiagramShape =
+  | ({ kind: 'rect'; x: number; y: number; w: number; h: number; r?: number } & DiagramStyle)
+  | ({ kind: 'circle'; cx: number; cy: number; r: number } & DiagramStyle)
+  | ({ kind: 'ellipse'; cx: number; cy: number; rx: number; ry: number } & DiagramStyle)
+  | ({ kind: 'path'; d: string } & DiagramStyle)
+  /** A straight (or gently curved, `bend` px sideways) line with an arrowhead at `to`. */
+  | ({ kind: 'arrow'; from: [number, number]; to: [number, number]; bend?: number } & DiagramStyle)
+  | ({
+      kind: 'text';
+      x: number;
+      y: number;
+      text: string;
+      size?: number;
+      anchor?: 'start' | 'middle' | 'end';
+      bold?: boolean;
+    } & DiagramStyle);
+
+/** A numbered, tappable part of a diagram. `at` is where its number marker sits. */
+export interface DiagramPart {
+  id: string;
+  label: string;
+  description: string;
+  at: [number, number];
+}
+
+/** A labeled scientific diagram drawn from data, in a `width` × `height` coordinate box. */
+export interface Diagram {
+  title: string;
+  /** One- or two-sentence overview of what the diagram shows. */
+  caption: string;
+  width: number;
+  height: number;
+  shapes: DiagramShape[];
+  parts: DiagramPart[];
+}
+
+export interface HighSchoolInfo {
+  unit: HsUnitId;
+  /** The library concept this lesson deepens (its interaction is reused). */
+  baseId: string;
+  diagrams: Diagram[];
+  keyTerms: { term: string; definition: string }[];
 }
 
 // ---------------------------------------------------------------- mysteries

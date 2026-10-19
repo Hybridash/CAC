@@ -9,6 +9,9 @@ import { Icon } from './components/Icon';
 import { WelcomePage } from './pages/Welcome';
 
 const LibraryPage = lazy(() => import('./pages/Library').then((m) => ({ default: m.LibraryPage })));
+const HighSchoolPage = lazy(() =>
+  import('./highschool/HighSchoolPage').then((m) => ({ default: m.HighSchoolPage })),
+);
 const LessonPage = lazy(() =>
   import('./lesson/LessonPage').then((m) => ({ default: m.LessonPage })),
 );
@@ -68,6 +71,7 @@ export function App() {
             <Route element={<Layout />}>
               <Route index element={<HomePage />} />
               <Route path="library" element={<LibraryPage />} />
+              <Route path="library/high-school" element={<HighSchoolPage />} />
               <Route path="learn/:id" element={<LessonPage />} />
               <Route path="map" element={<KnowledgeMapPage />} />
               <Route path="mysteries" element={<MysteriesPage />} />

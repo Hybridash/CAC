@@ -1,10 +1,15 @@
 import { useState } from 'react';
-import type { AuthProvider } from '@bioplay/shared';
+import type { AccountProvider, SignInResponse } from '@bioplay/shared';
 import { usePlayer } from '../store/player';
 import { Icon } from './Icon';
 import { SignInButtons } from './SignInButtons';
+import { EmailAccountForm } from './EmailAccountForm';
 
-const NAME: Record<AuthProvider, string> = { google: 'Google', apple: 'Apple' };
+const NAME: Record<AccountProvider, string> = {
+  google: 'Google',
+  apple: 'Apple',
+  email: 'your Bio Bites account',
+};
 
 /** Save progress to a Google or Apple account, or show which account it's saved to. */
 export function AccountCard({ compact = false }: { compact?: boolean }) {
@@ -49,23 +54,23 @@ export function AccountCard({ compact = false }: { compact?: boolean }) {
           </p>
         )}
       </div>
-      <div className="sm:w-56">
+      <div className="sm:w-72">
         {account ? (
           <button className="btn-ghost w-full py-2" onClick={out} disabled={signingOut}>
             {signingOut ? 'Signing out…' : 'Sign out'}
           </button>
         ) : (
-          <SignInButtons
-            onSignedIn={(res) =>
-              setMsg(
-                res.switched
-                  ? `Welcome back, ${res.state.displayName}! Your saved progress is loaded.`
-                  : 'Saved! Your progress now follows you to any device you sign in on.',
-              )
-            }
-          />
+          <div className="flex flex-col gap-3">
+            <EmailAccountForm collapsible onSignedIn={(res) => setMsg(signedInMessage(res))} />
+            <SignInButtons onSignedIn={(res) => setMsg(signedInMessage(res))} />
+          </div>
         )}
       </div>
     </section>
   );
 }
+
+const signedInMessage = (res: SignInResponse) =>
+  res.switched
+    ? `Welcome back, ${res.state.displayName}! Your saved progress is loaded.`
+    : 'Saved! Your progress now follows you to any device you sign in on.';

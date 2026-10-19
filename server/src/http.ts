@@ -4,6 +4,7 @@ import { getUserByToken, type UserRow } from './repo.js';
 import type { Rng } from '@bioplay/shared';
 import type { Clock } from './time.js';
 import type { IdentityVerifier } from './identity.js';
+import type { Tutor } from './tutor.js';
 
 export interface AppContext {
   db: DB;
@@ -12,6 +13,8 @@ export interface AppContext {
   rng?: Rng;
   /** Checks Google/Apple ID tokens; injectable so tests don't call the real providers. */
   verifyIdentity?: IdentityVerifier;
+  /** The AI behind Bio Bot; undefined when no API key is configured (the chat is then off). */
+  tutor?: Tutor;
 }
 
 export class HttpError extends Error {

@@ -89,13 +89,13 @@ export function findIdentity(db: DB, provider: AuthProvider, subject: string) {
 }
 
 export function linkedAccount(db: DB, userId: string): LinkedAccount | null {
-  return (
-    (db
-      .prepare(
-        'SELECT provider, email FROM identities WHERE user_id = ? ORDER BY created_at LIMIT 1',
-      )
-      .get(userId) as LinkedAccount | undefined) ?? null
-  );
+  const identity = db
+    .prepare('SELECT provider, email FROM identities WHERE user_id = ? ORDER BY created_at LIMIT 1')
+    .get(userId) as LinkedAccount | undefined;
+  if (identity) return identity;
+  const email = db.prepare('SELECT email FROM email_accounts WHERE user_id = ?').get(userId) as
+    { email: string } | undefined;
+  return email ? { provider: 'email', email: email.email } : null;
 }
 
 export function getProgress(db: DB, userId: string, conceptId: string): ProgressRow | undefined {

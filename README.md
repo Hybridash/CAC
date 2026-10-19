@@ -5,6 +5,9 @@ hands-on interaction plus a three-question quiz. Completing lessons earns **ATP*
 card packs of collectible biology avatars. No real money, ads or purchases — ever.
 
 - **154 concepts** across 12 categories, from food chains to nonsense-mediated decay
+- **High School Biology:** 40 core topics in 9 course units, taught in more depth with 74 labeled, tappable diagrams,
+  key terms and exam-style quizzes
+- **Bio Bot**, an AI tutor on every lesson (optional; needs an API key)
 - **10 hand-built flagship lessons** (Insulin, Action Potentials, Photosynthesis, DNA → Protein, Mitosis, Vaccines,
   Electron Transport Chain, Natural Selection, Food Chains, Antibiotic Resistance)
 - **10 reusable interaction templates** that power the rest of the library from plain data
@@ -98,6 +101,17 @@ press Run. A real iPhone can't reach `localhost` on your Mac, so first set `VITE
 your Mac's Wi-Fi address (e.g. `http://192.168.1.50:3000`) or to a hosted `https://` server, then run `npm run ios`
 again to rebuild.
 
+## Bio Bites accounts (email + password)
+
+The welcome screen offers **Create a Bio Bites account**: any email address and a password of at least 6 characters.
+Like Google/Apple sign-in, creating an account keeps everything earned as a guest, and logging in on another device
+loads the same progress. Passwords are stored only as salted scrypt hashes, and after 10 wrong passwords for one email
+the server refuses further tries for 15 minutes.
+
+**Demo login:** the server creates `demo@gmail.com` / `demo123` on startup (the login form has a one-tap “Try the demo
+account” button). Anyone who knows it can use it, so set `DEMO_ACCOUNT=off` in `server/.env` on a public server and
+remove the button from `client/src/components/EmailAccountForm.tsx`.
+
 ## Sign in with Google or Apple
 
 Players start as guests. Signing in saves their progress to that Google or Apple account: everything earned as a
@@ -125,6 +139,34 @@ What you need to provide:
 
 To keep progress safe when your Mac is off, and to let real phones sign in from anywhere, host the server somewhere
 with `https://` and point `VITE_API_URL` at it.
+
+## Bio Bot (AI tutor)
+
+Every lesson has an **Ask Bio Bot** button. Students ask questions about the lesson they’re on; the server sends
+the question, the recent conversation and the lesson’s text to Google’s Gemini API and returns the answer. The API
+key stays on the server. Bio Bot is **off until you add a key**; without one, the panel says it isn’t available.
+
+> **Check the provider’s terms before turning it on for students.** Google’s
+> [Gemini API terms](https://ai.google.dev/gemini-api/terms) say the API may not be used in an app “directed towards
+> or likely to be accessed by individuals under the age of 18,” and on the free tier Google may use prompts to
+> improve its products, with human reviewers. Bio Bites is aimed at students, so confirm you’re allowed to use it
+> (or switch providers) first. Swapping providers only means replacing `geminiTutor` in `server/src/tutor.ts`.
+
+1. Create an API key in [Google AI Studio](https://aistudio.google.com/apikey).
+2. Add it to `server/.env`:
+
+   ```bash
+   GEMINI_API_KEY=your-key-here
+   # optional:
+   GEMINI_MODEL=gemini-3.5-flash-lite   # the default
+   CHAT_DAILY_LIMIT=30                  # questions per player per day (the default)
+   ```
+
+3. Restart the server (`npm run app`, `npm run ios` or `npm run dev`).
+
+Limits and safety: each player (guest or signed in) gets `CHAT_DAILY_LIMIT` questions per UTC day, counted on the
+server, and a failed answer doesn’t use one up. The instructions in `server/src/routes/chat.ts` keep Bio Bot on biology,
+short, school-appropriate, hinting rather than giving quiz answers, and never asking for personal information.
 
 ## Project layout
 
@@ -212,6 +254,30 @@ challenges are reachable, and that every `relatedConcepts`/`prerequisites` id ex
 
 A hand-built lesson uses `interaction: { template: 'flagship', config: { component: 'my-lesson' } }` and registers a
 React component in `client/src/flagships/registry.ts`.
+
+## Adding a High School lesson
+
+High School lessons live in `shared/src/data/highschool/`, one file per unit. Each one deepens an existing library
+concept: it reuses that concept’s interaction, so `steps` must have the same number of entries as the base concept’s
+(they track the interaction’s stages). Add an `hs({ … })` entry to the unit’s array:
+
+```ts
+hs({
+  base: 'osmosis',              // the library concept to deepen; the lesson id becomes 'hs-osmosis'
+  unit: 'cells',                // one of HS_UNITS in build.ts
+  summary: '…',
+  steps: [['Title', 'Text'], …],
+  diagrams: [diagram('Title', 'One-sentence caption', shapes, parts)],
+  keyTerms: [['Term', 'Definition'], …],
+  goDeeper: '…',
+  quiz: [mc(…), predict(…), label(…)],
+})
+```
+
+Diagrams are drawn from data in a 400 × 260 box using the helpers in `build.ts` (`rect`, `circle`, `ellipse`,
+`path`, `arrow`, `text`). Give shapes a `part` id to tie them to a numbered, tappable label:
+`[id, label, [markerX, markerY], description]`. `npm test` checks every lesson: step counts, quiz shape, that each
+diagram has 3+ parts with real descriptions, and that every shape’s `part` exists.
 
 ## Adding a Bio Mystery (data only)
 

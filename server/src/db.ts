@@ -94,6 +94,24 @@ const MIGRATIONS: string[] = [
   );
   CREATE INDEX identities_user ON identities(user_id);
   `,
+  `
+  -- Bio Bot questions asked per player per UTC day, for the daily limit.
+  CREATE TABLE chat_usage (
+    user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    day TEXT NOT NULL,
+    count INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (user_id, day)
+  );
+  `,
+  `
+  -- Bio Bites accounts: an email and password linked to one player.
+  CREATE TABLE email_accounts (
+    email TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+    password_hash TEXT NOT NULL,
+    created_at TEXT NOT NULL
+  );
+  `,
 ];
 
 export function openDatabase(file: string): DB {

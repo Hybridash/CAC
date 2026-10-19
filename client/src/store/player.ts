@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import {
   gradeQuiz,
-  CONCEPT_BY_ID,
+  LESSON_BY_ID,
   type MysterySolveRequest,
   type MysterySolveResponse,
   type PackOpenResponse,
@@ -48,6 +48,12 @@ interface PlayerStore {
   solveMystery: (id: string, req: MysterySolveRequest) => Promise<MysterySolveResponse>;
   /** Save progress to a Google/Apple account (or switch to the one saved there). */
   signIn: (provider: AuthProvider) => Promise<SignInResponse>;
+  /** Create a Bio Bites account for this player, or log in to one (switching to its player). */
+  emailAuth: (
+    mode: 'register' | 'login',
+    email: string,
+    password: string,
+  ) => Promise<SignInResponse>;
   /** Sign this device out; it carries on as a fresh guest. The account stays saved. */
   signOut: () => Promise<void>;
   dismissToast: (id: number) => void;
@@ -189,7 +195,7 @@ export const usePlayer = create<PlayerStore>((set, get) => {
       } catch (e) {
         if (!(e instanceof RequestError && e.offline)) throw e;
         // Offline: grade locally for instant feedback; the server re-grades when we reconnect.
-        const concept = CONCEPT_BY_ID[conceptId];
+        const concept = LESSON_BY_ID[conceptId];
         const g = gradeQuiz(concept.quiz, answers);
         enqueue({ kind: 'quiz', conceptId, answers });
         const passed = g.score >= 2;
@@ -241,10 +247,20 @@ export const usePlayer = create<PlayerStore>((set, get) => {
       return res;
     },
 
+    async emailAuth(mode, email, password) {
+      // Send anything done offline first, so it lands on the guest profile before linking.
+      await flushQueue();
+      const res = await api<SignInResponse>(`/auth/email/${mode}`, { body: { email, password } });
+      if (res.token) setToken(res.token);
+      accept(res.state);
+      get().finishWelcome();
+      return res;
+    },
+
     async signOut() {
       const provider = get().player?.account?.provider;
       await api('/auth/sign-out', { method: 'POST' }).catch(() => undefined);
-      if (provider) await providerSignOut(provider);
+      if (provider && provider !== 'email') await providerSignOut(provider);
       clearToken();
       storage.remove(STATE_KEY);
       saveQueue([]);

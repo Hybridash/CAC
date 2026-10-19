@@ -1,0 +1,2050 @@
+import type { Concept, DiagramShape } from '../../types';
+import { label, mc, predict } from '../concepts/helpers';
+import { arrow, circle, diagram, ellipse, hs, path, rect, text } from './build';
+
+const OXY = '#dc2626';
+const DEOXY = '#2563eb';
+
+/** A wide, rounded vessel drawn as a thick stroke with an arrowhead showing flow. */
+const vessel = (d: string, color: string, part: string): DiagramShape =>
+  path(d, { stroke: color, strokeWidth: 9, part });
+
+/** Membrane potential (mV) to y on the action potential graph. */
+const mv = (v: number) => 40 + ((40 - v) / 130) * 170;
+
+export const body: Concept[] = [
+  hs({
+    base: 'heart-circulation',
+    unit: 'body',
+    summary:
+      'The heart is two pumps side by side. The right side sends deoxygenated blood to the lungs (pulmonary circulation); the left side sends oxygenated blood to the body (systemic circulation). Valves keep blood flowing one way, and an electrical pacemaker coordinates each beat.',
+    steps: [
+      [
+        'Four chambers',
+        'The two atria (top) receive blood and the two ventricles (bottom) pump it out. A wall called the septum keeps oxygenated and deoxygenated blood apart. The left ventricle has the thickest wall, because it must push blood around the whole body.',
+      ],
+      [
+        'Right side → lungs',
+        'Deoxygenated blood returns from the body through the venae cavae into the right atrium, passes the tricuspid valve into the right ventricle, and is pumped through the pulmonary valve into the pulmonary arteries to the lungs, where it picks up O₂ and drops off CO₂.',
+      ],
+      [
+        'Left side → body',
+        'Oxygenated blood returns through the pulmonary veins to the left atrium, passes the mitral (bicuspid) valve into the left ventricle, and is pumped through the aortic valve into the aorta, which branches to every organ. Blood passes through the heart twice per circuit: double circulation.',
+      ],
+      [
+        'Valves and the heartbeat',
+        'Atrioventricular valves (tricuspid, mitral) close as the ventricles contract: “lub.” Semilunar valves (pulmonary, aortic) close as the ventricles relax: “dub.” The beat starts at the sinoatrial (SA) node, the heart’s natural pacemaker, and spreads through the muscle.',
+      ],
+    ],
+    diagrams: [
+      diagram(
+        'Inside the heart',
+        'A front view, so the heart’s right side appears on your left. Blue = deoxygenated blood; red = oxygenated blood.',
+        [
+          vessel('M118 6 L118 66', DEOXY, 'vena'),
+          vessel('M40 230 Q60 120 98 110', DEOXY, 'vena'),
+          rect(96, 62, 96, 66, '#bfdbfe', { r: 14, stroke: '#1d4ed8', strokeWidth: 2, part: 'ra' }),
+          rect(208, 62, 96, 66, '#fecaca', {
+            r: 14,
+            stroke: '#b91c1c',
+            strokeWidth: 2,
+            part: 'la',
+          }),
+          rect(96, 136, 96, 96, '#93c5fd', {
+            r: 22,
+            stroke: '#1d4ed8',
+            strokeWidth: 3,
+            part: 'rv',
+          }),
+          rect(208, 136, 96, 106, '#fca5a5', {
+            r: 24,
+            stroke: '#991b1b',
+            strokeWidth: 7,
+            part: 'lv',
+          }),
+          rect(193, 70, 14, 170, '#fbcfe8', { r: 4, part: 'septum' }),
+          vessel('M178 150 L178 40 L60 40', DEOXY, 'pa'),
+          vessel('M178 40 L350 50', DEOXY, 'pa'),
+          vessel('M222 150 L222 22 Q222 10 240 10 L330 10', OXY, 'aorta'),
+          arrow([56, 40], [22, 40], { stroke: DEOXY, strokeWidth: 3, part: 'pa' }),
+          arrow([346, 50], [372, 52], { stroke: DEOXY, strokeWidth: 3, part: 'pa' }),
+          arrow([326, 10], [366, 10], { stroke: OXY, strokeWidth: 3, part: 'aorta' }),
+          vessel('M390 86 L306 86', OXY, 'pv'),
+          vessel('M390 110 L306 110', OXY, 'pv'),
+          path('M120 132 L166 132', { stroke: '#0f172a', strokeWidth: 4, part: 'valves' }),
+          path('M232 132 L280 132', { stroke: '#0f172a', strokeWidth: 4, part: 'valves' }),
+          path('M171 146 L185 146 M215 146 L229 146', {
+            stroke: '#0f172a',
+            strokeWidth: 4,
+            part: 'semilunar',
+          }),
+          arrow([144, 112], [144, 152], { stroke: '#fff', strokeWidth: 2.5 }),
+          arrow([256, 112], [256, 152], { stroke: '#fff', strokeWidth: 2.5 }),
+          text(144, 86, 'Right', { size: 9.5, bold: true, part: 'ra' }),
+          text(144, 98, 'atrium', { size: 9.5, bold: true, part: 'ra' }),
+          text(256, 86, 'Left', { size: 9.5, bold: true, part: 'la' }),
+          text(256, 98, 'atrium', { size: 9.5, bold: true, part: 'la' }),
+          text(140, 190, 'Right', { size: 9.5, bold: true, part: 'rv' }),
+          text(140, 202, 'ventricle', { size: 9.5, bold: true, part: 'rv' }),
+          text(262, 196, 'Left', { size: 9.5, bold: true, part: 'lv' }),
+          text(262, 208, 'ventricle', { size: 9.5, bold: true, part: 'lv' }),
+          text(28, 30, 'to lungs', { anchor: 'start', size: 8.5, fill: DEOXY, part: 'pa' }),
+          text(370, 24, 'to body', { anchor: 'end', size: 8.5, fill: OXY, part: 'aorta' }),
+          text(392, 128, 'from lungs', { anchor: 'end', size: 8.5, fill: OXY, part: 'pv' }),
+          text(14, 246, 'from body', { anchor: 'start', size: 8.5, fill: DEOXY, part: 'vena' }),
+        ],
+        [
+          [
+            'vena',
+            'Venae cavae',
+            [96, 18],
+            'The superior and inferior vena cava return deoxygenated blood from the body to the right atrium.',
+          ],
+          [
+            'ra',
+            'Right atrium',
+            [104, 70],
+            'Receives deoxygenated blood from the body. The SA node (pacemaker) is in its wall.',
+          ],
+          [
+            'rv',
+            'Right ventricle',
+            [104, 226],
+            'Pumps blood a short distance to the lungs, so its wall is thinner than the left ventricle’s.',
+          ],
+          [
+            'pa',
+            'Pulmonary arteries',
+            [60, 58],
+            'Carry deoxygenated blood to the lungs: the only arteries carrying deoxygenated blood.',
+          ],
+          [
+            'pv',
+            'Pulmonary veins',
+            [346, 70],
+            'Bring oxygenated blood from the lungs to the left atrium: the only veins carrying oxygenated blood.',
+          ],
+          ['la', 'Left atrium', [296, 70], 'Receives oxygenated blood from the lungs.'],
+          [
+            'lv',
+            'Left ventricle',
+            [296, 232],
+            'The thickest, strongest chamber: it generates enough pressure to push blood through about 100,000 km of vessels.',
+          ],
+          [
+            'aorta',
+            'Aorta',
+            [244, 24],
+            'The body’s largest artery, carrying oxygenated blood from the left ventricle to all organs.',
+          ],
+          [
+            'septum',
+            'Septum',
+            [200, 252],
+            'A muscular wall that keeps the two sides’ blood from mixing.',
+          ],
+          [
+            'valves',
+            'AV valves (tricuspid, mitral)',
+            [80, 132],
+            'Between atria and ventricles. They snap shut when the ventricles contract, making the “lub” sound.',
+          ],
+          [
+            'semilunar',
+            'Semilunar valves',
+            [200, 160],
+            'At the exits to the pulmonary artery and aorta. They close as the ventricles relax: “dub.”',
+          ],
+        ],
+      ),
+      diagram(
+        'Double circulation',
+        'Blood passes through the heart twice on each full trip: once through the pulmonary circuit (to the lungs) and once through the systemic circuit (to the body).',
+        [
+          rect(130, 20, 140, 40, '#e0f2fe', {
+            r: 14,
+            stroke: '#0284c7',
+            strokeWidth: 2,
+            part: 'lungs',
+          }),
+          text(200, 45, 'Lung capillaries', { size: 10, bold: true, part: 'lungs' }),
+          rect(130, 200, 140, 44, '#fef3c7', {
+            r: 14,
+            stroke: '#d97706',
+            strokeWidth: 2,
+            part: 'body',
+          }),
+          text(200, 220, 'Body capillaries', { size: 10, bold: true, part: 'body' }),
+          text(200, 234, '(organs and tissues)', { size: 8.5, fill: '#475569', part: 'body' }),
+          rect(150, 100, 50, 60, '#bfdbfe', {
+            r: 10,
+            stroke: '#1d4ed8',
+            strokeWidth: 2,
+            part: 'right',
+          }),
+          rect(200, 100, 50, 60, '#fecaca', {
+            r: 10,
+            stroke: '#b91c1c',
+            strokeWidth: 2,
+            part: 'left',
+          }),
+          text(175, 128, 'Right', { size: 9, bold: true, part: 'right' }),
+          text(175, 140, 'side', { size: 9, bold: true, part: 'right' }),
+          text(225, 128, 'Left', { size: 9, bold: true, part: 'left' }),
+          text(225, 140, 'side', { size: 9, bold: true, part: 'left' }),
+          arrow([160, 100], [100, 40], {
+            bend: -30,
+            stroke: DEOXY,
+            strokeWidth: 4,
+            part: 'pulmonary',
+          }),
+          arrow([102, 40], [126, 40], { stroke: DEOXY, strokeWidth: 4, part: 'pulmonary' }),
+          arrow([274, 40], [300, 40], { stroke: OXY, strokeWidth: 4, part: 'pulmonary' }),
+          arrow([300, 40], [240, 98], {
+            bend: -30,
+            stroke: OXY,
+            strokeWidth: 4,
+            part: 'pulmonary',
+          }),
+          arrow([240, 162], [300, 222], {
+            bend: 30,
+            stroke: OXY,
+            strokeWidth: 4,
+            part: 'systemic',
+          }),
+          arrow([300, 222], [274, 222], { stroke: OXY, strokeWidth: 4, part: 'systemic' }),
+          arrow([126, 222], [100, 222], { stroke: DEOXY, strokeWidth: 4, part: 'systemic' }),
+          arrow([100, 222], [160, 162], {
+            bend: 30,
+            stroke: DEOXY,
+            strokeWidth: 4,
+            part: 'systemic',
+          }),
+          text(64, 92, 'pulmonary', { size: 10, bold: true, fill: '#475569', part: 'pulmonary' }),
+          text(64, 106, 'circuit', { size: 10, bold: true, fill: '#475569', part: 'pulmonary' }),
+          text(344, 160, 'systemic', { size: 10, bold: true, fill: '#475569', part: 'systemic' }),
+          text(344, 174, 'circuit', { size: 10, bold: true, fill: '#475569', part: 'systemic' }),
+          rect(300, 96, 92, 40, '#f8fafc', { r: 8, stroke: '#e2e8f0' }),
+          path('M308 108 L326 108', { stroke: OXY, strokeWidth: 4 }),
+          text(330, 111, 'oxygen-rich', { anchor: 'start', size: 8.5 }),
+          path('M308 124 L326 124', { stroke: DEOXY, strokeWidth: 4 }),
+          text(330, 127, 'oxygen-poor', { anchor: 'start', size: 8.5 }),
+        ],
+        [
+          [
+            'right',
+            'Right side of the heart',
+            [130, 94],
+            'Collects oxygen-poor blood from the body and pumps it to the lungs.',
+          ],
+          [
+            'left',
+            'Left side of the heart',
+            [270, 166],
+            'Collects oxygen-rich blood from the lungs and pumps it to the body.',
+          ],
+          [
+            'pulmonary',
+            'Pulmonary circuit',
+            [36, 60],
+            'Heart → lungs → heart. Low pressure, so delicate lung capillaries aren’t damaged.',
+          ],
+          [
+            'systemic',
+            'Systemic circuit',
+            [370, 196],
+            'Heart → body → heart. High pressure to reach every organ, from brain to toes.',
+          ],
+          [
+            'lungs',
+            'Gas exchange in the lungs',
+            [282, 20],
+            'Blood picks up O₂ and releases CO₂ in the alveolar capillaries.',
+          ],
+          [
+            'body',
+            'Exchange in body tissues',
+            [282, 252],
+            'Capillary walls are one cell thick, so O₂ and nutrients diffuse out to cells and CO₂ and wastes diffuse in.',
+          ],
+        ],
+      ),
+    ],
+    keyTerms: [
+      ['Atrium', 'Upper heart chamber that receives blood.'],
+      ['Ventricle', 'Lower heart chamber that pumps blood out.'],
+      ['Artery / vein', 'Vessel carrying blood away from / back to the heart.'],
+      ['Double circulation', 'Pulmonary and systemic circuits, each passing through the heart.'],
+      ['SA node', 'The heart’s natural pacemaker in the right atrium.'],
+      ['Capillary', 'Tiny vessel with one-cell-thick walls where exchange happens.'],
+    ],
+    goDeeper:
+      'The heartbeat is myogenic: it starts in the heart muscle itself. The SA node fires, the atria contract, then the signal pauses briefly at the atrioventricular (AV) node, giving the ventricles time to fill, before racing down the bundle of His and Purkinje fibers so the ventricles contract from the bottom up, squeezing blood toward the exits. An ECG records this electrical sequence.\n\nArteries have thick, elastic, muscular walls to withstand high pressure. Veins have thinner walls, wider lumens and valves to stop backflow, helped by skeletal muscles squeezing them. Capillaries are one cell thick for exchange. Blood pressure is written as systolic/diastolic, such as 120/80 mmHg.\n\nIn reality, it’s a bit more complicated: “blue” blood isn’t actually blue. Deoxygenated blood is dark red; veins look bluish because of how light passes through skin.',
+    quiz: [
+      mc(
+        'Which chamber pumps oxygenated blood into the aorta?',
+        ['Left ventricle', 'Right ventricle', 'Left atrium', 'Right atrium'],
+        0,
+        'Oxygenated blood from the lungs enters the left atrium, then the left ventricle pumps it into the aorta.',
+      ),
+      predict(
+        'A person’s mitral valve doesn’t close properly (it leaks).',
+        'What happens when the left ventricle contracts?',
+        [
+          'Some blood flows backward into the left atrium, so less reaches the body',
+          'Blood flows backward into the lungs’ arteries',
+          'Deoxygenated and oxygenated blood mix in the ventricles',
+          'Nothing; valves aren’t needed',
+        ],
+        0,
+        'The mitral valve stops backflow into the left atrium. A leak reduces output and makes a murmur (a whooshing sound).',
+      ),
+      label(
+        'Put the path of blood in order by matching each step to what comes next.',
+        [
+          ['Right ventricle', 'Pulmonary artery'],
+          ['Pulmonary veins', 'Left atrium'],
+          ['Left ventricle', 'Aorta'],
+          ['Venae cavae', 'Right atrium'],
+        ],
+        'Body → venae cavae → RA → RV → pulmonary artery → lungs → pulmonary veins → LA → LV → aorta → body.',
+      ),
+    ],
+  }),
+
+  hs({
+    base: 'breathing',
+    unit: 'body',
+    summary:
+      'Breathing (ventilation) moves air in and out by changing the volume, and so the pressure, of the chest. Gas exchange happens by diffusion across the thin, moist walls of hundreds of millions of alveoli, each surrounded by capillaries.',
+    steps: [
+      [
+        'Ventilation',
+        'To inhale, the diaphragm contracts and flattens and the external intercostal muscles pull the ribs up and out. Chest volume increases, so pressure inside falls below atmospheric pressure and air flows in. Exhaling at rest is passive: the muscles relax, volume falls, pressure rises, air flows out.',
+      ],
+      [
+        'The airways',
+        'Air passes through the nose (warmed, moistened, filtered), the trachea (held open by C-shaped cartilage rings), two bronchi and thousands of narrower bronchioles. Mucus traps dust and microbes, and cilia sweep it up and away.',
+      ],
+      [
+        'Alveoli: built for exchange',
+        'About 480 million alveoli give a surface area of roughly 70 m², about half a tennis court. Their walls are one cell thick, they are moist so gases dissolve, and each is wrapped in a dense network of capillaries.',
+      ],
+      [
+        'Diffusion of gases',
+        'O₂ diffuses from alveolar air (high concentration) into the blood (low), where it binds hemoglobin in red blood cells. CO₂ diffuses the opposite way. Breathing and blood flow keep both concentration gradients steep.',
+      ],
+    ],
+    diagrams: [
+      diagram(
+        'The respiratory system',
+        'Air travels through branching tubes to the alveoli. The diaphragm and rib muscles power ventilation.',
+        [
+          rect(186, 8, 28, 70, '#fde68a', {
+            r: 8,
+            stroke: '#a16207',
+            strokeWidth: 2,
+            part: 'trachea',
+          }),
+          ...[16, 28, 40, 52, 64].map((y) =>
+            path(`M188 ${y} L212 ${y}`, { stroke: '#a16207', strokeWidth: 2, part: 'trachea' }),
+          ),
+          path(
+            'M80 70 C30 100 30 210 70 226 C110 236 160 224 172 196 L172 92 C160 74 110 60 80 70 Z',
+            {
+              fill: '#fecdd3',
+              stroke: '#e11d48',
+              strokeWidth: 2,
+              part: 'lungs',
+            },
+          ),
+          path(
+            'M320 70 C370 100 370 210 330 226 C290 236 240 224 228 196 L228 92 C240 74 290 60 320 70 Z',
+            {
+              fill: '#fecdd3',
+              stroke: '#e11d48',
+              strokeWidth: 2,
+              part: 'lungs',
+            },
+          ),
+          path('M200 78 L200 96 M200 96 L150 120 M200 96 L250 120', {
+            stroke: '#a16207',
+            strokeWidth: 7,
+            part: 'bronchi',
+          }),
+          path(
+            'M150 120 L118 140 M150 120 L136 160 M118 140 L94 150 M118 140 L104 172 M136 160 L120 190 M136 160 L150 196',
+            {
+              stroke: '#c2410c',
+              strokeWidth: 3,
+              part: 'bronchioles',
+            },
+          ),
+          path(
+            'M250 120 L282 140 M250 120 L264 160 M282 140 L306 150 M282 140 L296 172 M264 160 L280 190 M264 160 L250 196',
+            {
+              stroke: '#c2410c',
+              strokeWidth: 3,
+              part: 'bronchioles',
+            },
+          ),
+          ...[
+            [94, 150],
+            [104, 172],
+            [120, 190],
+            [150, 196],
+            [306, 150],
+            [296, 172],
+            [280, 190],
+            [250, 196],
+          ].map(([x, y]) =>
+            circle(x, y, 5, '#fda4af', { stroke: '#be123c', strokeWidth: 1.5, part: 'alveoli' }),
+          ),
+          path('M40 236 Q200 200 360 236', {
+            stroke: '#7c3aed',
+            strokeWidth: 6,
+            part: 'diaphragm',
+          }),
+          path('M30 84 Q20 150 34 214 M370 84 Q380 150 366 214', {
+            stroke: '#94a3b8',
+            strokeWidth: 3,
+            dash: true,
+            part: 'ribs',
+          }),
+          text(200, 254, 'diaphragm', { size: 9, bold: true, fill: '#6d28d9', part: 'diaphragm' }),
+        ],
+        [
+          [
+            'trachea',
+            'Trachea',
+            [230, 30],
+            'The windpipe. C-shaped cartilage rings keep it open; its lining has mucus and cilia.',
+          ],
+          [
+            'bronchi',
+            'Bronchi',
+            [226, 96],
+            'The trachea splits into two bronchi, one to each lung.',
+          ],
+          [
+            'bronchioles',
+            'Bronchioles',
+            [318, 132],
+            'Ever-narrower tubes with smooth muscle; during an asthma attack this muscle tightens.',
+          ],
+          [
+            'alveoli',
+            'Alveoli',
+            [86, 196],
+            'Tiny air sacs at the ends of bronchioles where gas exchange happens.',
+          ],
+          [
+            'lungs',
+            'Lungs',
+            [56, 82],
+            'Spongy organs in the chest, surrounded by pleural membranes that reduce friction.',
+          ],
+          [
+            'diaphragm',
+            'Diaphragm',
+            [330, 248],
+            'A dome-shaped sheet of muscle. Contracting flattens it, enlarging the chest: the main breathing muscle.',
+          ],
+          [
+            'ribs',
+            'Ribs & intercostal muscles',
+            [18, 150],
+            'Intercostal muscles between the ribs lift the rib cage when you inhale, especially during exercise.',
+          ],
+        ],
+      ),
+      diagram(
+        'Gas exchange in an alveolus',
+        'One alveolus and its capillary, magnified. Gases diffuse down their concentration gradients across a barrier less than 1 µm thick.',
+        [
+          circle(130, 130, 96, '#e0f2fe', { stroke: '#0284c7', strokeWidth: 3, part: 'alveolus' }),
+          text(110, 120, 'air in the alveolus', {
+            size: 9.5,
+            bold: true,
+            fill: '#0369a1',
+            part: 'alveolus',
+          }),
+          text(110, 134, 'high O₂, low CO₂', { size: 9, fill: '#0369a1', part: 'alveolus' }),
+          path('M232 20 C250 80 250 180 232 240', {
+            stroke: '#fecaca',
+            strokeWidth: 44,
+            part: 'capillary',
+          }),
+          path('M232 20 C250 80 250 180 232 240', {
+            stroke: '#dc2626',
+            strokeWidth: 2,
+            opacity: 0.4,
+          }),
+          ...[50, 100, 150, 200].map((y) =>
+            ellipse(242, y, 12, 7, '#ef4444', { stroke: '#991b1b', part: 'rbc' }),
+          ),
+          arrow([236, 248], [232, 252], { stroke: '#dc2626', strokeWidth: 2 }),
+          arrow([180, 92], [226, 92], { stroke: '#16a34a', strokeWidth: 3, part: 'o2' }),
+          text(200, 84, 'O₂', { size: 11, bold: true, fill: '#15803d', part: 'o2' }),
+          arrow([228, 172], [182, 172], { stroke: '#9333ea', strokeWidth: 3, part: 'co2' }),
+          text(204, 190, 'CO₂', { size: 11, bold: true, fill: '#7e22ce', part: 'co2' }),
+          rect(290, 40, 104, 74, '#f8fafc', { r: 10, stroke: '#e2e8f0', part: 'wall' }),
+          text(342, 58, 'Barrier: just', { size: 9, bold: true, part: 'wall' }),
+          text(342, 72, '2 thin cells', { size: 9, bold: true, part: 'wall' }),
+          text(342, 88, 'alveolus wall +', { size: 8.5, fill: '#475569', part: 'wall' }),
+          text(342, 100, 'capillary wall', { size: 8.5, fill: '#475569', part: 'wall' }),
+          text(342, 150, 'blood: low O₂,', { size: 9, fill: '#b91c1c', part: 'capillary' }),
+          text(342, 164, 'high CO₂', { size: 9, fill: '#b91c1c', part: 'capillary' }),
+          text(342, 222, 'blood flow ↓', { size: 9, fill: '#b91c1c', part: 'capillary' }),
+          path('M44 200 Q60 214 80 210', { stroke: '#0ea5e9', strokeWidth: 4, part: 'moist' }),
+          text(54, 232, 'moist lining', { size: 8.5, fill: '#0369a1', part: 'moist' }),
+        ],
+        [
+          [
+            'alveolus',
+            'Alveolus',
+            [60, 64],
+            'Air here is constantly refreshed by breathing, keeping O₂ high and CO₂ low.',
+          ],
+          [
+            'capillary',
+            'Capillary',
+            [274, 132],
+            'Blood arriving from the pulmonary artery is low in O₂ and high in CO₂, so both gradients are steep.',
+          ],
+          [
+            'o2',
+            'Oxygen diffuses in',
+            [172, 72],
+            'O₂ dissolves in the moist lining, diffuses into the blood and binds hemoglobin.',
+          ],
+          [
+            'co2',
+            'CO₂ diffuses out',
+            [168, 196],
+            'Carried mostly as bicarbonate in plasma, CO₂ diffuses into the alveolus to be exhaled.',
+          ],
+          [
+            'rbc',
+            'Red blood cells',
+            [266, 50],
+            'Packed with hemoglobin: each can carry about a billion O₂ molecules. They squeeze through capillaries single file.',
+          ],
+          [
+            'wall',
+            'Thin barrier',
+            [384, 30],
+            'Short diffusion distance makes exchange fast; diseases that thicken it (like fibrosis) make breathing hard.',
+          ],
+          [
+            'moist',
+            'Moist surface',
+            [24, 210],
+            'Gases must dissolve in water before they can diffuse across the cell membranes.',
+          ],
+        ],
+      ),
+    ],
+    keyTerms: [
+      ['Ventilation', 'Moving air in and out of the lungs.'],
+      ['Alveoli', 'Tiny air sacs where gas exchange occurs.'],
+      ['Diaphragm', 'Dome-shaped muscle that drives breathing.'],
+      ['Gas exchange', 'Diffusion of O₂ into and CO₂ out of the blood.'],
+      ['Hemoglobin', 'Iron-containing protein in red blood cells that carries oxygen.'],
+    ],
+    goDeeper:
+      'Breathing rate is controlled mainly by CO₂, not O₂. Chemoreceptors in the brainstem (medulla) and in the aorta and carotid arteries detect rising CO₂ (which lowers blood pH), and the medulla signals the diaphragm and intercostals to breathe faster and deeper. This is why you can’t hold your breath indefinitely.\n\nSmoking damages every part of the system: tar paralyzes cilia (hence “smoker’s cough”), carbon monoxide binds hemoglobin about 200× more tightly than O₂, and over time alveolar walls break down (emphysema), shrinking the surface area for exchange.\n\nIn reality, it’s a bit more complicated: alveoli are coated with surfactant, a soapy mixture that lowers surface tension so they don’t collapse when you exhale. Premature babies often lack it and may need treatment to help them breathe.',
+    quiz: [
+      mc(
+        'What happens to the pressure in the chest when the diaphragm contracts?',
+        [
+          'It decreases, so air flows in',
+          'It increases, so air flows out',
+          'It doesn’t change',
+          'It increases, so air flows in',
+        ],
+        0,
+        'Contracting enlarges the chest; larger volume means lower pressure than outside, so air rushes in.',
+      ),
+      predict(
+        'In emphysema, the walls between alveoli break down, forming fewer, larger air spaces.',
+        'How does this affect gas exchange?',
+        [
+          'It decreases, because the total surface area is smaller',
+          'It increases, because the alveoli are bigger',
+          'It stays the same, because the volume is unchanged',
+          'Only CO₂ exchange is affected',
+        ],
+        0,
+        'Fewer, larger sacs have much less total surface area, so less O₂ diffuses into the blood.',
+      ),
+      label(
+        'Match each feature of the alveoli to why it helps.',
+        [
+          ['Huge surface area', 'More room for diffusion'],
+          ['One-cell-thick walls', 'Short diffusion distance'],
+          ['Dense capillary network', 'Keeps the concentration gradient steep'],
+          ['Moist lining', 'Gases dissolve before diffusing'],
+        ],
+        'Structure fits function: every feature speeds up diffusion.',
+      ),
+    ],
+  }),
+
+  hs({
+    base: 'kidneys',
+    unit: 'body',
+    summary:
+      'The kidneys filter blood, reabsorb what the body needs and excrete wastes like urea in urine. Each kidney has about a million nephrons, which work by filtration, selective reabsorption and secretion. Hormones such as ADH adjust how much water is kept, making the kidneys key to homeostasis.',
+    steps: [
+      [
+        'Blood filters',
+        'The kidneys receive about a fifth of the blood pumped by the heart through the renal arteries. They filter around 180 liters of fluid a day but make only about 1.5 liters of urine: almost everything filtered is taken back.',
+      ],
+      [
+        'The nephron',
+        'Each nephron has a glomerulus (a knot of capillaries) inside Bowman’s capsule, then a long tubule: the proximal convoluted tubule, the loop of Henle, the distal convoluted tubule, and finally a collecting duct shared by many nephrons.',
+      ],
+      [
+        'Filter, reabsorb, secrete',
+        'High pressure in the glomerulus forces water, glucose, salts, amino acids and urea into the capsule (filtration); cells and proteins are too big. The proximal tubule reabsorbs all the glucose and most water and salt. The loop of Henle concentrates the urine, and some wastes and drugs are actively secreted in.',
+      ],
+      [
+        'Urine and water balance',
+        'What remains (water, urea, excess salts) flows to the renal pelvis, down the ureter to the bladder and out through the urethra. When you’re dehydrated, the pituitary releases ADH, making the collecting ducts reabsorb more water so urine is more concentrated.',
+      ],
+    ],
+    diagrams: [
+      diagram(
+        'A nephron',
+        'One of about a million nephrons in each kidney. The dashed line separates the outer cortex from the inner medulla.',
+        [
+          path('M0 120 L400 120', { stroke: '#94a3b8', strokeWidth: 1.5, dash: true }),
+          text(396, 112, 'cortex', { anchor: 'end', size: 8.5, fill: '#64748b' }),
+          text(396, 134, 'medulla', { anchor: 'end', size: 8.5, fill: '#64748b' }),
+          path('M30 30 L58 54', { stroke: OXY, strokeWidth: 5, part: 'arterioles' }),
+          path('M58 70 L28 96', { stroke: '#b91c1c', strokeWidth: 3.5, part: 'arterioles' }),
+          path('M42 46 C50 30 92 30 98 54 C104 80 72 94 54 86', {
+            fill: 'none',
+            stroke: '#0f766e',
+            strokeWidth: 3,
+            part: 'capsule',
+          }),
+          circle(70, 62, 14, '#fca5a5', { part: 'glomerulus' }),
+          path('M60 56 Q70 46 80 56 Q86 66 74 70 Q62 74 62 64 Q66 58 74 62', {
+            stroke: '#b91c1c',
+            strokeWidth: 2,
+            part: 'glomerulus',
+          }),
+          path('M98 54 C120 40 130 70 150 56 C170 42 180 76 200 60 C214 50 224 70 230 90', {
+            stroke: '#0f766e',
+            strokeWidth: 6,
+            part: 'pct',
+          }),
+          path('M230 90 L230 230 Q240 248 252 230 L252 110', {
+            stroke: '#0f766e',
+            strokeWidth: 6,
+            part: 'loop',
+          }),
+          path('M252 110 C256 80 280 96 290 70 C300 46 318 70 330 54', {
+            stroke: '#0f766e',
+            strokeWidth: 6,
+            part: 'dct',
+          }),
+          path('M330 54 L346 54 L346 246', { stroke: '#0e7490', strokeWidth: 8, part: 'duct' }),
+          arrow([346, 230], [346, 256], { stroke: '#0e7490', strokeWidth: 3, part: 'duct' }),
+          path('M210 30 C240 20 250 60 270 120 C276 200 214 214 210 150', {
+            stroke: '#f87171',
+            strokeWidth: 2,
+            dash: true,
+            part: 'capillaries',
+          }),
+          arrow([150, 66], [150, 94], { stroke: '#16a34a', strokeWidth: 2.5, part: 'reabsorb' }),
+          arrow([180, 72], [180, 100], { stroke: '#16a34a', strokeWidth: 2.5, part: 'reabsorb' }),
+          text(166, 112, 'glucose, salts, water', { size: 8, fill: '#15803d', part: 'reabsorb' }),
+          text(166, 22, 'proximal tubule', { size: 8.5, bold: true, fill: '#0f766e', part: 'pct' }),
+          text(206, 196, 'loop of', {
+            anchor: 'end',
+            size: 8.5,
+            bold: true,
+            fill: '#0f766e',
+            part: 'loop',
+          }),
+          text(206, 208, 'Henle', {
+            anchor: 'end',
+            size: 8.5,
+            bold: true,
+            fill: '#0f766e',
+            part: 'loop',
+          }),
+          text(296, 40, 'distal tubule', { size: 8.5, bold: true, fill: '#0f766e', part: 'dct' }),
+          text(358, 180, 'collecting', {
+            anchor: 'start',
+            size: 8.5,
+            bold: true,
+            fill: '#0e7490',
+            part: 'duct',
+          }),
+          text(358, 192, 'duct', {
+            anchor: 'start',
+            size: 8.5,
+            bold: true,
+            fill: '#0e7490',
+            part: 'duct',
+          }),
+          arrow([392, 100], [354, 100], { stroke: '#9333ea', strokeWidth: 2, part: 'adh' }),
+          text(374, 92, 'ADH', {
+            anchor: 'middle',
+            size: 9,
+            bold: true,
+            fill: '#7e22ce',
+            part: 'adh',
+          }),
+          text(20, 24, 'blood in', { anchor: 'start', size: 8, fill: OXY, part: 'arterioles' }),
+          text(14, 110, 'out', { anchor: 'start', size: 8, fill: '#b91c1c', part: 'arterioles' }),
+        ],
+        [
+          [
+            'arterioles',
+            'Afferent & efferent arterioles',
+            [24, 50],
+            'Blood enters the glomerulus through a wide vessel and leaves through a narrower one, building the high pressure that drives filtration.',
+          ],
+          [
+            'glomerulus',
+            'Glomerulus (filtration)',
+            [92, 80],
+            'Pressure forces small molecules out of the blood: water, glucose, salts, amino acids and urea. Cells and proteins stay in.',
+          ],
+          [
+            'capsule',
+            'Bowman’s capsule',
+            [110, 28],
+            'Cup that collects the filtrate and channels it into the tubule.',
+          ],
+          [
+            'pct',
+            'Proximal convoluted tubule',
+            [216, 22],
+            'Reabsorbs 100% of glucose and amino acids and about 65% of water and salts, using active transport. Its cells have microvilli and many mitochondria.',
+          ],
+          [
+            'reabsorb',
+            'Selective reabsorption',
+            [112, 100],
+            'Useful substances move from the tubule back into the surrounding capillaries.',
+          ],
+          [
+            'loop',
+            'Loop of Henle',
+            [226, 246],
+            'Dips into the salty medulla. By pumping salt out, it creates the gradient that lets the body make concentrated urine.',
+          ],
+          [
+            'dct',
+            'Distal convoluted tubule',
+            [332, 76],
+            'Fine-tunes salt and pH balance; some wastes and drugs are secreted into the urine here.',
+          ],
+          [
+            'duct',
+            'Collecting duct',
+            [330, 220],
+            'Carries urine to the renal pelvis. Its permeability to water is controlled by ADH.',
+          ],
+          [
+            'adh',
+            'ADH (antidiuretic hormone)',
+            [388, 74],
+            'When you’re dehydrated, ADH inserts aquaporins into the collecting duct, so more water is reabsorbed.',
+          ],
+          [
+            'capillaries',
+            'Peritubular capillaries',
+            [270, 160],
+            'Wrap around the tubule and carry reabsorbed substances back into circulation.',
+          ],
+        ],
+      ),
+      diagram(
+        'The urinary system',
+        'Blood enters each kidney through a renal artery and leaves, cleaned, through a renal vein. Urine drains through the ureters to the bladder.',
+        [
+          path('M190 30 L190 176', { stroke: OXY, strokeWidth: 10, part: 'vessels' }),
+          path('M212 30 L212 176', { stroke: DEOXY, strokeWidth: 10, part: 'vessels' }),
+          text(182, 24, 'aorta', {
+            anchor: 'end',
+            size: 8.5,
+            bold: true,
+            fill: OXY,
+            part: 'vessels',
+          }),
+          text(220, 24, 'vena cava', {
+            anchor: 'start',
+            size: 8.5,
+            bold: true,
+            fill: DEOXY,
+            part: 'vessels',
+          }),
+          path('M84 54 C40 54 34 140 84 146 C108 148 116 124 104 100 C116 76 108 54 84 54 Z', {
+            fill: '#fca5a5',
+            stroke: '#991b1b',
+            strokeWidth: 2,
+            part: 'kidney',
+          }),
+          path('M316 54 C360 54 366 140 316 146 C292 148 284 124 296 100 C284 76 292 54 316 54 Z', {
+            fill: '#fca5a5',
+            stroke: '#991b1b',
+            strokeWidth: 2,
+            part: 'kidney',
+          }),
+          path('M106 92 L186 92', { stroke: OXY, strokeWidth: 5, part: 'renal' }),
+          path('M106 108 L208 108', { stroke: DEOXY, strokeWidth: 5, part: 'renal' }),
+          path('M294 92 L194 92', { stroke: OXY, strokeWidth: 5, part: 'renal' }),
+          path('M294 108 L216 108', { stroke: DEOXY, strokeWidth: 5, part: 'renal' }),
+          path('M98 124 C110 160 140 190 168 206', {
+            stroke: '#ca8a04',
+            strokeWidth: 4,
+            part: 'ureter',
+          }),
+          path('M302 124 C290 160 260 190 232 206', {
+            stroke: '#ca8a04',
+            strokeWidth: 4,
+            part: 'ureter',
+          }),
+          ellipse(200, 216, 40, 26, '#fef08a', {
+            stroke: '#a16207',
+            strokeWidth: 2,
+            part: 'bladder',
+          }),
+          path('M200 242 L200 258', { stroke: '#ca8a04', strokeWidth: 5, part: 'urethra' }),
+          text(76, 168, 'kidney', { size: 9.5, bold: true, part: 'kidney' }),
+          text(140, 218, 'ureter', {
+            anchor: 'end',
+            size: 9,
+            bold: true,
+            fill: '#a16207',
+            part: 'ureter',
+          }),
+          text(250, 238, 'bladder', {
+            anchor: 'start',
+            size: 9,
+            bold: true,
+            fill: '#a16207',
+            part: 'bladder',
+          }),
+        ],
+        [
+          [
+            'kidney',
+            'Kidneys',
+            [52, 40],
+            'Two bean-shaped organs below the ribs at the back, each about the size of a fist.',
+          ],
+          [
+            'renal',
+            'Renal artery and vein',
+            [140, 80],
+            'The renal artery brings blood carrying wastes; the renal vein returns filtered blood, now low in urea.',
+          ],
+          [
+            'vessels',
+            'Aorta & vena cava',
+            [250, 50],
+            'The body’s main artery and vein, which branch to and from the kidneys.',
+          ],
+          [
+            'ureter',
+            'Ureters',
+            [116, 196],
+            'Muscular tubes that carry urine from each kidney to the bladder by waves of contraction.',
+          ],
+          [
+            'bladder',
+            'Bladder',
+            [252, 206],
+            'A stretchy muscular bag that stores urine (about 400–600 mL).',
+          ],
+          [
+            'urethra',
+            'Urethra',
+            [216, 254],
+            'Carries urine out of the body; sphincter muscles control release.',
+          ],
+        ],
+      ),
+    ],
+    keyTerms: [
+      ['Nephron', 'The functional filtering unit of the kidney.'],
+      ['Glomerulus', 'Knot of capillaries where blood is filtered.'],
+      ['Filtration', 'Pressure forcing small molecules out of the blood into the nephron.'],
+      ['Reabsorption', 'Returning useful substances from the filtrate to the blood.'],
+      ['Urea', 'Nitrogen-containing waste made by the liver from excess amino acids.'],
+      ['ADH', 'Hormone that makes the kidneys reabsorb more water.'],
+    ],
+    goDeeper:
+      'Urea comes from the liver. Excess amino acids can’t be stored, so the liver removes their amino group (deamination), producing toxic ammonia, which it converts into less toxic urea. The kidneys then excrete the urea.\n\nUrine tests reveal health problems. Glucose in urine suggests diabetes: blood glucose is so high that the proximal tubule’s transporters are saturated and can’t reabsorb it all. Protein in urine suggests damaged glomeruli. When kidneys fail, patients need dialysis (blood passed against a dialysis fluid across a partially permeable membrane) or a transplant.\n\nIn reality, it’s a bit more complicated: kidneys also regulate blood pressure (through the renin–angiotensin system), blood pH (by excreting H⁺ and reabsorbing bicarbonate) and red blood cell production (by releasing the hormone EPO).',
+    quiz: [
+      mc(
+        'Which substance is normally filtered into the nephron but then 100% reabsorbed?',
+        ['Glucose', 'Urea', 'Red blood cells', 'Plasma proteins'],
+        0,
+        'Glucose is small enough to filter, and the proximal tubule actively reabsorbs all of it. Cells and proteins are too large to be filtered at all.',
+      ),
+      predict(
+        'Someone drinks two liters of water quickly on a cool day.',
+        'What happens to ADH release and urine?',
+        [
+          'ADH falls, so collecting ducts reabsorb less water: lots of dilute urine',
+          'ADH rises, producing concentrated urine',
+          'ADH falls, producing a small amount of concentrated urine',
+          'ADH has no effect on urine',
+        ],
+        0,
+        'Excess water lowers blood solute concentration; less ADH means fewer aquaporins, so more water leaves as urine. This is negative feedback.',
+      ),
+      label(
+        'Match each nephron region to its main job.',
+        [
+          ['Glomerulus', 'Filtration under pressure'],
+          ['Proximal tubule', 'Reabsorbs glucose and most water'],
+          ['Loop of Henle', 'Creates a salt gradient to concentrate urine'],
+          ['Collecting duct', 'Final water reabsorption, controlled by ADH'],
+        ],
+        'Filtration is unselective; reabsorption is selective.',
+      ),
+    ],
+  }),
+
+  hs({
+    base: 'hormones-feedback',
+    unit: 'body',
+    summary:
+      'The endocrine system uses hormones, chemical messengers released into the blood by glands, to control target cells with matching receptors. The hypothalamus and pituitary direct many other glands, and most hormone levels are held steady by negative feedback.',
+    steps: [
+      [
+        'Hormones and target cells',
+        'Endocrine glands secrete hormones directly into the blood, which carries them everywhere, but only target cells with the right receptor respond. Compared with nerve signals, hormone responses are slower and longer-lasting. Steroid hormones (like testosterone) enter cells; protein hormones (like insulin) bind surface receptors.',
+      ],
+      [
+        'The hypothalamus–pituitary axis',
+        'The hypothalamus in the brain monitors the body and releases hormones that control the pituitary, the “master gland.” The pituitary then releases hormones that stimulate other glands: for example TRH → TSH → thyroxine from the thyroid, which sets the body’s metabolic rate.',
+      ],
+      [
+        'Negative and positive feedback',
+        'In negative feedback, a change triggers responses that reverse it: high thyroxine inhibits TRH and TSH release, and high blood glucose triggers insulin, which lowers it. Positive feedback amplifies a change and is rarer, like oxytocin intensifying contractions during childbirth until the baby is born.',
+      ],
+    ],
+    diagrams: [
+      diagram(
+        'Negative feedback: blood glucose',
+        'The pancreas keeps blood glucose near a set point (about 90 mg/dL). Each hormone reverses the change that triggered it.',
+        [
+          rect(140, 108, 120, 44, '#dcfce7', {
+            r: 22,
+            stroke: '#16a34a',
+            strokeWidth: 2.5,
+            part: 'setpoint',
+          }),
+          text(200, 127, 'Normal glucose', { size: 10, bold: true, part: 'setpoint' }),
+          text(200, 141, '~70–110 mg/dL', { size: 8.5, fill: '#475569', part: 'setpoint' }),
+          rect(150, 14, 100, 34, '#fee2e2', { r: 10, stroke: '#dc2626', part: 'high' }),
+          text(200, 35, 'Glucose rises', { size: 9.5, bold: true, part: 'high' }),
+          text(200, 63, '(after a meal)', { size: 8.5, fill: '#475569', part: 'high' }),
+          arrow([228, 106], [228, 50], { bend: 0, stroke: '#dc2626', strokeWidth: 2 }),
+          rect(286, 14, 108, 54, '#fff7ed', { r: 10, stroke: '#ea580c', part: 'insulin' }),
+          text(340, 32, 'Pancreas β cells', { size: 9, bold: true, part: 'insulin' }),
+          text(340, 46, 'release insulin', {
+            size: 9,
+            bold: true,
+            fill: '#c2410c',
+            part: 'insulin',
+          }),
+          arrow([252, 30], [284, 30], { strokeWidth: 2 }),
+          rect(286, 92, 108, 60, '#fff7ed', { r: 10, stroke: '#ea580c', part: 'insulinEffect' }),
+          text(340, 110, 'Cells take up', { size: 8.5, part: 'insulinEffect' }),
+          text(340, 123, 'glucose; liver', { size: 8.5, part: 'insulinEffect' }),
+          text(340, 136, 'stores glycogen', { size: 8.5, part: 'insulinEffect' }),
+          arrow([340, 70], [340, 90], { strokeWidth: 2 }),
+          arrow([286, 128], [262, 128], { stroke: '#16a34a', strokeWidth: 2.5 }),
+          rect(150, 212, 100, 34, '#e0f2fe', { r: 10, stroke: '#0284c7', part: 'low' }),
+          text(200, 233, 'Glucose falls', { size: 9.5, bold: true, part: 'low' }),
+          text(200, 202, '(fasting, exercise)', { size: 8.5, fill: '#475569', part: 'low' }),
+          arrow([172, 154], [172, 210], { stroke: '#0284c7', strokeWidth: 2 }),
+          rect(6, 192, 108, 54, '#eef2ff', { r: 10, stroke: '#4f46e5', part: 'glucagon' }),
+          text(60, 210, 'Pancreas α cells', { size: 9, bold: true, part: 'glucagon' }),
+          text(60, 224, 'release glucagon', {
+            size: 9,
+            bold: true,
+            fill: '#4338ca',
+            part: 'glucagon',
+          }),
+          arrow([148, 228], [116, 228], { strokeWidth: 2 }),
+          rect(6, 108, 108, 60, '#eef2ff', { r: 10, stroke: '#4f46e5', part: 'glucagonEffect' }),
+          text(60, 126, 'Liver breaks', { size: 8.5, part: 'glucagonEffect' }),
+          text(60, 139, 'glycogen down,', { size: 8.5, part: 'glucagonEffect' }),
+          text(60, 152, 'releases glucose', { size: 8.5, part: 'glucagonEffect' }),
+          arrow([60, 190], [60, 170], { strokeWidth: 2 }),
+          arrow([114, 132], [138, 132], { stroke: '#16a34a', strokeWidth: 2.5 }),
+        ],
+        [
+          [
+            'setpoint',
+            'Set point',
+            [200, 168],
+            'The target range the body maintains. Homeostasis means keeping internal conditions stable.',
+          ],
+          [
+            'high',
+            'Stimulus: glucose rises',
+            [140, 14],
+            'After a meal, glucose absorbed from the gut raises blood levels.',
+          ],
+          [
+            'insulin',
+            'Insulin',
+            [392, 14],
+            'β cells in the pancreas’s islets detect high glucose and secrete insulin.',
+          ],
+          [
+            'insulinEffect',
+            'Insulin’s effects',
+            [392, 92],
+            'Body cells add glucose channels and absorb glucose; the liver and muscles store it as glycogen. Glucose falls back to normal.',
+          ],
+          [
+            'low',
+            'Stimulus: glucose falls',
+            [258, 230],
+            'Between meals or during exercise, cells use up glucose.',
+          ],
+          ['glucagon', 'Glucagon', [8, 186], 'α cells detect low glucose and secrete glucagon.'],
+          [
+            'glucagonEffect',
+            'Glucagon’s effects',
+            [8, 102],
+            'The liver breaks down glycogen and releases glucose into the blood, raising levels back to normal.',
+          ],
+        ],
+      ),
+      diagram(
+        'A hormone cascade: the thyroid axis',
+        'The hypothalamus and pituitary control the thyroid. Thyroid hormones then switch off their own production by negative feedback (red dashed lines).',
+        [
+          rect(120, 12, 160, 36, '#ede9fe', {
+            r: 12,
+            stroke: '#7c3aed',
+            strokeWidth: 2,
+            part: 'hypothalamus',
+          }),
+          text(200, 35, 'Hypothalamus', { size: 10.5, bold: true, part: 'hypothalamus' }),
+          arrow([200, 50], [200, 76], { strokeWidth: 2.5, part: 'hypothalamus' }),
+          text(212, 68, 'TRH', {
+            anchor: 'start',
+            size: 9.5,
+            bold: true,
+            fill: '#6d28d9',
+            part: 'hypothalamus',
+          }),
+          rect(120, 78, 160, 36, '#fae8ff', {
+            r: 12,
+            stroke: '#a21caf',
+            strokeWidth: 2,
+            part: 'pituitary',
+          }),
+          text(200, 101, 'Anterior pituitary', { size: 10.5, bold: true, part: 'pituitary' }),
+          arrow([200, 116], [200, 142], { strokeWidth: 2.5, part: 'pituitary' }),
+          text(212, 134, 'TSH', {
+            anchor: 'start',
+            size: 9.5,
+            bold: true,
+            fill: '#a21caf',
+            part: 'pituitary',
+          }),
+          path(
+            'M160 146 C150 146 146 176 172 178 L200 170 L228 178 C254 176 250 146 240 146 C226 146 214 160 200 158 C186 160 174 146 160 146 Z',
+            {
+              fill: '#fecaca',
+              stroke: '#b91c1c',
+              strokeWidth: 2,
+              part: 'thyroid',
+            },
+          ),
+          text(270, 166, 'Thyroid', { anchor: 'start', size: 10.5, bold: true, part: 'thyroid' }),
+          arrow([200, 180], [200, 206], { strokeWidth: 2.5, part: 'thyroid' }),
+          text(212, 198, 'T₃, T₄ (thyroxine)', {
+            anchor: 'start',
+            size: 9.5,
+            bold: true,
+            fill: '#b91c1c',
+            part: 'thyroid',
+          }),
+          rect(110, 208, 180, 40, '#fef3c7', {
+            r: 12,
+            stroke: '#d97706',
+            strokeWidth: 2,
+            part: 'targets',
+          }),
+          text(200, 226, 'Body cells', { size: 10, bold: true, part: 'targets' }),
+          text(200, 240, 'metabolic rate increases', {
+            size: 8.5,
+            fill: '#475569',
+            part: 'targets',
+          }),
+          arrow([110, 226], [118, 32], {
+            bend: -90,
+            stroke: '#dc2626',
+            strokeWidth: 2,
+            dash: true,
+            part: 'feedback',
+          }),
+          arrow([112, 214], [118, 100], {
+            bend: -50,
+            stroke: '#dc2626',
+            strokeWidth: 2,
+            dash: true,
+            part: 'feedback',
+          }),
+          text(50, 134, '−', { size: 20, bold: true, fill: '#dc2626', part: 'feedback' }),
+          text(64, 178, '−', { size: 20, bold: true, fill: '#dc2626', part: 'feedback' }),
+        ],
+        [
+          [
+            'hypothalamus',
+            'Hypothalamus',
+            [292, 30],
+            'Links the nervous and endocrine systems. It senses body conditions and releases TRH (thyrotropin-releasing hormone).',
+          ],
+          [
+            'pituitary',
+            'Anterior pituitary',
+            [292, 96],
+            'Responds to TRH by releasing TSH (thyroid-stimulating hormone). It also makes growth hormone, FSH, LH and more.',
+          ],
+          [
+            'thyroid',
+            'Thyroid gland',
+            [328, 150],
+            'A butterfly-shaped gland in the neck. TSH stimulates it to make thyroid hormones, which need iodine.',
+          ],
+          [
+            'targets',
+            'Target cells',
+            [300, 228],
+            'Almost every cell responds to thyroid hormones by increasing its metabolic rate.',
+          ],
+          [
+            'feedback',
+            'Negative feedback',
+            [24, 90],
+            'High T₃/T₄ inhibits the hypothalamus and pituitary, so less TRH and TSH are released, and levels fall back.',
+          ],
+        ],
+      ),
+    ],
+    keyTerms: [
+      ['Hormone', 'A chemical messenger carried in the blood to target cells.'],
+      ['Endocrine gland', 'A ductless gland that secretes hormones into the blood.'],
+      ['Target cell', 'A cell with receptors for a specific hormone.'],
+      ['Negative feedback', 'A response that reverses a change, keeping conditions stable.'],
+      ['Positive feedback', 'A response that amplifies a change.'],
+      ['Homeostasis', 'Maintaining a stable internal environment.'],
+    ],
+    goDeeper:
+      'Diabetes shows what happens when glucose feedback fails. In type 1 diabetes, the immune system destroys the pancreas’s β cells, so no insulin is made; patients need insulin injections or pumps. In type 2, much more common, cells stop responding properly to insulin (insulin resistance); it is linked to genetics, diet, inactivity and obesity, and is managed with diet, exercise and medication.\n\nThyroid problems show the cascade in action. Without enough iodine, the thyroid can’t make thyroxine; low thyroxine means no negative feedback, so TSH stays high and keeps stimulating the gland, which swells into a goiter. Adding iodine to table salt has made this rare in many countries.\n\nIn reality, it’s a bit more complicated: many hormones are controlled by several signals at once, and hormone release often follows daily rhythms, like cortisol peaking in the morning.',
+    quiz: [
+      mc(
+        'Why do hormones affect only certain cells, even though blood carries them everywhere?',
+        [
+          'Only target cells have receptors for that hormone',
+          'Hormones are only released near their target cells',
+          'Other cells destroy the hormone immediately',
+          'Hormones only travel in arteries',
+        ],
+        0,
+        'A hormone acts only on cells with matching receptors, like a key that fits only certain locks.',
+      ),
+      predict(
+        'A person’s diet contains almost no iodine, so their thyroid can’t make enough thyroxine.',
+        'What happens to their TSH level?',
+        [
+          'It rises, because low thyroxine removes negative feedback',
+          'It falls, because the thyroid is inactive',
+          'It stays the same',
+          'It falls to zero',
+        ],
+        0,
+        'Without thyroxine’s inhibition, the pituitary keeps releasing TSH, which can enlarge the thyroid (goiter).',
+      ),
+      label(
+        'Match each hormone to its effect.',
+        [
+          ['Insulin', 'Lowers blood glucose'],
+          ['Glucagon', 'Raises blood glucose'],
+          ['TSH', 'Stimulates the thyroid'],
+          ['Oxytocin', 'Strengthens contractions in childbirth (positive feedback)'],
+        ],
+        'Antagonistic hormones like insulin and glucagon fine-tune levels in both directions.',
+      ),
+    ],
+  }),
+
+  hs({
+    base: 'action-potential',
+    unit: 'body',
+    summary:
+      'A neuron sends signals as action potentials: rapid, all-or-none reversals of the voltage across its membrane, caused by voltage-gated Na⁺ and K⁺ channels opening in sequence. They travel along the axon, fastest where it is myelinated, and trigger neurotransmitter release at synapses.',
+    steps: [
+      [
+        'Resting potential',
+        'At rest the inside of a neuron is about −70 mV relative to the outside. The Na⁺/K⁺ pump keeps Na⁺ high outside and K⁺ high inside, and K⁺ leaks out through leak channels, leaving the inside negative.',
+      ],
+      [
+        'Graded potentials',
+        'Neurotransmitters from other neurons open ligand-gated channels on the dendrites, nudging the voltage up (excitatory) or down (inhibitory). These small changes add together (summation) and fade with distance.',
+      ],
+      [
+        'Threshold and depolarization',
+        'If the axon hillock reaches threshold (about −55 mV), voltage-gated Na⁺ channels open and Na⁺ floods in, making the inside positive (up to about +30 to +40 mV). It is all-or-none: every action potential is the same size; stronger stimuli produce more frequent ones, not bigger ones.',
+      ],
+      [
+        'Repolarization',
+        'Within about a millisecond, Na⁺ channels inactivate and voltage-gated K⁺ channels open. K⁺ rushes out, returning the inside to negative.',
+      ],
+      [
+        'Hyperpolarization and refractory period',
+        'K⁺ channels close slowly, so the voltage briefly dips below resting (to about −80 mV). During the refractory period the neuron can’t fire again (or needs a much larger stimulus), which keeps signals moving in one direction and limits firing frequency.',
+      ],
+      [
+        'Propagation and the synapse',
+        'Na⁺ entering one patch spreads and depolarizes the next patch to threshold, so the action potential travels down the axon. At the axon terminal, it opens Ca²⁺ channels, triggering exocytosis of neurotransmitter into the synaptic cleft.',
+      ],
+      [
+        'Myelin and nerve toxins',
+        'Myelin sheaths (from Schwann cells) insulate the axon, so the impulse jumps between gaps called nodes of Ranvier (saltatory conduction), up to about 120 m/s. Multiple sclerosis damages myelin. Tetrodotoxin from pufferfish blocks Na⁺ channels, stopping action potentials entirely.',
+      ],
+    ],
+    diagrams: [
+      diagram(
+        'An action potential',
+        'Membrane voltage at one spot on an axon over about 5 milliseconds.',
+        [
+          path(`M50 30 L50 ${mv(-90)} L388 ${mv(-90)}`, { strokeWidth: 1.5 }),
+          ...[40, 0, -55, -70, -80].map((v) =>
+            text(44, mv(v) + 3, `${v}`, { anchor: 'end', size: 8, fill: '#64748b' }),
+          ),
+          text(30, 24, 'mV', { size: 8.5, fill: '#64748b' }),
+          text(388, mv(-90) + 16, 'time (ms) →', { anchor: 'end', size: 8.5, fill: '#64748b' }),
+          path(`M50 ${mv(0)} L388 ${mv(0)}`, { stroke: '#e2e8f0', strokeWidth: 1 }),
+          path(`M50 ${mv(-55)} L388 ${mv(-55)}`, {
+            stroke: '#f59e0b',
+            strokeWidth: 1.5,
+            dash: true,
+            part: 'threshold',
+          }),
+          text(386, mv(-55) - 4, 'threshold', {
+            anchor: 'end',
+            size: 8.5,
+            bold: true,
+            fill: '#b45309',
+            part: 'threshold',
+          }),
+          rect(158, 30, 70, mv(-90) - 30, '#f1f5f9', { opacity: 0.8, part: 'refractory' }),
+          path(
+            `M50 ${mv(-70)} L90 ${mv(-70)} Q96 ${mv(-62)} 102 ${mv(-70)} L112 ${mv(-70)} Q120 ${mv(-58)} 126 ${mv(-55)}`,
+            { stroke: '#64748b', strokeWidth: 3, part: 'graded' },
+          ),
+          path(`M126 ${mv(-55)} C132 ${mv(-30)} 136 ${mv(30)} 142 ${mv(35)}`, {
+            stroke: '#dc2626',
+            strokeWidth: 3.5,
+            part: 'depol',
+          }),
+          path(`M142 ${mv(35)} C150 ${mv(30)} 158 ${mv(-40)} 166 ${mv(-70)}`, {
+            stroke: '#2563eb',
+            strokeWidth: 3.5,
+            part: 'repol',
+          }),
+          path(
+            `M166 ${mv(-70)} C172 ${mv(-82)} 184 ${mv(-82)} 196 ${mv(-78)} C214 ${mv(-72)} 226 ${mv(-70)} 240 ${mv(-70)} L388 ${mv(-70)}`,
+            {
+              stroke: '#7c3aed',
+              strokeWidth: 3.5,
+              part: 'hyper',
+            },
+          ),
+          path(`M50 ${mv(-70)} L90 ${mv(-70)}`, {
+            stroke: '#0f766e',
+            strokeWidth: 3.5,
+            part: 'resting',
+          }),
+          path(`M240 ${mv(-70)} L388 ${mv(-70)}`, {
+            stroke: '#0f766e',
+            strokeWidth: 3.5,
+            part: 'resting',
+          }),
+          text(122, 98, 'Na⁺ in', {
+            anchor: 'end',
+            size: 9,
+            bold: true,
+            fill: '#dc2626',
+            part: 'depol',
+          }),
+          text(162, 98, 'K⁺ out', {
+            anchor: 'start',
+            size: 9,
+            bold: true,
+            fill: '#2563eb',
+            part: 'repol',
+          }),
+          text(193, 44, 'refractory', { size: 8.5, fill: '#64748b', part: 'refractory' }),
+          text(193, 56, 'period', { size: 8.5, fill: '#64748b', part: 'refractory' }),
+          text(144, mv(35) - 6, '+35', { size: 8.5, bold: true, part: 'depol' }),
+        ],
+        [
+          [
+            'resting',
+            'Resting potential (−70 mV)',
+            [320, mv(-70) - 16],
+            'Maintained by the Na⁺/K⁺ pump and K⁺ leak channels.',
+          ],
+          [
+            'graded',
+            'Graded potentials',
+            [86, mv(-70) + 18],
+            'Small inputs nudge the voltage; a sub-threshold bump (first one) just fades away.',
+          ],
+          [
+            'threshold',
+            'Threshold (−55 mV)',
+            [270, mv(-55) - 14],
+            'Once reached, voltage-gated Na⁺ channels open: the all-or-none trigger.',
+          ],
+          [
+            'depol',
+            'Depolarization',
+            [104, 76],
+            'Na⁺ rushes in through voltage-gated channels; the inside becomes positive.',
+          ],
+          [
+            'repol',
+            'Repolarization',
+            [184, 112],
+            'Na⁺ channels inactivate and K⁺ channels open; K⁺ flows out and the inside turns negative again.',
+          ],
+          [
+            'hyper',
+            'Hyperpolarization',
+            [210, mv(-82) + 18],
+            'Slow-closing K⁺ channels cause an undershoot below resting potential.',
+          ],
+          [
+            'refractory',
+            'Refractory period',
+            [242, 44],
+            'Inactivated Na⁺ channels can’t reopen yet, so another action potential can’t start here.',
+          ],
+        ],
+      ),
+      diagram(
+        'A myelinated neuron',
+        'Signals travel from dendrites to the cell body, down the axon and to the axon terminals. On myelinated axons, the impulse jumps from node to node.',
+        [
+          path('M40 110 L14 84 M40 110 L10 112 M40 120 L16 144 M30 94 L22 76 M24 140 L12 156', {
+            stroke: '#7c3aed',
+            strokeWidth: 3,
+            part: 'dendrites',
+          }),
+          circle(56, 116, 24, '#ddd6fe', { stroke: '#6d28d9', strokeWidth: 2.5, part: 'soma' }),
+          circle(54, 116, 9, '#7c3aed', { part: 'soma' }),
+          path('M78 112 L94 116 L78 122', {
+            fill: '#ddd6fe',
+            stroke: '#6d28d9',
+            strokeWidth: 2,
+            part: 'hillock',
+          }),
+          path('M94 116 L330 116', { stroke: '#6d28d9', strokeWidth: 4, part: 'axon' }),
+          ...[100, 150, 200, 250].map((x) =>
+            rect(x, 104, 42, 24, '#fef3c7', {
+              r: 12,
+              stroke: '#d97706',
+              strokeWidth: 2,
+              part: 'myelin',
+            }),
+          ),
+          ...[146, 196, 246].map((x) => circle(x, 116, 3, '#dc2626', { part: 'nodes' })),
+          ...[146, 196, 246].map((x) =>
+            arrow([x - 40, 88], [x + 8, 88], {
+              bend: -14,
+              stroke: '#dc2626',
+              strokeWidth: 2,
+              part: 'saltatory',
+            }),
+          ),
+          path('M330 116 L360 92 M330 116 L364 116 M330 116 L360 140', {
+            stroke: '#6d28d9',
+            strokeWidth: 3,
+            part: 'terminals',
+          }),
+          ...[
+            [362, 92],
+            [366, 116],
+            [362, 140],
+          ].map(([x, y]) => circle(x, y, 5, '#a78bfa', { stroke: '#6d28d9', part: 'terminals' })),
+          arrow([90, 196], [330, 196], { stroke: '#475569', strokeWidth: 2.5 }),
+          text(210, 214, 'direction of the impulse', { size: 9, fill: '#475569' }),
+          text(170, 150, 'myelin sheath (Schwann cells)', {
+            size: 8.5,
+            fill: '#b45309',
+            part: 'myelin',
+          }),
+          text(220, 72, 'impulse jumps node to node', {
+            size: 8.5,
+            fill: '#dc2626',
+            part: 'saltatory',
+          }),
+        ],
+        [
+          [
+            'dendrites',
+            'Dendrites',
+            [16, 60],
+            'Branches that receive signals from other neurons through synapses.',
+          ],
+          ['soma', 'Cell body', [56, 156], 'Contains the nucleus; adds up incoming signals.'],
+          [
+            'hillock',
+            'Axon hillock',
+            [96, 140],
+            'Where action potentials begin, if the summed input reaches threshold.',
+          ],
+          [
+            'axon',
+            'Axon',
+            [318, 104],
+            'A long extension (up to a meter, in nerves to the feet) that carries impulses away from the cell body.',
+          ],
+          [
+            'myelin',
+            'Myelin sheath',
+            [272, 150],
+            'Fatty insulation made by Schwann cells wrapping the axon. Ion flow is blocked under it.',
+          ],
+          [
+            'nodes',
+            'Nodes of Ranvier',
+            [196, 134],
+            'Gaps in the myelin packed with voltage-gated channels: the only places action potentials occur.',
+          ],
+          [
+            'saltatory',
+            'Saltatory conduction',
+            [114, 70],
+            'The impulse leaps from node to node, about 50× faster than along an unmyelinated axon.',
+          ],
+          [
+            'terminals',
+            'Axon terminals',
+            [384, 116],
+            'Release neurotransmitters into synapses to signal the next cell.',
+          ],
+        ],
+      ),
+    ],
+    keyTerms: [
+      ['Resting potential', 'The voltage across a neuron’s membrane at rest (about −70 mV).'],
+      [
+        'Action potential',
+        'A rapid, all-or-none reversal of membrane voltage that travels along an axon.',
+      ],
+      ['Threshold', 'The voltage that must be reached to trigger an action potential.'],
+      ['Depolarization', 'The inside of the membrane becoming less negative (or positive).'],
+      [
+        'Refractory period',
+        'Brief time after an action potential when another can’t be triggered.',
+      ],
+      ['Myelin', 'Insulating sheath that speeds up impulse conduction.'],
+    ],
+    goDeeper:
+      'Neurons encode stimulus strength by frequency, not size. A gentle touch might trigger a few action potentials per second; firm pressure triggers many more. The refractory period sets the maximum rate, roughly several hundred per second.\n\nMany toxins and drugs target ion channels. Tetrodotoxin (pufferfish) and saxitoxin (shellfish) block voltage-gated Na⁺ channels, causing paralysis. Local anesthetics like lidocaine also block Na⁺ channels, which is why a numbed tooth can’t send pain signals.\n\nIn reality, it’s a bit more complicated: the exact voltages vary between neuron types, and the resting potential is closer to K⁺’s equilibrium potential (about −90 mV) than Na⁺’s (about +60 mV) because, at rest, the membrane is far more permeable to K⁺.',
+    quiz: [
+      mc(
+        'What causes the rising (depolarization) phase of an action potential?',
+        [
+          'Voltage-gated Na⁺ channels open and Na⁺ flows into the cell',
+          'K⁺ flows into the cell',
+          'The Na⁺/K⁺ pump speeds up',
+          'Cl⁻ flows out of the cell',
+        ],
+        0,
+        'At threshold, voltage-gated Na⁺ channels open; Na⁺ rushes in down its electrochemical gradient, making the inside positive.',
+      ),
+      predict(
+        'A stimulus brings a neuron’s axon hillock from −70 mV to −60 mV, then fades.',
+        'What happens?',
+        [
+          'No action potential: threshold (−55 mV) wasn’t reached',
+          'A small action potential',
+          'A full action potential, because any stimulus counts',
+          'The neuron becomes permanently depolarized',
+        ],
+        0,
+        'Action potentials are all-or-none: below threshold, nothing fires; above it, the response is always full size.',
+      ),
+      label(
+        'Match each phase to the ion movement that causes it.',
+        [
+          ['Depolarization', 'Na⁺ flows in'],
+          ['Repolarization', 'K⁺ flows out'],
+          ['Hyperpolarization', 'K⁺ channels close slowly'],
+          ['Resting potential', 'Maintained by the Na⁺/K⁺ pump and K⁺ leak'],
+        ],
+        'Different voltage-gated channels open in sequence.',
+      ),
+    ],
+  }),
+
+  hs({
+    base: 'innate-vs-adaptive',
+    unit: 'body',
+    summary:
+      'The immune system has three lines of defense. Physical and chemical barriers keep pathogens out; the innate response attacks any invader quickly; and the adaptive response, using B and T lymphocytes, targets specific antigens and remembers them.',
+    steps: [
+      [
+        'Innate immunity',
+        'The first line is barriers: skin, mucus and cilia, stomach acid, and enzymes like lysozyme in tears. The second line responds within minutes to hours: phagocytes (neutrophils, macrophages) engulf invaders, inflammation brings blood and immune cells, and fever slows pathogen growth. It is non-specific.',
+      ],
+      [
+        'Adaptive immunity',
+        'The third line is specific. Macrophages and dendritic cells present antigens to helper T cells, which activate B cells and cytotoxic T cells. B cells become plasma cells making antibodies (humoral response); cytotoxic T cells kill infected body cells (cell-mediated response). The first time, this takes 1–2 weeks.',
+      ],
+      [
+        'Immunological memory',
+        'After an infection, long-lived memory B and T cells remain. If the same antigen returns, they respond faster and more strongly, often stopping the pathogen before you feel sick. This is why you rarely catch chickenpox twice, and it is the basis of vaccination.',
+      ],
+    ],
+    diagrams: [
+      diagram(
+        'Three lines of defense',
+        'Pathogens must get past barriers, then the fast innate response, before facing the slower, targeted adaptive response.',
+        [
+          ...[
+            [
+              'barrier',
+              'First line',
+              'Barriers',
+              '#e0f2fe',
+              '#0284c7',
+              ['Skin', 'Mucus & cilia', 'Stomach acid', 'Tears (lysozyme)'],
+            ],
+            [
+              'innate',
+              'Second line',
+              'Innate response',
+              '#fef3c7',
+              '#d97706',
+              ['Phagocytes', 'Inflammation', 'Fever', 'NK cells, complement'],
+            ],
+            [
+              'adaptive',
+              'Third line',
+              'Adaptive response',
+              '#ede9fe',
+              '#7c3aed',
+              ['Helper T cells', 'B cells → antibodies', 'Cytotoxic T cells', 'Memory cells'],
+            ],
+          ].flatMap(([part, line, name, fill, stroke, items], i) => [
+            rect(8 + i * 132, 14, 120, 176, fill as string, {
+              r: 14,
+              stroke: stroke as string,
+              strokeWidth: 2,
+              part: part as string,
+            }),
+            text(68 + i * 132, 34, line as string, {
+              size: 9,
+              fill: stroke as string,
+              bold: true,
+              part: part as string,
+            }),
+            text(68 + i * 132, 50, name as string, {
+              size: 10.5,
+              bold: true,
+              part: part as string,
+            }),
+            ...(items as string[]).map((it, k) =>
+              text(68 + i * 132, 80 + k * 26, it, { size: 9, part: part as string }),
+            ),
+          ]),
+          arrow([128, 100], [138, 100], { strokeWidth: 2.5 }),
+          arrow([260, 100], [270, 100], { strokeWidth: 2.5 }),
+          rect(8, 204, 252, 22, '#fde68a', { r: 6, part: 'speed' }),
+          text(134, 219, 'Non-specific · minutes to hours', { size: 9, bold: true, part: 'speed' }),
+          rect(272, 204, 120, 22, '#ddd6fe', { r: 6, part: 'specific' }),
+          text(332, 219, 'Specific · days', { size: 9, bold: true, part: 'specific' }),
+          text(
+            200,
+            246,
+            'Innate = born with it, same every time. Adaptive = learned, improves with exposure.',
+            { size: 8.5, fill: '#475569' },
+          ),
+        ],
+        [
+          [
+            'barrier',
+            'Barriers',
+            [20, 20],
+            'Physical and chemical defenses that stop most microbes from ever getting in.',
+          ],
+          [
+            'innate',
+            'Innate response',
+            [152, 20],
+            'Recognizes general features shared by many pathogens and attacks quickly. It also alerts the adaptive system.',
+          ],
+          [
+            'adaptive',
+            'Adaptive response',
+            [284, 20],
+            'Lymphocytes with receptors for one specific antigen multiply and attack, then leave memory cells behind.',
+          ],
+          [
+            'speed',
+            'Fast but general',
+            [14, 236],
+            'The innate system responds the same way to every infection.',
+          ],
+          [
+            'specific',
+            'Slow but precise',
+            [386, 236],
+            'The first adaptive response takes days, but it is precisely targeted, and it remembers.',
+          ],
+        ],
+      ),
+      diagram(
+        'Antibody structure',
+        'An antibody is a Y-shaped protein of four chains. The tips bind one specific antigen; the stem signals other immune cells.',
+        [
+          path('M200 240 L200 140 L130 60', { stroke: '#2563eb', strokeWidth: 14, part: 'heavy' }),
+          path('M214 240 L214 140 L284 60', { stroke: '#2563eb', strokeWidth: 14, part: 'heavy' }),
+          path('M172 150 L112 84', { stroke: '#38bdf8', strokeWidth: 10, part: 'light' }),
+          path('M242 150 L302 84', { stroke: '#38bdf8', strokeWidth: 10, part: 'light' }),
+          path('M130 60 L112 84', { stroke: '#f59e0b', strokeWidth: 16, part: 'variable' }),
+          path('M284 60 L302 84', { stroke: '#f59e0b', strokeWidth: 16, part: 'variable' }),
+          path('M106 50 L122 40 L134 52 L120 64 Z', {
+            fill: '#dc2626',
+            stroke: '#7f1d1d',
+            part: 'antigen',
+          }),
+          path('M308 50 L292 40 L280 52 L294 64 Z', {
+            fill: '#dc2626',
+            stroke: '#7f1d1d',
+            part: 'antigen',
+          }),
+          path('M200 170 L214 170 M200 180 L214 180', {
+            stroke: '#fde047',
+            strokeWidth: 3,
+            part: 'disulfide',
+          }),
+          path('M168 128 L182 140 M246 128 L232 140', {
+            stroke: '#fde047',
+            strokeWidth: 3,
+            part: 'disulfide',
+          }),
+          rect(192, 196, 30, 44, 'none', {
+            r: 6,
+            stroke: '#7c3aed',
+            strokeWidth: 2,
+            dash: true,
+            part: 'constant',
+          }),
+          text(244, 222, 'constant region', {
+            anchor: 'start',
+            size: 9,
+            bold: true,
+            fill: '#6d28d9',
+            part: 'constant',
+          }),
+          text(96, 26, 'antigen', { size: 9, bold: true, fill: '#b91c1c', part: 'antigen' }),
+        ],
+        [
+          [
+            'heavy',
+            'Heavy chains (2)',
+            [168, 210],
+            'The two long chains that form the stem and part of each arm.',
+          ],
+          [
+            'light',
+            'Light chains (2)',
+            [96, 120],
+            'Shorter chains alongside the upper part of each arm.',
+          ],
+          [
+            'variable',
+            'Variable regions (binding sites)',
+            [150, 44],
+            'The tips differ between antibodies; their shape fits one specific antigen like a lock and key. Each antibody has two identical binding sites.',
+          ],
+          [
+            'antigen',
+            'Antigen',
+            [328, 40],
+            'A molecule (often on a pathogen’s surface) recognized as foreign. Binding marks it for destruction.',
+          ],
+          [
+            'disulfide',
+            'Disulfide bonds',
+            [236, 176],
+            'Covalent bonds holding the four chains together.',
+          ],
+          [
+            'constant',
+            'Constant region',
+            [176, 250],
+            'The same within each antibody class; phagocytes and complement proteins recognize it.',
+          ],
+        ],
+      ),
+    ],
+    keyTerms: [
+      ['Pathogen', 'A disease-causing organism or virus.'],
+      ['Antigen', 'A molecule the immune system recognizes as foreign.'],
+      ['Phagocyte', 'White blood cell that engulfs and digests pathogens.'],
+      ['B cell / plasma cell', 'Lymphocyte that becomes an antibody-secreting cell.'],
+      ['Helper T cell', 'Lymphocyte that coordinates the adaptive response.'],
+      ['Cytotoxic T cell', 'Lymphocyte that kills infected or abnormal body cells.'],
+    ],
+    goDeeper:
+      'Antibodies work in several ways: neutralizing pathogens by blocking their binding sites, agglutinating them into clumps, marking them for phagocytes (opsonization), and activating complement proteins that punch holes in bacteria.\n\nHIV shows how central helper T cells are. The virus infects and destroys them; without enough helper T cells, B and cytotoxic T cells can’t be activated properly, and the body becomes vulnerable to infections that are normally harmless (AIDS). Antiretroviral therapy now allows people with HIV to live long, healthy lives.\n\nIn reality, it’s a bit more complicated: the innate and adaptive systems constantly interact. Dendritic cells (innate) are the main activators of T cells, and antibodies (adaptive) direct innate phagocytes and complement to their targets.',
+    quiz: [
+      mc(
+        'Which is part of the adaptive (specific) immune response?',
+        ['B cells producing antibodies', 'Stomach acid', 'Fever', 'Inflammation'],
+        0,
+        'Antibodies target specific antigens. The other options are innate and non-specific.',
+      ),
+      predict(
+        'A virus destroys most of a person’s helper T cells.',
+        'What happens to their immune responses?',
+        [
+          'Both antibody and cytotoxic T cell responses become weak',
+          'Only the skin barrier is affected',
+          'Antibody production increases to compensate',
+          'Nothing changes, since B cells work alone',
+        ],
+        0,
+        'Helper T cells activate B cells and cytotoxic T cells, so losing them cripples adaptive immunity, as in HIV/AIDS.',
+      ),
+      label(
+        'Match each defense to its line.',
+        [
+          ['Skin', 'First line (barrier)'],
+          ['Macrophage engulfing bacteria', 'Second line (innate)'],
+          ['Antibodies', 'Third line (adaptive)'],
+        ],
+        'Each line catches what the previous one missed.',
+      ),
+    ],
+  }),
+
+  hs({
+    base: 'vaccines',
+    unit: 'body',
+    summary:
+      'Vaccines expose the immune system to an antigen without causing disease, triggering a primary immune response that leaves memory cells. If the real pathogen arrives later, a fast, strong secondary response stops it. When enough people are immune, herd immunity protects those who can’t be vaccinated.',
+    steps: [
+      [
+        'Antigens and specificity',
+        'Each lymphocyte has receptors for one antigen shape. Out of millions of different B and T cells, only the few that match a pathogen’s antigens respond. The adaptive system learns which ones are needed.',
+      ],
+      [
+        'What a vaccine contains',
+        'Vaccines contain antigens, not the disease: inactivated (killed) pathogens, live attenuated (weakened) ones, purified proteins (subunit vaccines), or mRNA/viral vectors that instruct your own cells to make a harmless piece of the pathogen, like the coronavirus spike protein.',
+      ],
+      [
+        'The primary response',
+        'Antigen-presenting cells show the antigen to helper T cells, which activate matching B cells. Those B cells divide (clonal expansion) and become plasma cells that secrete antibodies, peaking after 1–2 weeks. Some become long-lived memory cells.',
+      ],
+      [
+        'Exposure to the real pathogen',
+        'Months or years later, the real pathogen enters the body and begins to replicate. Its antigens match the vaccine’s, so the memory cells recognize it.',
+      ],
+      [
+        'The secondary response',
+        'Memory cells divide rapidly into plasma cells, producing far more antibodies, within days, with a better fit (higher affinity). The pathogen is usually neutralized before it can cause disease.',
+      ],
+      [
+        'Without vaccination',
+        'An unvaccinated person must mount a primary response while the pathogen multiplies, taking a week or more. That delay is when people get sick and complications such as pneumonia or brain swelling can occur.',
+      ],
+      [
+        'Boosters and herd immunity',
+        'Booster doses trigger additional secondary responses, raising antibody levels and memory. When a large enough share of a population is immune, chains of transmission break; the threshold depends on how contagious the disease is (about 95% for measles).',
+      ],
+    ],
+    diagrams: [
+      diagram(
+        'Primary vs secondary response',
+        'Antibody concentration in the blood after a vaccine and after a later exposure to the real pathogen (simplified).',
+        [
+          path('M44 20 L44 214 L388 214', { strokeWidth: 1.5 }),
+          text(50, 16, 'antibody concentration', { anchor: 'start', size: 9, fill: '#64748b' }),
+          text(388, 230, 'time (days) →', { anchor: 'end', size: 9, fill: '#64748b' }),
+          path('M60 210 L60 30', {
+            stroke: '#16a34a',
+            strokeWidth: 1.5,
+            dash: true,
+            part: 'vaccine',
+          }),
+          path('M230 210 L230 30', {
+            stroke: '#dc2626',
+            strokeWidth: 1.5,
+            dash: true,
+            part: 'exposure',
+          }),
+          text(60, 248, 'vaccine', { size: 9, bold: true, fill: '#15803d', part: 'vaccine' }),
+          text(230, 248, 'real pathogen', {
+            size: 9,
+            bold: true,
+            fill: '#b91c1c',
+            part: 'exposure',
+          }),
+          path('M60 212 C80 212 88 208 96 196 C108 172 118 166 128 170 C142 178 160 196 230 200', {
+            stroke: '#7c3aed',
+            strokeWidth: 3.5,
+            part: 'primary',
+          }),
+          path('M230 200 C238 196 242 150 250 70 C256 40 268 36 284 46 C320 70 350 92 388 104', {
+            stroke: '#7c3aed',
+            strokeWidth: 3.5,
+            part: 'secondary',
+          }),
+          path('M60 216 L98 216', { stroke: '#64748b', strokeWidth: 1.5, part: 'lag' }),
+          path('M230 216 L244 216', { stroke: '#64748b', strokeWidth: 1.5, part: 'lag' }),
+          text(79, 232, '~7–14 days', { size: 8, fill: '#64748b', part: 'lag' }),
+          text(250, 232, '2–3 days', { size: 8, fill: '#64748b', part: 'lag' }),
+          path('M44 140 L388 140', {
+            stroke: '#f59e0b',
+            strokeWidth: 1.5,
+            dash: true,
+            part: 'protect',
+          }),
+          text(386, 134, 'protective level', {
+            anchor: 'end',
+            size: 8.5,
+            bold: true,
+            fill: '#b45309',
+            part: 'protect',
+          }),
+          text(128, 160, 'primary', { size: 9, bold: true, fill: '#6d28d9', part: 'primary' }),
+          text(296, 36, 'secondary', { size: 9, bold: true, fill: '#6d28d9', part: 'secondary' }),
+        ],
+        [
+          [
+            'vaccine',
+            'Vaccination',
+            [76, 36],
+            'The vaccine’s antigens trigger the first (primary) response without the disease.',
+          ],
+          [
+            'primary',
+            'Primary response',
+            [150, 180],
+            'Slow and small: few matching B cells exist at first. It leaves behind memory cells.',
+          ],
+          [
+            'exposure',
+            'Exposure to the pathogen',
+            [214, 36],
+            'The real pathogen arrives, carrying the same antigens.',
+          ],
+          [
+            'secondary',
+            'Secondary response',
+            [270, 76],
+            'Memory cells respond fast and strongly, producing roughly 10–100× more antibody, above the protective level within days.',
+          ],
+          [
+            'lag',
+            'Time lag',
+            [120, 222],
+            'The delay before antibody levels rise: long in the primary response, short in the secondary.',
+          ],
+          [
+            'protect',
+            'Protective level',
+            [340, 150],
+            'Above this, antibodies neutralize the pathogen before it can multiply enough to cause illness.',
+          ],
+        ],
+      ),
+      diagram(
+        'Clonal selection',
+        'Only the B cell whose receptor fits the antigen is activated. With help from a helper T cell, it multiplies into plasma cells and memory cells.',
+        [
+          ...[
+            [40, 60, 'tri'],
+            [40, 120, 'sq'],
+            [40, 180, 'match'],
+          ].flatMap(([x, y, kind]) => [
+            circle(x as number, y as number, 20, kind === 'match' ? '#c7d2fe' : '#e2e8f0', {
+              stroke: kind === 'match' ? '#4338ca' : '#94a3b8',
+              strokeWidth: 2,
+              part: kind === 'match' ? 'selected' : 'bcells',
+            }),
+            kind === 'tri'
+              ? path(
+                  `M${(x as number) + 20} ${(y as number) - 6} L${(x as number) + 30} ${y} L${(x as number) + 20} ${(y as number) + 6}`,
+                  { stroke: '#64748b', strokeWidth: 2, part: 'bcells' },
+                )
+              : kind === 'sq'
+                ? rect((x as number) + 20, (y as number) - 5, 9, 10, 'none', {
+                    stroke: '#64748b',
+                    strokeWidth: 2,
+                    part: 'bcells',
+                  })
+                : path(
+                    `M${(x as number) + 20} ${(y as number) - 7} Q${(x as number) + 30} ${y} ${(x as number) + 20} ${(y as number) + 7}`,
+                    { stroke: '#4338ca', strokeWidth: 2.5, part: 'selected' },
+                  ),
+          ]),
+          ellipse(84, 180, 9, 8, '#dc2626', { stroke: '#7f1d1d', part: 'antigen' }),
+          text(84, 206, 'antigen', { size: 8.5, bold: true, fill: '#b91c1c', part: 'antigen' }),
+          circle(150, 120, 18, '#bbf7d0', { stroke: '#15803d', strokeWidth: 2, part: 'helper' }),
+          text(150, 124, 'Tʜ', { size: 10, bold: true, part: 'helper' }),
+          arrow([138, 134], [64, 172], {
+            stroke: '#15803d',
+            strokeWidth: 2,
+            dash: true,
+            part: 'helper',
+          }),
+          text(150, 150, 'helper T', { size: 8.5, fill: '#15803d', part: 'helper' }),
+          arrow([66, 186], [176, 186], { strokeWidth: 2.5, part: 'clonal' }),
+          text(122, 204, 'divides', { size: 8.5, fill: '#475569', part: 'clonal' }),
+          ...[
+            [196, 160],
+            [218, 186],
+            [196, 212],
+            [240, 160],
+            [240, 212],
+          ].map(([x, y]) =>
+            circle(x, y, 11, '#c7d2fe', { stroke: '#4338ca', strokeWidth: 1.5, part: 'clonal' }),
+          ),
+          arrow([256, 170], [300, 120], { strokeWidth: 2.5 }),
+          arrow([256, 202], [300, 214], { strokeWidth: 2.5 }),
+          circle(324, 110, 22, '#a5b4fc', { stroke: '#4338ca', strokeWidth: 2, part: 'plasma' }),
+          ...[
+            [354, 70],
+            [372, 96],
+            [370, 130],
+          ].map(([x, y]) =>
+            path(
+              `M${x} ${(y as number) + 10} L${x} ${y} L${(x as number) - 6} ${(y as number) - 7} M${x} ${y} L${(x as number) + 6} ${(y as number) - 7}`,
+              { stroke: '#2563eb', strokeWidth: 2.5, part: 'plasma' },
+            ),
+          ),
+          text(324, 150, 'plasma cells', { size: 9, bold: true, fill: '#3730a3', part: 'plasma' }),
+          text(324, 162, '→ antibodies', { size: 8.5, fill: '#475569', part: 'plasma' }),
+          circle(324, 220, 18, '#e0e7ff', { stroke: '#4338ca', strokeWidth: 3, part: 'memory' }),
+          text(324, 224, 'M', { size: 11, bold: true, fill: '#3730a3', part: 'memory' }),
+          text(324, 252, 'memory B cells', {
+            size: 9,
+            bold: true,
+            fill: '#3730a3',
+            part: 'memory',
+          }),
+        ],
+        [
+          [
+            'bcells',
+            'Many different B cells',
+            [72, 36],
+            'Each B cell has receptors of one shape. Most don’t match this antigen and stay inactive.',
+          ],
+          [
+            'selected',
+            'The matching B cell',
+            [12, 212],
+            'Its receptor fits the antigen. Binding “selects” it for activation.',
+          ],
+          ['antigen', 'Antigen', [108, 172], 'From the vaccine or the pathogen.'],
+          [
+            'helper',
+            'Helper T cell',
+            [176, 106],
+            'Recognizes the same antigen and releases cytokines that switch the B cell fully on.',
+          ],
+          [
+            'clonal',
+            'Clonal expansion',
+            [264, 186],
+            'The selected B cell divides repeatedly, making thousands of identical clones.',
+          ],
+          [
+            'plasma',
+            'Plasma cells',
+            [358, 152],
+            'Antibody factories: each releases thousands of antibodies per second, but lives only days.',
+          ],
+          [
+            'memory',
+            'Memory cells',
+            [354, 210],
+            'Long-lived cells that persist for years, ready to start a fast secondary response.',
+          ],
+        ],
+      ),
+    ],
+    keyTerms: [
+      [
+        'Vaccine',
+        'A preparation that trains the immune system using antigens without causing disease.',
+      ],
+      ['Primary immune response', 'The slower first response to a new antigen.'],
+      ['Secondary immune response', 'The faster, stronger response from memory cells.'],
+      ['Memory cell', 'A long-lived lymphocyte that remembers an antigen.'],
+      [
+        'Clonal selection',
+        'Activation and multiplication of the lymphocytes that match an antigen.',
+      ],
+      ['Herd immunity', 'Indirect protection when most of a population is immune.'],
+    ],
+    goDeeper:
+      'Herd immunity depends on the basic reproduction number R₀, the average number of people one case infects in a fully susceptible population. The threshold is roughly 1 − 1/R₀. Measles (R₀ ≈ 12–18) needs about 92–95% immunity; diseases with lower R₀ need less. Herd immunity protects newborns and people who can’t be vaccinated, such as those with weakened immune systems.\n\nSome vaccines need regular updates. Influenza viruses mutate their surface antigens (antigenic drift), so memory cells from last year’s vaccine may not match, which is why flu shots are reformulated each year. Edward Jenner’s 1796 smallpox vaccine, using cowpox, began vaccination; smallpox was declared eradicated in 1980.\n\nIn reality, it’s a bit more complicated: memory T cells as well as antibodies provide protection, so immunity can last even after antibody levels fall, and vaccine effectiveness varies between people and diseases.',
+    quiz: [
+      mc(
+        'Why does the secondary immune response happen faster than the primary response?',
+        [
+          'Memory cells specific to the antigen are already present',
+          'The pathogen is weaker the second time',
+          'Antibodies from the first response never decrease',
+          'The innate system remembers the pathogen',
+        ],
+        0,
+        'Memory B and T cells made in the primary response recognize the antigen immediately and divide quickly.',
+      ),
+      predict(
+        'A disease has R₀ = 4. A city vaccinates 85% of its population with a highly effective vaccine.',
+        'What is likely to happen if a case arrives?',
+        [
+          'Outbreaks are unlikely to spread far, because 85% is above the ~75% threshold',
+          'It spreads to everyone',
+          'Only vaccinated people get sick',
+          'Nothing can stop it unless 100% are vaccinated',
+        ],
+        0,
+        'Threshold ≈ 1 − 1/R₀ = 1 − 1/4 = 75%. With 85% immune, each case infects on average fewer than one other person.',
+      ),
+      label(
+        'Match each vaccine type to how it works.',
+        [
+          ['Live attenuated', 'Weakened pathogen that still replicates a little'],
+          ['Inactivated', 'Killed pathogen'],
+          ['Subunit', 'Purified pieces such as proteins'],
+          ['mRNA', 'Instructions for your cells to make one antigen'],
+        ],
+        'All types expose the immune system to antigens without causing the disease.',
+      ),
+    ],
+  }),
+];
