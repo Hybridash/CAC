@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { usePlayer } from '../store/player';
 import { SignInButtons } from '../components/SignInButtons';
+import { EmailAccountForm } from '../components/EmailAccountForm';
 import { Icon, type IconName } from '../components/Icon';
 
 const FLOATERS: { icon: IconName; className: string; delay: number }[] = [
@@ -10,7 +11,7 @@ const FLOATERS: { icon: IconName; className: string; delay: number }[] = [
   { icon: 'brain', className: 'right-[10%] bottom-[12%]', delay: 0.3 },
 ];
 
-/** The first screen: sign in with Apple or Google to save progress, or play as a guest. */
+/** The first screen: a Bio Bites account, Apple or Google to save progress, or play as a guest. */
 export function WelcomePage() {
   const finishWelcome = usePlayer((s) => s.finishWelcome);
 
@@ -49,6 +50,12 @@ export function WelcomePage() {
           <p className="text-center text-sm text-ink-soft">
             Sign in to save your progress and pick it up on any device.
           </p>
+          <EmailAccountForm collapsible large onSignedIn={finishWelcome} />
+          <div className="flex items-center gap-3 text-xs font-bold text-ink-soft uppercase">
+            <span className="h-px flex-1 bg-black/10" />
+            or
+            <span className="h-px flex-1 bg-black/10" />
+          </div>
           <SignInButtons large onSignedIn={finishWelcome} />
           <div className="flex items-center gap-3 text-xs font-bold text-ink-soft uppercase">
             <span className="h-px flex-1 bg-black/10" />

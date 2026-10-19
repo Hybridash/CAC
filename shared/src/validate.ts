@@ -1,7 +1,7 @@
 /** Structural checks for concept and mystery data. Run by the test suite over the whole library. */
 import { evalExpr, exprVariables } from './expr';
 import { punnett } from './sim';
-import type { Concept, Mystery, QuizQuestion } from './types';
+import type { Concept, Diagram, LibraryUpgrade, Mystery, QuizQuestion } from './types';
 
 function checkQuestion(q: QuizQuestion, where: string, errors: string[]) {
   if (q.kind === 'label') {
@@ -149,6 +149,61 @@ export function validateConcept(c: Concept, allIds: Set<string>): string[] {
     case 'flagship':
       break;
   }
+  return e;
+}
+
+/** Extra checks for a High School lesson: it must line up with its base concept and its diagrams. */
+export function validateHighSchool(c: Concept, base: Concept | undefined): string[] {
+  const e: string[] = [];
+  const at = (s: string) => `${c.id}: ${s}`;
+  const hs = c.highSchool;
+  if (!hs) return [at('missing highSchool info')];
+  if (!base) return [at(`unknown base concept ${hs.baseId}`)];
+  // Steps track the reused interaction's stages, so the counts must match.
+  if (c.steps.length !== base.steps.length)
+    e.push(at(`has ${c.steps.length} steps but ${base.id} has ${base.steps.length}`));
+  if (hs.diagrams.length < 1) e.push(at('needs at least one diagram'));
+  if (hs.keyTerms.length < 3) e.push(at('needs at least 3 key terms'));
+  for (const d of hs.diagrams) e.push(...validateDiagram(d, at));
+  return e;
+}
+
+/** Structural checks for one labeled diagram. */
+export function validateDiagram(d: Diagram, at: (s: string) => string): string[] {
+  const e: string[] = [];
+  const where = (s: string) => at(`diagram “${d.title}”: ${s}`);
+  const ids = new Set(d.parts.map((p) => p.id));
+  if (ids.size !== d.parts.length) e.push(where('duplicate part ids'));
+  if (d.parts.length < 3) e.push(where('needs at least 3 labeled parts'));
+  if (!d.caption) e.push(where('missing caption'));
+  for (const p of d.parts) {
+    const [x, y] = p.at;
+    if (x < 0 || y < 0 || x > d.width || y > d.height)
+      e.push(where(`part ${p.id} marker is off the diagram`));
+    if (p.description.length < 30) e.push(where(`part ${p.id} needs a fuller description`));
+  }
+  for (const s of d.shapes)
+    if (s.part && !ids.has(s.part)) e.push(where(`shape refers to unknown part ${s.part}`));
+  return e;
+}
+
+/** Checks an upgrade against the library concept it improves. */
+export function validateLibraryUpgrade(
+  id: string,
+  up: LibraryUpgrade,
+  base: Concept | undefined,
+): string[] {
+  const at = (s: string) => `${id} (upgrade): ${s}`;
+  if (!base) return [at('unknown concept')];
+  const e: string[] = [];
+  if (up.steps.length !== base.steps.length)
+    e.push(at(`has ${up.steps.length} steps but the concept has ${base.steps.length}`));
+  for (const [title, text] of up.steps) {
+    if (!title) e.push(at('step missing a title'));
+    if (text.length < 80) e.push(at(`step “${title}” is too short to be a fuller explanation`));
+  }
+  if (up.goDeeperMore.length < 200) e.push(at('goDeeperMore is too short'));
+  for (const d of up.diagrams ?? []) e.push(...validateDiagram(d, at));
   return e;
 }
 

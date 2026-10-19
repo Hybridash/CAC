@@ -12,6 +12,8 @@ import { authRoutes } from './routes/auth.js';
 import { providerVerifier, type IdentityVerifier } from './identity.js';
 import { shopRoutes } from './routes/shop.js';
 import { mysteryRoutes } from './routes/mysteries.js';
+import { chatRoutes } from './routes/chat.js';
+import { tutorFromEnv, type Tutor } from './tutor.js';
 import { systemClock, type Clock } from './time.js';
 
 export function createApp(
@@ -19,8 +21,10 @@ export function createApp(
   clock: Clock = systemClock,
   rng?: Rng,
   verifyIdentity: IdentityVerifier = providerVerifier(),
+  /** null turns Bio Bot off (tests use this so they never call the real AI). */
+  tutor: Tutor | null = tutorFromEnv() ?? null,
 ) {
-  const ctx: AppContext = { db, clock, rng, verifyIdentity };
+  const ctx: AppContext = { db, clock, rng, verifyIdentity, tutor: tutor ?? undefined };
   const app = express();
   app.use(
     cors({
@@ -33,14 +37,17 @@ export function createApp(
   );
   app.use(express.json({ limit: '64kb' }));
 
+  // The launch scripts use startedAt and pid to spot (and restart) a server older than the code.
+  const startedAt = new Date().toISOString();
   app.get('/api/health', (_req, res) => {
-    res.json({ ok: true });
+    res.json({ ok: true, startedAt, pid: process.pid });
   });
   app.use('/api', playerRoutes(ctx));
   app.use('/api', authRoutes(ctx));
   app.use('/api/concepts', conceptRoutes(ctx));
   app.use('/api/shop', shopRoutes(ctx));
   app.use('/api/mysteries', mysteryRoutes(ctx));
+  app.use('/api/chat', chatRoutes(ctx));
 
   app.use('/api', (_req, res) => {
     res.status(404).json({ error: 'Not found' });

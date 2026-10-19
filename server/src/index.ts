@@ -1,5 +1,6 @@
 import { createApp } from './app.js';
 import { openDatabase } from './db.js';
+import { ensureDemoAccount } from './accounts.js';
 
 try {
   process.loadEnvFile('.env');
@@ -9,6 +10,8 @@ try {
 
 const port = Number(process.env.PORT ?? 3001);
 const db = openDatabase(process.env.DATABASE_PATH ?? './data/bioplay.db');
+// The demo login (demo@gmail.com / demo123). Set DEMO_ACCOUNT=off to skip it, e.g. on a public server.
+if (process.env.DEMO_ACCOUNT !== 'off') ensureDemoAccount(db, new Date());
 createApp(db)
   .listen(port, () => {
     console.log(`BioPlay server listening on http://localhost:${port}`);

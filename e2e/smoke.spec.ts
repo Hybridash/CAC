@@ -71,6 +71,18 @@ test('earn ATP, open a pack, see the avatars in the collection', async ({ page }
   await expect.poll(() => atp(page)).toBeGreaterThanOrEqual(75);
   await page.getByTestId('open-basic').click();
   await expect(page.getByTestId('pack-opening')).toBeVisible();
+  // Tap the floating pack four times to roll its rarity upgrades.
+  const pack = page.getByTestId('pack-tap');
+  for (let left = 3; left >= 0; left--) {
+    // Taps during the previous tap's animation are ignored, so retry until this one lands.
+    await expect(async () => {
+      // The pack never holds still (it floats and shakes), so skip the "stable" wait.
+      await pack.click({ force: true });
+      await expect(pack).toHaveAccessibleName(left ? new RegExp(`${left} taps? left`) : /opening/, {
+        timeout: 300,
+      });
+    }).toPass();
+  }
   await page.getByRole('button', { name: 'Reveal all' }).click();
   const cards = page.getByTestId('revealed-card');
   await expect(cards).toHaveCount(3);
@@ -127,4 +139,39 @@ test('@mobile insulin flagship works with taps on a phone', async ({ page }) => 
   await page.getByRole('radio', { name: /Type 2/ }).tap();
   await feed('Apple');
   await expect(page.getByTestId('interaction-complete')).toBeVisible();
+});
+
+test('High School section: open a lesson and explore its diagram', async ({ page }) => {
+  await page.goto('/library');
+  await page.getByTestId('tab-high-school').click();
+  await expect(page.getByRole('heading', { name: 'High School Biology' })).toBeVisible();
+  await page
+    .getByRole('link', { name: /Enzymes & Activation Energy/ })
+    .first()
+    .click();
+  await expect(page).toHaveURL(/\/learn\/hs-enzymes/);
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Enzymes & Activation Energy' }),
+  ).toBeVisible();
+  const diagram = page.getByTestId('hs-diagram');
+  await expect(diagram).toBeVisible();
+  await diagram.getByRole('button', { name: /Reactants/ }).click();
+  await expect(diagram).toContainText('An enzyme does not change this level');
+  await page.getByRole('tab', { name: /Induced fit/ }).click();
+  await expect(page.getByTestId('hs-diagram')).toContainText('Induced fit at the active site');
+  // The simpler library version is linked, and links back here.
+  await page.getByRole('link', { name: /Simpler version/ }).click();
+  await expect(page).toHaveURL(/\/learn\/enzymes$/);
+  await page.getByTestId('hs-version-link').click();
+  await expect(page).toHaveURL(/\/learn\/hs-enzymes/);
+});
+
+test('Bio Bot opens on a lesson page', async ({ page }) => {
+  await page.goto('/learn/insulin');
+  await page.getByTestId('open-chat').click();
+  const panel = page.getByTestId('chat-panel');
+  await expect(panel).toBeVisible();
+  await expect(panel.getByTestId('bot-message').first()).toContainText('How Insulin Works');
+  await page.keyboard.press('Escape');
+  await expect(panel).toHaveCount(0);
 });

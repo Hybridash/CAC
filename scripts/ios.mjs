@@ -12,6 +12,7 @@ import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { stopStaleServer } from './server-freshness.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const client = path.join(root, 'client');
@@ -43,6 +44,8 @@ const liveUp = () =>
 
 // 1. The server the app saves progress to (in live mode, also the Vite dev server for its pages).
 let server = null;
+// A server left running from before your latest changes would serve old behavior, so replace it.
+if (!live) await stopStaleServer(`http://localhost:${PORT}`, root);
 if (!(await serverUp()) || (live && !(await liveUp()))) {
   step(
     live

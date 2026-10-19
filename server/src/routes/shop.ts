@@ -14,10 +14,10 @@ export function shopRoutes(ctx: AppContext) {
       .object({ tier: z.enum(Object.keys(PACKS) as [PackTier, ...PackTier[]]) })
       .safeParse(req.body);
     if (!body.success) throw new HttpError(400, 'Unknown pack');
-    const cards = openPack(ctx.db, req.user!.id, body.data.tier, ctx.clock(), ctx.rng);
+    const opened = openPack(ctx.db, req.user!.id, body.data.tier, ctx.clock(), ctx.rng);
     const out: PackOpenResponse = {
       tier: body.data.tier,
-      cards,
+      ...opened,
       state: playerState(ctx.db, req.user!.id),
     };
     res.json(out);

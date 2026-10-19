@@ -10,5 +10,8 @@ export * from './daily';
 export * from './validate';
 export * from './data/categories';
 export * from './data/concepts';
+export * from './data/highschool';
+export * from './data/library';
+export * from './data/lessons';
 export * from './data/avatars';
 export * from './data/mysteries';

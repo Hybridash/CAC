@@ -3,8 +3,11 @@ import { Link, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   CATEGORY_BY_ID,
-  CONCEPT_BY_ID,
   DIFFICULTY_LABEL,
+  HS_UNIT_BY_ID,
+  HS_UNITS,
+  hsId,
+  LESSON_BY_ID,
   interactionReward,
   obscureBonus,
   perfectQuizBonus,
@@ -21,10 +24,12 @@ import { usePlayer } from '../store/player';
 import { todaysConceptId } from '../lib/library';
 import { sfx } from '../lib/sound';
 import { Icon } from '../components/Icon';
+import { DiagramsCard, HighSchoolExtras } from '../highschool/HighSchoolExtras';
+import { ChatPanel } from '../chat/ChatPanel';
 
 export function LessonPage() {
   const { id = '' } = useParams();
-  const concept = CONCEPT_BY_ID[id];
+  const concept = LESSON_BY_ID[id];
   if (!concept) {
     return (
       <div className="card p-10 text-center">
@@ -70,6 +75,8 @@ function Lesson({ concept }: { concept: Concept }) {
   );
 
   const d = concept.difficulty;
+  const hs = concept.highSchool;
+  const hsVersion = hs ? undefined : LESSON_BY_ID[hsId(concept.id)];
   return (
     <article className="flex flex-col gap-6">
       <header
@@ -81,14 +88,32 @@ function Lesson({ concept }: { concept: Concept }) {
             Library
           </Link>{' '}
           /{' '}
-          <Link to={`/library?cat=${cat.id}`} className="hover:underline">
-            {cat.name}
-          </Link>
+          {hs ? (
+            <>
+              <Link to="/library/high-school" className="hover:underline">
+                High School
+              </Link>{' '}
+              /{' '}
+              <Link to={`/library/high-school#unit-${hs.unit}`} className="hover:underline">
+                Unit {HS_UNITS.findIndex((u) => u.id === hs.unit) + 1}:{' '}
+                {HS_UNIT_BY_ID[hs.unit].name}
+              </Link>
+            </>
+          ) : (
+            <Link to={`/library?cat=${cat.id}`} className="hover:underline">
+              {cat.name}
+            </Link>
+          )}
         </nav>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="max-w-2xl">
             <div className="mb-2 flex flex-wrap gap-2">
               <CategoryChip id={concept.category} />
+              {hs && (
+                <span className="chip bg-indigo-950 text-white">
+                  <Icon name="flask" size={16} /> High School
+                </span>
+              )}
               {concept.flagship && (
                 <span className="chip bg-white text-ink">
                   <Icon name="sparkle" size={16} /> Flagship
@@ -108,6 +133,15 @@ function Lesson({ concept }: { concept: Concept }) {
             <h1 className="text-4xl font-extrabold sm:text-5xl">{concept.title}</h1>
             <p className="mt-2 text-lg text-ink-soft">{concept.summary}</p>
             <Prerequisites concept={concept} />
+            {hsVersion && (
+              <Link
+                to={`/learn/${hsVersion.id}`}
+                className="chip mt-3 bg-indigo-950 py-1 text-white hover:bg-indigo-800"
+                data-testid="hs-version-link"
+              >
+                <Icon name="flask" size={16} /> Ready for more? Try the High School version →
+              </Link>
+            )}
           </div>
           <div className="card min-w-60 p-4 text-sm">
             <div className="mb-2 flex items-center justify-between gap-3">
@@ -181,6 +215,12 @@ function Lesson({ concept }: { concept: Concept }) {
         </section>
       </div>
 
+      {hs ? (
+        <HighSchoolExtras info={hs} />
+      ) : (
+        concept.diagrams && <DiagramsCard diagrams={concept.diagrams} />
+      )}
+
       <div className="grid gap-5 md:grid-cols-2">
         <details className="card group p-5" data-testid="go-deeper">
           <summary className="flex cursor-pointer list-none items-center justify-between text-xl font-extrabold">
@@ -223,11 +263,19 @@ function Lesson({ concept }: { concept: Concept }) {
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {concept.relatedConcepts.map(
-              (r) => CONCEPT_BY_ID[r] && <ConceptCard key={r} concept={CONCEPT_BY_ID[r]} />,
+              (r) =>
+                LESSON_BY_ID[r] && (
+                  <ConceptCard
+                    key={r}
+                    concept={LESSON_BY_ID[r]}
+                    badge={hs && r === hs.baseId ? 'Simpler version' : undefined}
+                  />
+                ),
             )}
           </div>
         </section>
       )}
+      <ChatPanel concept={concept} />
     </article>
   );
 }
@@ -304,7 +352,7 @@ function StepCards({
 
 function Prerequisites({ concept }: { concept: Concept }) {
   const progress = usePlayer((s) => s.player?.progress);
-  const prereqs = (concept.prerequisites ?? []).map((id) => CONCEPT_BY_ID[id]).filter(Boolean);
+  const prereqs = (concept.prerequisites ?? []).map((id) => LESSON_BY_ID[id]).filter(Boolean);
   if (!prereqs.length) return null;
   return (
     <p className="mt-3 flex flex-wrap items-center gap-1.5 text-sm">

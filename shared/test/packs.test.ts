@@ -4,6 +4,8 @@ import {
   CARDS_PER_PACK,
   PACKS,
   mulberry32,
+  oddsAtLeast,
+  PACK_UPGRADE_TAPS,
   rollPack,
   rollRarity,
   type PackTier,
@@ -69,11 +71,56 @@ describe('pack odds', () => {
   });
 });
 
+describe('pack upgrades', () => {
+  const rank = (r: AvatarRarity) => AVATAR_RARITIES.indexOf(r);
+
+  it('pricier packs upgrade more often per tap', () => {
+    expect(PACKS.basic.upgradeChance).toBeLessThan(PACKS.rare.upgradeChance);
+    expect(PACKS.rare.upgradeChance).toBeLessThan(PACKS.legendary.upgradeChance);
+  });
+
+  it(`gives ${PACK_UPGRADE_TAPS} taps and four lucky ones make a Legendary pack`, () => {
+    expect(PACK_UPGRADE_TAPS).toBe(AVATAR_RARITIES.length - 1);
+    const roll = rollPack('basic', pool, () => 0);
+    expect(roll.upgrades).toEqual([true, true, true, true]);
+    expect(roll.rarity).toBe('legendary');
+    expect(roll.cards.some((c) => c.rarity === 'legendary')).toBe(true);
+  });
+
+  it.each(Object.keys(PACKS) as PackTier[])(
+    '%s: rarity matches its upgrades, its promise holds, and taps upgrade at the advertised rate',
+    (tier) => {
+      const rng = mulberry32(99);
+      const n = 20_000;
+      let ups = 0;
+      for (let i = 0; i < n; i++) {
+        const roll = rollPack(tier, pool, rng);
+        expect(roll.upgrades).toHaveLength(PACK_UPGRADE_TAPS);
+        const k = roll.upgrades.filter(Boolean).length;
+        ups += k;
+        expect(roll.rarity).toBe(AVATAR_RARITIES[k]);
+        expect(Math.max(...roll.cards.map((c) => rank(c.rarity)))).toBeGreaterThanOrEqual(k);
+        for (const c of roll.cards) expect(PACKS[tier].odds[c.rarity]).toBeGreaterThan(0);
+      }
+      const p = PACKS[tier].upgradeChance;
+      const taps = n * PACK_UPGRADE_TAPS;
+      expect(Math.abs(ups / taps - p)).toBeLessThanOrEqual(5 * Math.sqrt((p * (1 - p)) / taps));
+    },
+  );
+
+  it('oddsAtLeast keeps only the floor and rarer, summing to 1', () => {
+    const o = oddsAtLeast(PACKS.basic.odds, 'epic');
+    expect(o.common + o.uncommon + o.rare).toBe(0);
+    expect(o.epic + o.legendary).toBeCloseTo(1, 10);
+    expect(o.legendary / o.epic).toBeCloseTo(PACKS.basic.odds.legendary / PACKS.basic.odds.epic);
+  });
+});
+
 describe('rollPack', () => {
   it(`returns ${CARDS_PER_PACK} pack-eligible avatars and never exclusives`, () => {
     const rng = mulberry32(1);
     for (let i = 0; i < 2000; i++) {
-      const cards = rollPack('legendary', pool, rng);
+      const { cards } = rollPack('legendary', pool, rng);
       expect(cards).toHaveLength(CARDS_PER_PACK);
       for (const c of cards) {
         expect(c).toBeDefined();

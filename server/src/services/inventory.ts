@@ -9,6 +9,7 @@ import {
   isPackEligible,
   PACKS,
   rollPack,
+  type AvatarRarity,
   type CategoryId,
   type PackCard,
   type PackTier,
@@ -51,13 +52,14 @@ export function openPack(
   tier: PackTier,
   now: Date,
   rng: Rng = secureRng,
-): PackCard[] {
+): { cards: PackCard[]; upgrades: boolean[]; rarity: AvatarRarity } {
   const def = PACKS[tier];
   return db.transaction(() => {
     const user = getUser(db, userId)!;
     if (user.atp < def.cost) throw new HttpError(402, `You need ${def.cost - user.atp} more ATP`);
     credit(db, userId, 'atp', -def.cost, `Bought ${def.name}`, tier, now);
-    const cards = rollPack(tier, AVATARS, rng).map((av): PackCard => {
+    const roll = rollPack(tier, AVATARS, rng);
+    const cards = roll.cards.map((av): PackCard => {
       const isNew = addAvatar(db, userId, av.id, now);
       const nucleotides = isNew ? 0 : DUPLICATE_NUCLEOTIDES[av.rarity];
       if (nucleotides)
@@ -67,7 +69,7 @@ export function openPack(
     db.prepare(
       'INSERT INTO pack_openings (user_id, tier, results, created_at) VALUES (?, ?, ?, ?)',
     ).run(userId, tier, JSON.stringify(cards), now.toISOString());
-    return cards;
+    return { cards, upgrades: roll.upgrades, rarity: roll.rarity };
   })();
 }
 

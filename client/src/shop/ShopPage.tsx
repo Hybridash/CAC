@@ -7,6 +7,7 @@ import {
   DIRECT_BUY_COST,
   DUPLICATE_NUCLEOTIDES,
   formatOdds,
+  PACK_UPGRADE_TAPS,
   isPackEligible,
   PACKS,
   type AvatarRarity,
@@ -123,6 +124,11 @@ export function ShopPage() {
                     ))}
                   </tbody>
                 </table>
+                <p className="w-full rounded-2xl bg-amber-50 px-3 py-2 text-left text-sm font-bold text-amber-900">
+                  Tap it {PACK_UPGRADE_TAPS}× before opening: each tap has a{' '}
+                  {formatOdds(p.upgradeChance)} chance to raise its rarity. Each step up guarantees
+                  a better card.
+                </p>
                 <button
                   className="btn-primary mt-auto w-full"
                   onClick={() => open(tier)}

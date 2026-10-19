@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { AVATAR_BY_ID, type PackOpenResponse, type PackTier } from '@bioplay/shared';
+import {
+  AVATAR_BY_ID,
+  AVATAR_RARITIES,
+  type AvatarRarity,
+  type PackOpenResponse,
+  type PackTier,
+} from '@bioplay/shared';
 import { AvatarCard, RARITY_STYLE } from '../components/AvatarCard';
 import { NucleotideIcon } from '../components/Atp';
 import { PackArt } from './PackArt';
@@ -8,9 +14,24 @@ import { sfx } from '../lib/sound';
 import { usePlayer } from '../store/player';
 import { Icon } from '../components/Icon';
 
-type Stage = 'shake' | 'split' | 'cards';
+type Stage = 'charge' | 'split' | 'cards';
 
-/** Full-screen pack opening: shake → divide like a cell → flip the three cards. */
+/** Aura color around the floating pack for each pack rarity. */
+const AURA: Record<AvatarRarity, string> = {
+  common: '#cbd5e1',
+  uncommon: '#34d399',
+  rare: '#38bdf8',
+  epic: '#e879f9',
+  legendary: '#fbbf24',
+};
+
+/** Minimum time between taps, so each upgrade (or miss) gets its moment. */
+const TAP_COOLDOWN_MS = 450;
+
+/**
+ * Full-screen pack opening: the pack floats and shakes while the player taps it; each tap may raise
+ * its rarity (rolled by the server) → it divides like a cell → flip the three cards.
+ */
 export function PackOpening({
   result,
   onClose,
@@ -21,7 +42,14 @@ export function PackOpening({
   onAgain?: () => void;
 }) {
   const tier = result.tier as PackTier;
-  const [stage, setStage] = useState<Stage>('shake');
+  const [stage, setStage] = useState<Stage>('charge');
+  /** How many of the pack's taps have been used, and the result of the latest one. */
+  const [taps, setTaps] = useState(0);
+  const [lastTap, setLastTap] = useState<'up' | 'miss' | null>(null);
+  const lastTapAt = useRef(0);
+  const level = result.upgrades.slice(0, taps).filter(Boolean).length;
+  const packRarity = AVATAR_RARITIES[level];
+  const tapsLeft = result.upgrades.length - taps;
   const [flipped, setFlipped] = useState<boolean[]>(() => result.cards.map(() => false));
   const equip = usePlayer((s) => s.equip);
   const equipped = usePlayer((s) => s.player?.equippedAvatar ?? null);
@@ -33,16 +61,34 @@ export function PackOpening({
 
   useEffect(() => {
     sfx.whoosh();
+  }, []);
+
+  // After the last tap, let the final rarity sink in, then divide and deal the cards.
+  useEffect(() => {
+    if (tapsLeft > 0) return;
     const t1 = setTimeout(() => {
       setStage('split');
       sfx.pop();
-    }, 1300);
-    const t2 = setTimeout(() => setStage('cards'), 2200);
+    }, 1100);
+    const t2 = setTimeout(() => setStage('cards'), 2000);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
     };
-  }, []);
+  }, [tapsLeft]);
+
+  const tapPack = () => {
+    const now = Date.now();
+    if (tapsLeft === 0 || now - lastTapAt.current < TAP_COOLDOWN_MS) return;
+    lastTapAt.current = now;
+    const up = result.upgrades[taps];
+    if (up) {
+      if (level + 1 === AVATAR_RARITIES.length - 1) sfx.fanfare();
+      else sfx.sparkle();
+    } else sfx.drop();
+    setLastTap(up ? 'up' : 'miss');
+    setTaps((n) => n + 1);
+  };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -91,56 +137,155 @@ export function PackOpening({
       role="dialog"
       aria-modal="true"
       aria-label="Opening pack"
-      className="fixed inset-0 z-[80] flex flex-col items-center justify-center gap-6 overflow-y-auto bg-indigo-950/90 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[80] flex flex-col items-center [justify-content:safe_center] gap-6 overflow-y-auto bg-indigo-950/90 p-4 backdrop-blur-sm"
       data-testid="pack-opening"
     >
-      {stage !== 'cards' && (
-        <div className="relative flex h-72 w-full items-center justify-center">
-          {stage === 'shake' ? (
+      {stage === 'charge' && (
+        <div className="flex w-full flex-col items-center gap-5">
+          <motion.p
+            key={packRarity}
+            initial={{ scale: level > 0 ? 1.6 : 1, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 14 }}
+            className="font-display text-3xl font-extrabold uppercase"
+            style={{ color: AURA[packRarity] }}
+            data-testid="pack-rarity"
+          >
+            {RARITY_STYLE[packRarity].label} pack
+          </motion.p>
+
+          <div className="relative grid h-80 w-full place-items-center">
+            {/* Aura: grows and pulses faster as the pack's rarity climbs. */}
             <motion.div
-              animate={{ rotate: [0, -8, 8, -10, 10, -6, 6, 0], scale: [1, 1.05, 1, 1.08, 1] }}
-              transition={{ duration: 1.2 }}
-            >
-              <PackArt tier={tier} size={190} />
-            </motion.div>
-          ) : (
-            <>
+              aria-hidden
+              className="absolute h-56 w-56 rounded-full blur-2xl"
+              style={{ background: AURA[packRarity] }}
+              animate={{ scale: [1, 1.15 + level * 0.08, 1], opacity: [0.35, 0.6, 0.35] }}
+              transition={{ duration: 1.6 - level * 0.25, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            {lastTap === 'up' && (
               <motion.div
-                className="absolute"
-                initial={{ x: 0 }}
-                animate={{ x: -110, rotate: -12, opacity: 0.25 }}
-                transition={{ duration: 0.8 }}
-              >
-                <PackArt tier={tier} size={190} half="left" />
-              </motion.div>
-              <motion.div
-                className="absolute"
-                initial={{ x: 0 }}
-                animate={{ x: 110, rotate: 12, opacity: 0.25 }}
-                transition={{ duration: 0.8 }}
-              >
-                <PackArt tier={tier} size={190} half="right" />
-              </motion.div>
-              <motion.div
-                className="absolute h-40 w-40 rounded-full bg-white"
-                initial={{ scale: 0, opacity: 0.9 }}
-                animate={{ scale: 3, opacity: 0 }}
-                transition={{ duration: 0.8 }}
+                key={`ring-${taps}`}
+                aria-hidden
+                className="absolute h-40 w-40 rounded-full border-8"
+                style={{ borderColor: AURA[packRarity] }}
+                initial={{ scale: 0.6, opacity: 1 }}
+                animate={{ scale: 2.6, opacity: 0 }}
+                transition={{ duration: 0.7, ease: 'easeOut' }}
               />
-            </>
-          )}
+            )}
+            {/* Levitate: a slow bob up and down. */}
+            <motion.div
+              animate={{ y: [0, -18, 0] }}
+              transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              {/* Hover-shake: a constant jitter that gets more restless with every upgrade. */}
+              <motion.div
+                animate={
+                  tapsLeft > 0
+                    ? { rotate: [-(2 + level), 2 + level, -(2 + level)], x: [-1, 1, -1] }
+                    : { rotate: 0, x: 0 }
+                }
+                transition={{ duration: 0.3 - level * 0.04, repeat: Infinity, ease: 'linear' }}
+              >
+                <motion.button
+                  key={`tap-${taps}`}
+                  type="button"
+                  onClick={tapPack}
+                  disabled={tapsLeft === 0}
+                  animate={
+                    taps === 0
+                      ? {}
+                      : lastTap === 'up'
+                        ? { scale: [1, 1.25, 0.95, 1.05, 1], rotate: [0, -16, 16, -8, 0] }
+                        : { scale: [1, 0.92, 1], rotate: [0, -6, 6, 0] }
+                  }
+                  transition={{ duration: lastTap === 'up' ? 0.6 : 0.35 }}
+                  className="block rounded-3xl focus-visible:ring-4 focus-visible:ring-white"
+                  aria-label={
+                    tapsLeft > 0
+                      ? `Tap the pack. ${RARITY_STYLE[packRarity].label} so far, ${tapsLeft} ${tapsLeft === 1 ? 'tap' : 'taps'} left`
+                      : `${RARITY_STYLE[packRarity].label} pack, opening`
+                  }
+                  data-testid="pack-tap"
+                >
+                  <PackArt tier={tier} size={190} />
+                </motion.button>
+              </motion.div>
+            </motion.div>
+          </div>
+
+          <div className="flex gap-2" aria-hidden>
+            {result.upgrades.map((up, i) => (
+              <span
+                key={i}
+                className={`h-3.5 w-3.5 rounded-full ring-2 ring-white/60 transition ${i >= taps ? 'bg-white/10' : up ? '' : 'bg-white/40'}`}
+                style={
+                  i < taps && up
+                    ? {
+                        background:
+                          AURA[
+                            AVATAR_RARITIES[result.upgrades.slice(0, i + 1).filter(Boolean).length]
+                          ],
+                      }
+                    : undefined
+                }
+              />
+            ))}
+          </div>
+          <p className="text-center font-display text-xl font-bold text-white" aria-live="polite">
+            {tapsLeft === 0
+              ? `${RARITY_STYLE[packRarity].label} pack — at least one ${RARITY_STYLE[packRarity].label} or better!`
+              : lastTap === 'up'
+                ? `Upgraded to ${RARITY_STYLE[packRarity].label}! Tap again`
+                : lastTap === 'miss'
+                  ? 'No change… tap again'
+                  : 'Tap the pack to try to raise its rarity!'}
+          </p>
+        </div>
+      )}
+
+      {stage === 'split' && (
+        <div className="relative flex h-72 w-full items-center justify-center">
+          <>
+            <motion.div
+              className="absolute"
+              initial={{ x: 0 }}
+              animate={{ x: -110, rotate: -12, opacity: 0.25 }}
+              transition={{ duration: 0.8 }}
+            >
+              <PackArt tier={tier} size={190} half="left" />
+            </motion.div>
+            <motion.div
+              className="absolute"
+              initial={{ x: 0 }}
+              animate={{ x: 110, rotate: 12, opacity: 0.25 }}
+              transition={{ duration: 0.8 }}
+            >
+              <PackArt tier={tier} size={190} half="right" />
+            </motion.div>
+            <motion.div
+              className="absolute h-40 w-40 rounded-full bg-white"
+              initial={{ scale: 0, opacity: 0.9 }}
+              animate={{ scale: 3, opacity: 0 }}
+              transition={{ duration: 0.8 }}
+            />
+          </>
           <p
             className="absolute -bottom-6 w-full text-center font-display text-xl font-bold text-white"
             aria-live="polite"
           >
-            {stage === 'shake' ? 'Something’s growing…' : 'It’s dividing!'}
+            It’s dividing!
           </p>
         </div>
       )}
 
       {stage === 'cards' && (
         <>
-          <h2 className="text-center text-3xl font-extrabold text-white">
+          <span className="chip font-extrabold text-ink" style={{ background: AURA[packRarity] }}>
+            {RARITY_STYLE[packRarity].label} pack
+          </span>
+          <h2 className="-mt-3 text-center text-3xl font-extrabold text-white">
             {allFlipped ? 'Your new avatars!' : 'Tap each card to reveal it'}
           </h2>
           {allFlipped && (

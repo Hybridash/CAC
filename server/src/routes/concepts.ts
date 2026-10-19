@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { CONCEPT_BY_ID, type QuizSubmitResponse, type RewardResponse } from '@bioplay/shared';
+import { LESSON_BY_ID, type QuizSubmitResponse, type RewardResponse } from '@bioplay/shared';
 import { HttpError, requireUser, type AppContext } from '../http.js';
 import { playerState } from '../repo.js';
 import { recordInteraction, recordQuiz } from '../services/progress.js';
@@ -14,7 +14,7 @@ export function conceptRoutes(ctx: AppContext) {
   r.use(requireUser(ctx));
 
   const concept = (id: string) => {
-    const c = CONCEPT_BY_ID[id];
+    const c = LESSON_BY_ID[id];
     if (!c) throw new HttpError(404, 'Unknown concept');
     return c;
   };
