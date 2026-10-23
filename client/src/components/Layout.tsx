@@ -14,6 +14,7 @@ const NAV = [
   { to: '/library', label: 'Library', icon: 'book' },
   { to: '/map', label: 'Map', icon: 'map' },
   { to: '/mysteries', label: 'Mysteries', icon: 'mystery' },
+  { to: '/olympiad', label: 'Olympiad', icon: 'medal' },
   { to: '/shop', label: 'Shop', icon: 'bag' },
   { to: '/collection', label: 'Collection', icon: 'cards' },
 ] satisfies { to: string; label: string; icon: IconName }[];
@@ -124,7 +125,7 @@ export function Layout() {
       {/* Bottom tab bar for phones and tablets. */}
       <nav
         aria-label="Main"
-        className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-6 border-t border-black/10 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-7 border-t border-black/10 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden"
       >
         {NAV.map((n) => (
           <NavLink

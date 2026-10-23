@@ -76,6 +76,9 @@ export function HomePage() {
           <Link to="/library/high-school" className="btn-ghost">
             <Icon name="flask" size={22} /> High School Biology
           </Link>
+          <Link to="/olympiad" className="btn-ghost">
+            <Icon name="medal" size={22} /> Bio Olympiad prep
+          </Link>
           <InstallApp />
           <span className="chip bg-white/80 py-1.5 text-base text-amber-900">
             <AtpIcon /> {player?.atp ?? 0} ATP

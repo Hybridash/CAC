@@ -28,6 +28,18 @@ const ProfilePage = lazy(() =>
 const MysteriesPage = lazy(() =>
   import('./mysteries/MysteriesPage').then((m) => ({ default: m.MysteriesPage })),
 );
+const OlympiadPage = lazy(() =>
+  import('./olympiad/OlympiadPage').then((m) => ({ default: m.OlympiadPage })),
+);
+const OlyPracticePage = lazy(() =>
+  import('./olympiad/PracticePage').then((m) => ({ default: m.PracticePage })),
+);
+const OlyTestPage = lazy(() =>
+  import('./olympiad/TestPage').then((m) => ({ default: m.TestPage })),
+);
+const OlyReviewPage = lazy(() =>
+  import('./olympiad/ReviewPage').then((m) => ({ default: m.ReviewPage })),
+);
 const MysteryCasePage = lazy(() =>
   import('./mysteries/MysteryCasePage').then((m) => ({ default: m.MysteryCasePage })),
 );
@@ -76,6 +88,10 @@ export function App() {
               <Route path="map" element={<KnowledgeMapPage />} />
               <Route path="mysteries" element={<MysteriesPage />} />
               <Route path="mysteries/:id" element={<MysteryCasePage />} />
+              <Route path="olympiad" element={<OlympiadPage />} />
+              <Route path="olympiad/practice" element={<OlyPracticePage />} />
+              <Route path="olympiad/test/:testId" element={<OlyTestPage />} />
+              <Route path="olympiad/review/:attemptId" element={<OlyReviewPage />} />
               <Route path="shop" element={<ShopPage />} />
               <Route path="collection" element={<CollectionPage />} />
               <Route path="profile" element={<ProfilePage />} />
