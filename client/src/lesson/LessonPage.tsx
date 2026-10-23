@@ -18,6 +18,7 @@ import { CategoryChip, ConceptCard, Stars } from '../components/ConceptBits';
 import { AtpAmount } from '../components/Atp';
 import { AvatarCheer } from '../components/AvatarCheer';
 import { InteractionHost } from './InteractionHost';
+import { InteractiveStage } from './InteractiveStage';
 import { Quiz } from './Quiz';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { usePlayer } from '../store/player';
@@ -182,7 +183,19 @@ function Lesson({ concept }: { concept: Concept }) {
           <StepCards concept={concept} step={step} setStep={setStep} />
           <AvatarCheer message={cheer} />
         </aside>
-        <section aria-label="Interactive" className="card min-w-0 p-4 sm:p-5">
+        <InteractiveStage
+          concept={concept}
+          done={interactionDone}
+          onQuiz={() => quizRef.current?.scrollIntoView({ behavior: 'smooth' })}
+          guide={
+            <div className="flex flex-col gap-3">
+              <StepCards concept={concept} step={step} setStep={setStep} />
+              <div className="hidden lg:block">
+                <AvatarCheer message={cheer} />
+              </div>
+            </div>
+          }
+        >
           <ErrorBoundary label="interaction">
             <InteractionHost
               concept={concept}
@@ -191,28 +204,7 @@ function Lesson({ concept }: { concept: Concept }) {
               alreadyDone={!!progress?.interactionDoneAt}
             />
           </ErrorBoundary>
-          <AnimatePresence>
-            {interactionDone && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-emerald-50 p-4 ring-1 ring-emerald-200"
-                data-testid="interaction-complete"
-              >
-                <span className="font-bold text-emerald-900">
-                  <Icon name="check" size={22} className="mr-1 -mt-0.5" />
-                  Interaction complete! Keep playing, or test yourself.
-                </span>
-                <button
-                  className="btn-primary"
-                  onClick={() => quizRef.current?.scrollIntoView({ behavior: 'smooth' })}
-                >
-                  Take the quiz ↓
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </section>
+        </InteractiveStage>
       </div>
 
       {hs ? (

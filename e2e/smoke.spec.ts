@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { AVATAR_BY_ID } from '@bioplay/shared';
+import { AVATAR_BY_ID, CONCEPT_BY_ID } from '@bioplay/shared';
 import { atp, completeViaApi } from './helpers';
 
 // These tests start past the welcome screen, as a guest (welcome.spec.ts covers that screen).
@@ -174,4 +174,38 @@ test('Bio Bot opens on a lesson page', async ({ page }) => {
   await expect(panel.getByTestId('bot-message').first()).toContainText('How Insulin Works');
   await page.keyboard.press('Escape');
   await expect(panel).toHaveCount(0);
+});
+
+test('a lesson can be played in full screen, and the quiz button leaves full screen', async ({
+  page,
+}) => {
+  await page.goto('/learn/mutations');
+  const stage = page.getByRole('region', { name: 'Interactive' });
+  await page.getByTestId('stage-fullscreen').click();
+  await expect(page.getByRole('button', { name: /Exit full screen/ })).toBeVisible();
+  // The stage covers the whole window (native full screen or the overlay fallback).
+  const box = await stage.boundingBox();
+  const vp = page.viewportSize()!;
+  expect(box?.width).toBe(vp.width);
+  expect(box?.height).toBe(vp.height);
+
+  // Sort every card from the deck into its bin.
+  const it = CONCEPT_BY_ID.mutations.interaction;
+  if (it.template !== 'sorting') throw new Error('mutations should be a sorting lesson');
+  const binLabel = Object.fromEntries(it.config.bins.map((b) => [b.id, b.label]));
+  for (let i = 0; i < it.config.items.length; i++) {
+    const name = await stage
+      .getByRole('button', { name: /^Sort .* into / })
+      .first()
+      .getAttribute('aria-label');
+    const item = it.config.items.find((x) => name?.startsWith(`Sort ${x.label} into`))!;
+    await stage
+      .getByRole('button', { name: `Sort ${item.label} into ${binLabel[item.bin]}` })
+      .click();
+  }
+  await expect(stage.getByTestId('interaction-complete')).toBeVisible();
+
+  await stage.getByRole('button', { name: /Take the quiz/ }).click();
+  await expect(page.getByTestId('stage-fullscreen')).toHaveText(/^Full screen$/);
+  await expect(page.getByTestId('quiz')).toBeInViewport();
 });
