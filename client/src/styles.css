@@ -110,3 +110,185 @@ h4 {
   background-size: 200% 100%;
   animation: shimmer 2.5s linear infinite;
 }
+
+/* ------------------------------------------------------------ interactive stage */
+
+/* Drifting cells and bubbles behind the full-screen stage. Pure CSS, so it costs nothing to run. */
+@keyframes drift {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(var(--dx, 40px), var(--dy, -60px), 0) rotate(180deg);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) rotate(360deg);
+  }
+}
+.drift {
+  animation: drift var(--dur, 24s) ease-in-out infinite;
+}
+
+@keyframes rise {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(var(--rise, -110vh)) scale(1.1);
+    opacity: 0;
+  }
+}
+.rise {
+  animation: rise var(--dur, 14s) linear infinite;
+}
+
+/* A soft sheen that sweeps across banners and progress bars. */
+@keyframes sheen {
+  0% {
+    transform: translateX(-120%) skewX(-20deg);
+  }
+  60%,
+  100% {
+    transform: translateX(260%) skewX(-20deg);
+  }
+}
+.sheen {
+  position: relative;
+  overflow: hidden;
+}
+.sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  animation: sheen 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.65);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(250, 204, 21, 0);
+  }
+}
+.glow-pulse {
+  animation: glow-pulse 1.6s ease-out infinite;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(2deg);
+  }
+}
+.bob {
+  animation: bob var(--dur, 2.8s) ease-in-out infinite;
+}
+
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+.dash-flow {
+  animation: dash-flow 1.2s linear infinite;
+}
+
+/* Chunky, colorful range sliders. The filled part comes from --fill (0–100%). */
+.bio-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 2.25rem;
+  background: transparent;
+  cursor: pointer;
+  --fill: 50%;
+  --c1: #818cf8;
+  --c2: #c084fc;
+}
+.bio-range::-webkit-slider-runnable-track {
+  height: 0.85rem;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, var(--c1), var(--c2)) 0 / var(--fill) 100% no-repeat,
+    #e2e8f0;
+  box-shadow: inset 0 1px 2px rgba(30, 27, 46, 0.15);
+}
+.bio-range::-moz-range-track {
+  height: 0.85rem;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+.bio-range::-moz-range-progress {
+  height: 0.85rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--c1), var(--c2));
+}
+.bio-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  margin-top: -0.6rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: white;
+  border: 4px solid var(--c2);
+  box-shadow: 0 3px 8px rgba(30, 27, 46, 0.25);
+  transition: transform 0.15s;
+}
+.bio-range::-moz-range-thumb {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  background: white;
+  border: 4px solid var(--c2);
+  box-shadow: 0 3px 8px rgba(30, 27, 46, 0.25);
+}
+.bio-range:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+.bio-range:focus-visible {
+  outline: none;
+}
+.bio-range:focus-visible::-webkit-slider-thumb {
+  outline: 3px solid #6366f1;
+  outline-offset: 2px;
+}
+
+/* The pseudo-full-screen fallback (iPhone has no element full screen) must not let the page scroll behind it. */
+html.stage-locked,
+html.stage-locked body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* A moving conveyor belt. */
+@keyframes belt {
+  to {
+    background-position: 48px 0;
+  }
+}
+.belt {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(30, 27, 46, 0.025) 0 24px,
+    rgba(30, 27, 46, 0.055) 24px 48px
+  );
+  animation: belt 2.4s linear infinite;
+}
+
+/* Hold still while the player is aiming at something that bobs. */
+.bob:hover,
+.bob:focus-within {
+  animation-play-state: paused;
+}
