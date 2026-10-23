@@ -209,3 +209,48 @@ test('a lesson can be played in full screen, and the quiz button leaves full scr
   await expect(page.getByTestId('stage-fullscreen')).toHaveText(/^Full screen$/);
   await expect(page.getByTestId('quiz')).toBeInViewport();
 });
+
+test('Bio Olympiad: filter practice questions, then take and review a test', async ({ page }) => {
+  await page.goto('/olympiad');
+  await expect(page.getByRole('heading', { level: 1, name: 'Bio Olympiad' })).toBeVisible();
+
+  // Practice: filter to genetics data questions, answer one and see the explanation.
+  await page.getByTestId('oly-practice').click();
+  await page
+    .getByRole('group', { name: 'Topic' })
+    .getByRole('button', { name: /Genetics/ })
+    .click();
+  await page
+    .getByRole('group', { name: 'Skill' })
+    .getByRole('button', { name: 'Data analysis' })
+    .click();
+  await expect(page).toHaveURL(/topic=genetics/);
+  const count = await page.getByTestId('oly-question').count();
+  expect(count).toBeGreaterThan(0);
+  const card = page.getByTestId('oly-question').first();
+  await card.getByRole('radio').first().click();
+  await card.getByRole('button', { name: 'Check answer' }).click();
+  await expect(card.getByRole('status')).toContainText(/point/);
+
+  // A ready-made test: answer the first question, submit, and review.
+  await page.goto('/olympiad/test/quick-10');
+  await page.getByTestId('oly-start').click();
+  const test = page.getByTestId('oly-test');
+  await expect(test.getByText('Question 1 of 10')).toBeVisible();
+  await test.getByRole('radio').first().click();
+  await page.keyboard.press('ArrowRight');
+  await expect(test.getByText('Question 2 of 10')).toBeVisible();
+
+  // A refresh keeps the test in progress.
+  await page.reload();
+  await expect(page.getByTestId('oly-test').getByText('Question 2 of 10')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Submit', exact: true }).click();
+  await page.getByTestId('oly-submit').click();
+  await expect(page.getByTestId('oly-review')).toBeVisible();
+  await expect(page.getByTestId('oly-score')).toContainText('/ 10 points');
+
+  // The result is listed on the Bio Olympiad page.
+  await page.goto('/olympiad');
+  await expect(page.getByRole('heading', { name: 'Your results' })).toBeVisible();
+});
