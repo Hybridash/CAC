@@ -62,9 +62,9 @@ export function QuestionMeta({ q }: { q: OlyQuestion }) {
 
 function DataTable({ table }: { table: OlyTable }) {
   return (
-    <figure className="overflow-x-auto rounded-2xl bg-white ring-1 ring-black/10">
+    <figure className="overflow-x-auto rounded-2xl bg-surface ring-1 ring-black/10">
       <table className="w-full min-w-max border-collapse text-sm">
-        <caption className="bg-slate-50 px-3 py-2 text-left text-xs font-extrabold tracking-wide text-ink-soft uppercase">
+        <caption className="bg-slate-50 px-3 py-2 text-left text-xs font-extrabold text-ink-soft">
           <Icon name="clipboard" size={16} className="-mt-0.5 mr-1" />
           {table.caption}
         </caption>
@@ -164,7 +164,7 @@ export function QuestionView({
                       ? 'bg-rose-50 ring-rose-300'
                       : chosen
                         ? 'bg-indigo-50 ring-indigo-400'
-                        : 'bg-white ring-black/10 enabled:hover:ring-indigo-200'
+                        : 'bg-surface ring-black/10 enabled:hover:ring-indigo-200'
                 }`}
               >
                 <span
@@ -204,7 +204,7 @@ export function QuestionView({
                     ? 'bg-emerald-50 ring-emerald-300'
                     : wrong
                       ? 'bg-rose-50 ring-rose-200'
-                      : 'bg-white ring-black/10'
+                      : 'bg-surface ring-black/10'
                 }`}
               >
                 <p className="flex-1 font-semibold">
@@ -234,7 +234,7 @@ export function QuestionView({
                             ? v
                               ? 'bg-emerald-600 text-white ring-emerald-600'
                               : 'bg-rose-600 text-white ring-rose-600'
-                            : 'bg-white text-ink-soft ring-black/10 enabled:hover:ring-indigo-200'
+                            : 'bg-surface text-ink-soft ring-black/10 enabled:hover:ring-indigo-200'
                         } ${isAnswer && !on ? 'ring-emerald-500 ring-dashed' : ''}`}
                       >
                         {v ? 'True' : 'False'}
@@ -318,7 +318,7 @@ export function ScoreRing({ pct, size = 120 }: { pct: number; size?: number }) {
         fontSize="28"
         fontWeight="800"
         fill="#1e1b2e"
-        fontFamily="Baloo 2, ui-rounded, sans-serif"
+        fontFamily="Newsreader, Georgia, serif"
       >
         {pct}%
       </text>

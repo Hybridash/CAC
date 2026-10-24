@@ -331,7 +331,7 @@ export function MitosisLesson({
         </button>
       )}
       {phase === 'anaphase' && (
-        <label className="flex flex-col gap-1 rounded-2xl bg-white p-3 ring-1 ring-black/10">
+        <label className="flex flex-col gap-1 rounded-2xl bg-surface p-3 ring-1 ring-black/10">
           <span className="text-sm font-bold">Pull the spindle fibers ({pull}%)</span>
           <input
             type="range"
@@ -344,7 +344,7 @@ export function MitosisLesson({
         </label>
       )}
       {phase === 'telophase' && (
-        <label className="flex flex-col gap-1 rounded-2xl bg-white p-3 ring-1 ring-black/10">
+        <label className="flex flex-col gap-1 rounded-2xl bg-surface p-3 ring-1 ring-black/10">
           <span className="text-sm font-bold">Pinch the cell in two ({pinch}%)</span>
           <input
             type="range"
@@ -358,7 +358,7 @@ export function MitosisLesson({
       )}
 
       {phase === 'done' && (
-        <div className="grid gap-3 rounded-2xl bg-white p-3 ring-1 ring-black/10 sm:grid-cols-[1fr_auto]">
+        <div className="grid gap-3 rounded-2xl bg-surface p-3 ring-1 ring-black/10 sm:grid-cols-[1fr_auto]">
           <div>
             <h3 className="font-extrabold">
               <Icon name="microscope" size={22} className="mr-1" /> Checkpoint check

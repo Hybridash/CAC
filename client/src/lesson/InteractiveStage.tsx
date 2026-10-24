@@ -146,12 +146,12 @@ export function InteractiveStage({
       className={
         immersive
           ? 'fixed inset-0 z-[150] flex flex-col overflow-hidden text-white'
-          : 'card relative min-w-0 overflow-hidden'
+          : 'relative min-w-0'
       }
       style={
         immersive
           ? {
-              background: `radial-gradient(90% 70% at 15% 0%, ${cat.color}cc, transparent 60%), radial-gradient(80% 60% at 100% 100%, #7c3aedaa, transparent 60%), linear-gradient(160deg, #1e1b4b, #0f172a 55%, #111827)`,
+              background: 'var(--color-night)',
             }
           : undefined
       }
@@ -162,33 +162,30 @@ export function InteractiveStage({
         className={`relative z-10 flex items-center gap-3 ${
           immersive
             ? 'px-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-2 sm:px-5'
-            : 'border-b border-black/5 px-4 py-2.5 sm:px-5'
+            : 'border-b border-line pb-3'
         }`}
-        style={
-          immersive ? undefined : { background: `linear-gradient(90deg, ${cat.tint}, #ffffff)` }
-        }
       >
         <span
-          className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl shadow-sm ${immersive ? 'bg-white/15 ring-1 ring-white/25' : 'bg-white ring-1 ring-black/10'}`}
+          className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl shadow-sm ${immersive ? 'bg-white/15 ring-1 ring-white/25' : 'bg-surface ring-1 ring-black/10'}`}
         >
           <Icon name={icon} size={26} />
         </span>
         <div className="min-w-0 flex-1 leading-tight">
           <p
-            className={`text-[11px] font-extrabold tracking-[0.16em] uppercase ${immersive ? 'text-white/70' : 'text-ink-soft'}`}
+            className={`truncate font-display font-extrabold ${immersive ? 'text-xl sm:text-2xl' : 'text-lg'}`}
+          >
+            {immersive ? concept.title : 'Interactive lab'}
+          </p>
+          <p
+            className={`text-xs font-semibold ${immersive ? 'text-white/70' : 'text-ink-soft'}`}
           >
             {label}
             {done && (
               <span className={immersive ? 'text-emerald-300' : 'text-emerald-700'}>
                 {' '}
-                · Complete
+                (complete)
               </span>
             )}
-          </p>
-          <p
-            className={`truncate font-display font-extrabold ${immersive ? 'text-xl sm:text-2xl' : 'text-lg'}`}
-          >
-            {immersive ? concept.title : 'Interactive lab'}
           </p>
         </div>
         {immersive && (
@@ -207,8 +204,8 @@ export function InteractiveStage({
           onClick={() => void (immersive ? exit() : enter())}
           className={
             immersive
-              ? 'btn bg-white px-3 py-2 text-sm text-ink shadow-lg hover:bg-slate-100'
-              : 'btn sheen bg-ink px-3 py-2 text-sm text-white shadow-[0_3px_0_#000] hover:brightness-125'
+              ? 'btn bg-surface px-3 py-2 text-sm text-ink shadow-lg hover:bg-slate-100'
+              : 'btn bg-night px-3 py-2 text-sm text-white hover:bg-brand-hover'
           }
           aria-keyshortcuts="F"
           data-testid="stage-fullscreen"
@@ -236,10 +233,11 @@ export function InteractiveStage({
           </aside>
         )}
         <div
+          data-theme="light"
           className={
             immersive
-              ? 'mx-auto min-h-0 w-full max-w-7xl flex-1 overflow-y-auto rounded-[2rem] bg-paper p-4 text-ink shadow-2xl ring-4 ring-white/15 sm:p-6'
-              : 'p-4 sm:p-5'
+              ? 'mx-auto min-h-0 w-full max-w-7xl flex-1 overflow-y-auto rounded-3xl bg-paper p-4 text-ink shadow-2xl ring-4 ring-white/15 sm:p-6'
+              : 'bg-paper pt-4 dark:rounded-xl dark:sm:p-4'
           }
         >
           <StageContext.Provider value={stage}>{children}</StageContext.Provider>
@@ -248,7 +246,7 @@ export function InteractiveStage({
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 p-4 ring-2 ring-emerald-300"
+                className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-emerald-50 p-4 ring-1 ring-emerald-300"
                 data-testid="interaction-complete"
               >
                 <span className="flex items-center gap-2 font-bold text-emerald-900">
@@ -286,7 +284,7 @@ export function InteractiveStage({
             className="pointer-events-none absolute inset-x-0 top-20 z-40 flex justify-center px-4"
             aria-hidden
           >
-            <div className="flex items-center gap-3 rounded-full bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-300 px-6 py-3 font-display text-2xl font-extrabold text-amber-950 shadow-2xl ring-4 ring-white">
+            <div className="flex items-center gap-3 rounded-xl bg-amber-300 px-6 py-3 font-display text-2xl font-extrabold text-amber-950 shadow-lg ring-2 ring-white">
               <Icon name="star" size={34} /> Lab complete!
               <Icon name="star" size={34} />
             </div>
@@ -386,7 +384,7 @@ function Backdrop({ emoji }: { emoji: string }) {
           }
         />
       ))}
-      <span className="drift absolute right-[6%] bottom-[8%] text-[9rem] opacity-[0.07]">
+      <span className="drift absolute right-[6%] bottom-[8%] text-9xl opacity-[0.07]">
         {emoji}
       </span>
     </div>

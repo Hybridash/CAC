@@ -10,7 +10,7 @@ export const CODONS: Record<string, AminoAcid> = {
   AUG: { name: 'Methionine', short: 'Met', color: '#22c55e' },
   CAC: { name: 'Histidine', short: 'His', color: '#3b82f6' },
   GAG: { name: 'Glutamic acid', short: 'Glu', color: '#f43f5e' },
-  GUG: { name: 'Valine', short: 'Val', color: '#a855f7' },
+  GUG: { name: 'Valine', short: 'Val', color: '#c93c80' },
   CCU: { name: 'Proline', short: 'Pro', color: '#f59e0b' },
   UUU: { name: 'Phenylalanine', short: 'Phe', color: '#14b8a6' },
   GGA: { name: 'Glycine', short: 'Gly', color: '#64748b' },

@@ -365,7 +365,7 @@ export function EtcLesson({
                   width="70"
                   height="48"
                   rx="16"
-                  fill="#a78bfa"
+                  fill="#8fb1ce"
                   stroke="#1e1b2e"
                   strokeWidth="2.5"
                 />
@@ -565,7 +565,7 @@ export function EtcLesson({
               .filter((t) => !placed.includes(t.id))
               .map((t) => (
                 <Draggable key={t.id} id={t.id} label={t.label}>
-                  <span className="block rounded-xl bg-white px-3 py-2 text-sm font-bold shadow ring-1 ring-black/10">
+                  <span className="block rounded-xl bg-surface px-3 py-2 text-sm font-bold shadow ring-1 ring-black/10">
                     {t.label}
                   </span>
                 </Draggable>
@@ -573,17 +573,17 @@ export function EtcLesson({
           ) : (
             <>
               <Draggable id="nadh" label="NADH">
-                <span className="flex items-center gap-1 rounded-xl bg-white px-3 py-2 font-bold shadow ring-1 ring-black/10">
+                <span className="flex items-center gap-1 rounded-xl bg-surface px-3 py-2 font-bold shadow ring-1 ring-black/10">
                   <Icon name="battery" size={18} /> NADH
                 </span>
               </Draggable>
               <Draggable id="fadh2" label="FADH2">
-                <span className="flex items-center gap-1 rounded-xl bg-white px-3 py-2 font-bold shadow ring-1 ring-black/10">
+                <span className="flex items-center gap-1 rounded-xl bg-surface px-3 py-2 font-bold shadow ring-1 ring-black/10">
                   <Icon name="battery" size={18} /> FADH₂
                 </span>
               </Draggable>
               <button
-                className={`chip py-1.5 text-sm ${auto ? 'bg-amber-300 text-amber-950' : 'bg-white ring-1 ring-black/10'}`}
+                className={`chip py-1.5 text-sm ${auto ? 'bg-amber-300 text-amber-950' : 'bg-surface ring-1 ring-black/10'}`}
                 aria-pressed={auto}
                 onClick={() => setAuto(!auto)}
               >
@@ -645,7 +645,7 @@ function PoisonBtn({
     <button
       onClick={onClick}
       aria-pressed={on}
-      className={`chip py-1.5 text-sm ${on ? 'bg-rose-600 text-white' : 'bg-white text-ink ring-1 ring-black/10'}`}
+      className={`chip py-1.5 text-sm ${on ? 'bg-rose-600 text-white' : 'bg-surface text-ink ring-1 ring-black/10'}`}
     >
       {children}
     </button>
@@ -664,7 +664,7 @@ function Stat({
   color: string;
 }) {
   return (
-    <div className="rounded-2xl bg-white p-2.5 ring-1 ring-black/10">
+    <div className="rounded-2xl bg-surface p-2.5 ring-1 ring-black/10">
       <div className="flex justify-between text-sm font-bold">
         <span>{label}</span>
         <span>{value}</span>

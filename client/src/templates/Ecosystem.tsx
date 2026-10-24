@@ -100,7 +100,7 @@ export function Ecosystem({
         <Habitat config={config} pop={pop} tall={immersive} running={running} />
         <div className="absolute top-3 right-3 flex gap-2">
           <button
-            className="grid h-11 w-11 place-items-center rounded-full bg-white/90 shadow-lg ring-1 ring-black/10 hover:bg-white"
+            className="grid h-11 w-11 place-items-center rounded-full bg-surface/90 shadow-lg ring-1 ring-black/10 hover:bg-surface"
             onClick={() => {
               sfx.pop();
               setRunning(!running);
@@ -110,14 +110,14 @@ export function Ecosystem({
             <Icon name={running ? 'pause' : 'play'} size={24} />
           </button>
           <button
-            className="grid h-11 w-11 place-items-center rounded-full bg-white/90 text-xl font-extrabold shadow-lg ring-1 ring-black/10 hover:bg-white"
+            className="grid h-11 w-11 place-items-center rounded-full bg-surface/90 text-xl font-extrabold shadow-lg ring-1 ring-black/10 hover:bg-surface"
             onClick={reset}
             aria-label="Reset"
           >
             ↺
           </button>
         </div>
-        <span className="absolute top-3 left-3 chip bg-white/90 py-1 font-mono shadow">
+        <span className="absolute top-3 left-3 chip bg-surface/90 py-1 font-mono shadow">
           <Icon name="clock" size={18} /> Day {Math.round(steps * (speed / 10))}
         </span>
       </div>
@@ -134,7 +134,7 @@ export function Ecosystem({
           return (
             <div
               key={s.id}
-              className={`flex flex-col gap-1.5 rounded-2xl bg-white p-2.5 ring-2 transition ${present ? '' : 'opacity-70'}`}
+              className={`flex flex-col gap-1.5 rounded-2xl bg-surface p-2.5 ring-2 transition ${present ? '' : 'opacity-70'}`}
               style={{ ['--tw-ring-color' as string]: `${s.color}66` }}
             >
               <div className="flex items-center gap-2">
@@ -163,7 +163,7 @@ export function Ecosystem({
               {canToggle && (
                 <button
                   onClick={() => toggle(s.id)}
-                  className={`rounded-xl py-1.5 text-sm font-extrabold transition active:scale-95 ${present ? 'bg-rose-100 text-rose-800 hover:bg-rose-200' : 'bg-emerald-500 text-white shadow-[0_3px_0_#047857] hover:brightness-105'}`}
+                  className={`rounded-xl py-1.5 text-sm font-extrabold transition active:scale-95 ${present ? 'bg-rose-100 text-rose-800 hover:bg-rose-200' : 'bg-emerald-500 text-white hover:brightness-105'}`}
                 >
                   {present ? '− Remove' : '+ Add'} {s.emoji} {s.label}
                 </button>
@@ -173,7 +173,7 @@ export function Ecosystem({
         })}
       </div>
 
-      <figure className="rounded-3xl bg-slate-900 p-3 ring-1 ring-black/10">
+      <figure className="rounded-3xl bg-night p-3 ring-1 ring-black/10">
         <figcaption className="mb-1 flex flex-wrap gap-3 text-xs font-bold text-slate-200">
           {config.species.map((s) => (
             <span key={s.id} className="flex items-center gap-1">

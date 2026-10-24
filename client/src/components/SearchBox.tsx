@@ -4,7 +4,8 @@ import { CATEGORY_BY_ID, potentialReward } from '@bioplay/shared';
 import { searchIndex } from '../lib/library';
 import { AtpAmount } from './Atp';
 import { Stars } from './ConceptBits';
-import { CategoryIcon, Icon } from './Icon';
+import { CategoryIcon } from './Icon';
+import { UiIcon } from './UiIcon';
 
 /** Accessible combobox with live fuzzy autocomplete. */
 export function SearchBox({
@@ -51,7 +52,7 @@ export function SearchBox({
           aria-hidden
           className={`pointer-events-none absolute top-1/2 -translate-y-1/2 ${big ? 'left-4' : 'left-2.5'}`}
         >
-          <Icon name="mystery" size={big ? 28 : 18} />
+          <UiIcon name="search" size={big ? 22 : 18} className="text-ink-soft" />
         </span>
         <input
           ref={inputRef}
@@ -65,7 +66,7 @@ export function SearchBox({
           autoComplete="off"
           value={q}
           placeholder={
-            big ? 'Try “blood sugar”, “jumping genes”, “tardigrade”…' : 'Search concepts…'
+            big ? 'Search 154 concepts' : 'Search concepts…'
           }
           onChange={(e) => {
             setQ(e.target.value);
@@ -83,10 +84,10 @@ export function SearchBox({
               setActive((a) => Math.max(a - 1, 0));
             } else if (e.key === 'Escape') setOpen(false);
           }}
-          className={`w-full rounded-full bg-white font-semibold text-ink ring-2 ring-black/10 placeholder:font-normal placeholder:text-slate-400 focus:ring-indigo-400 focus:outline-none ${
+          className={`w-full rounded-lg bg-surface font-medium text-ink ring-1 ring-ink/20 placeholder:font-normal placeholder:text-slate-500 focus:ring-2 focus:ring-brand focus:outline-none ${
             big
-              ? 'py-4 pr-5 pl-14 text-lg shadow-[0_6px_0_rgba(30,27,46,0.08)]'
-              : 'py-2 pr-3 pl-9 text-sm'
+              ? 'py-3.5 pr-5 pl-14 text-lg'
+              : 'py-2.5 pr-3 pl-9 text-base'
           }`}
         />
       </form>
@@ -94,7 +95,7 @@ export function SearchBox({
         <ul
           id={listId}
           role="listbox"
-          className="absolute z-50 mt-2 max-h-[70vh] w-full min-w-72 overflow-auto rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-black/10"
+          className="absolute z-50 mt-2 max-h-[70vh] w-full min-w-72 overflow-auto rounded-2xl bg-surface p-1.5 shadow-xl ring-1 ring-black/10"
         >
           {results.length === 0 && (
             <li className="p-3 text-sm text-ink-soft">No matches yet — try another word.</li>

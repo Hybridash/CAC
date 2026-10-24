@@ -157,6 +157,8 @@ export interface AssemblyPart {
   id: string;
   label: string;
   emoji?: string;
+  /** A short chemical symbol drawn as a badge instead of an emoji, e.g. "Na⁺", "ATP". */
+  symbol?: string;
   description: string;
 }
 

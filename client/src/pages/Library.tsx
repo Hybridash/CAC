@@ -13,7 +13,6 @@ import { ConceptCard } from '../components/ConceptBits';
 import { searchIndex } from '../lib/library';
 import { DEFAULT_FILTERS, filterConcepts, type LibraryFilters, type SortKey } from '../lib/search';
 import { usePlayer } from '../store/player';
-import { inkFor } from '../lib/color';
 import { CategoryIcon } from '../components/Icon';
 
 const toggle = <T,>(list: T[], v: T) =>
@@ -51,7 +50,7 @@ export function LibraryPage() {
         </div>
       </div>
 
-      <div className="card flex flex-col gap-4 p-4">
+      <div className="flex flex-col gap-5 border-y border-line py-5">
         <label className="flex flex-col gap-1">
           <span className="text-sm font-bold">Search</span>
           <input
@@ -77,12 +76,7 @@ export function LibraryPage() {
                   key={c.id}
                   aria-pressed={on}
                   onClick={() => set({ categories: toggle(filters.categories, c.id) })}
-                  className="chip py-1 ring-2 transition"
-                  style={{
-                    background: on ? c.color : c.tint,
-                    color: on ? 'white' : inkFor(c.color),
-                    ['--tw-ring-color' as string]: on ? c.color : 'transparent',
-                  }}
+                  className={`chip min-h-9 px-2.5 ring-1 transition-colors ${on ? 'bg-night text-white ring-ink' : 'bg-surface text-ink ring-ink/20 hover:ring-ink/50'}`}
                 >
                   <CategoryIcon id={c.id} size={18} /> {c.name}
                 </button>
@@ -103,7 +97,7 @@ export function LibraryPage() {
                     aria-pressed={on}
                     title={DIFFICULTY_LABEL[d]}
                     onClick={() => set({ difficulties: toggle(filters.difficulties, d) })}
-                    className={`chip py-1 ${on ? 'bg-amber-400 text-amber-950' : 'bg-slate-100 text-ink-soft'}`}
+                    className={`chip min-h-9 px-2.5 ring-1 transition-colors ${on ? 'bg-night text-white ring-ink' : 'bg-surface text-ink ring-ink/20 hover:ring-ink/50'}`}
                   >
                     {d}★<span className="sr-only"> {DIFFICULTY_LABEL[d]}</span>
                   </button>
@@ -155,7 +149,7 @@ export function LibraryPage() {
         {results.length} concept{results.length === 1 ? '' : 's'}
         {q && <> matching “{q}”</>}
       </p>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-x-10 gap-y-3 lg:grid-cols-2">
         {results.map((c) => (
           <ConceptCard key={c.id} concept={c} />
         ))}

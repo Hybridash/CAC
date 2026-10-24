@@ -42,11 +42,9 @@ export function createUser(db: DB, now: Date): { user: UserRow; token: string } 
     db.prepare(
       'INSERT INTO users (id, token_hash, created_at, equipped_avatar) VALUES (?, ?, ?, ?)',
     ).run(id, hashToken(token), now.toISOString(), STARTER_AVATAR);
-    db.prepare('INSERT INTO sessions (token_hash, user_id, created_at) VALUES (?, ?, ?)').run(
-      hashToken(token),
-      id,
-      now.toISOString(),
-    );
+    db.prepare(
+      'INSERT INTO sessions (token_hash, user_id, created_at, last_used_at) VALUES (?, ?, ?, ?)',
+    ).run(hashToken(token), id, now.toISOString(), now.toISOString());
     // Everyone starts with one friendly avatar so the header isn't empty.
     db.prepare(
       'INSERT INTO inventory (user_id, avatar_id, count, acquired_at) VALUES (?, ?, 1, ?)',
@@ -59,27 +57,68 @@ export function getUser(db: DB, id: string): UserRow | undefined {
   return db.prepare('SELECT * FROM users WHERE id = ?').get(id) as UserRow | undefined;
 }
 
-export function getUserByToken(db: DB, token: string): UserRow | undefined {
-  return db
-    .prepare(
-      'SELECT users.* FROM sessions JOIN users ON users.id = sessions.user_id WHERE sessions.token_hash = ?',
-    )
-    .get(hashToken(token)) as UserRow | undefined;
+/** A sign-in token stops working after 90 idle days, or 365 days after it was issued. */
+export const SESSION_IDLE_MS = 90 * 24 * 3600_000;
+export const SESSION_MAX_AGE_MS = 365 * 24 * 3600_000;
+/** A player can be signed in on at most this many devices; the oldest sessions are dropped. */
+export const MAX_SESSIONS_PER_USER = 20;
+
+export function getUserByToken(db: DB, token: string, now: Date = new Date()): UserRow | undefined {
+  const tokenHash = hashToken(token);
+  const s = db
+    .prepare('SELECT user_id, created_at, last_used_at FROM sessions WHERE token_hash = ?')
+    .get(tokenHash) as { user_id: string; created_at: string; last_used_at: string | null } | undefined;
+  if (!s) return undefined;
+  const t = now.getTime();
+  const lastUsed = Date.parse(s.last_used_at ?? s.created_at);
+  if (t - lastUsed > SESSION_IDLE_MS || t - Date.parse(s.created_at) > SESSION_MAX_AGE_MS) {
+    db.prepare('DELETE FROM sessions WHERE token_hash = ?').run(tokenHash);
+    return undefined;
+  }
+  // Refresh "last used" at most once an hour so reads don't turn into constant writes.
+  if (t - lastUsed > 3600_000) {
+    db.prepare('UPDATE sessions SET last_used_at = ? WHERE token_hash = ?').run(
+      now.toISOString(),
+      tokenHash,
+    );
+  }
+  return getUser(db, s.user_id);
 }
 
 /** A new sign-in token for an existing player (another device, or after switching accounts). */
 export function createSession(db: DB, userId: string, now: Date): string {
   const token = crypto.randomBytes(32).toString('base64url');
-  db.prepare('INSERT INTO sessions (token_hash, user_id, created_at) VALUES (?, ?, ?)').run(
-    hashToken(token),
-    userId,
-    now.toISOString(),
-  );
+  db.transaction(() => {
+    db.prepare(
+      'INSERT INTO sessions (token_hash, user_id, created_at, last_used_at) VALUES (?, ?, ?, ?)',
+    ).run(hashToken(token), userId, now.toISOString(), now.toISOString());
+    db.prepare(
+      `DELETE FROM sessions WHERE user_id = ? AND token_hash NOT IN (
+         SELECT token_hash FROM sessions WHERE user_id = ? ORDER BY created_at DESC, rowid DESC LIMIT ?
+       )`,
+    ).run(userId, userId, MAX_SESSIONS_PER_USER);
+  })();
   return token;
 }
 
 export function deleteSession(db: DB, token: string) {
   db.prepare('DELETE FROM sessions WHERE token_hash = ?').run(hashToken(token));
+}
+
+/** Sign this player out on every device. */
+export function deleteAllSessions(db: DB, userId: string) {
+  db.prepare('DELETE FROM sessions WHERE user_id = ?').run(userId);
+}
+
+/** Housekeeping: remove sessions that can no longer be used. */
+export function purgeExpiredSessions(db: DB, now: Date): number {
+  const idle = new Date(now.getTime() - SESSION_IDLE_MS).toISOString();
+  const old = new Date(now.getTime() - SESSION_MAX_AGE_MS).toISOString();
+  return db
+    .prepare(
+      'DELETE FROM sessions WHERE COALESCE(last_used_at, created_at) < ? OR created_at < ?',
+    )
+    .run(idle, old).changes;
 }
 
 export function findIdentity(db: DB, provider: AuthProvider, subject: string) {

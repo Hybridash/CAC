@@ -88,7 +88,7 @@ function SceneItem({
         ) : null}
       </span>
       {el.label && (
-        <span className="mt-1 rounded-full bg-white/90 px-2 py-0.5 text-[11px] font-extrabold whitespace-nowrap text-ink shadow ring-1 ring-black/5">
+        <span className="mt-1 rounded-full bg-surface/90 px-2 py-0.5 text-xs font-extrabold whitespace-nowrap text-ink shadow ring-1 ring-black/5">
           {el.label}
         </span>
       )}

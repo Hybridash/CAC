@@ -8,6 +8,7 @@ export default tseslint.config(
     ignores: [
       '**/dist-native/**',
       'client/ios/**',
+      'client/public/**', // static assets such as theme-init.js (plain browser script)
       '*.tmp.mjs',
       '**/dist/**',
       '**/node_modules/**',

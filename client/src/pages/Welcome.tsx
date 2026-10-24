@@ -1,15 +1,10 @@
-import { motion } from 'framer-motion';
+import { CONCEPTS, HS_LESSONS } from '@bioplay/shared';
 import { usePlayer } from '../store/player';
 import { SignInButtons } from '../components/SignInButtons';
 import { EmailAccountForm } from '../components/EmailAccountForm';
 import { Icon, type IconName } from '../components/Icon';
 
-const FLOATERS: { icon: IconName; className: string; delay: number }[] = [
-  { icon: 'microbe', className: 'left-[6%] top-[10%]', delay: 0 },
-  { icon: 'dna', className: 'right-[8%] top-[14%]', delay: 0.6 },
-  { icon: 'sprout', className: 'left-[10%] bottom-[16%]', delay: 1.1 },
-  { icon: 'brain', className: 'right-[10%] bottom-[12%]', delay: 0.3 },
-];
+const TILES: IconName[] = ['microscope', 'dna', 'brain', 'sprout', 'heart', 'microbe'];
 
 /** The first screen: a Bio Bites account, Apple or Google to save progress, or play as a guest. */
 export function WelcomePage() {
@@ -17,59 +12,80 @@ export function WelcomePage() {
 
   return (
     <main
-      className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-200 via-teal-100 to-sky-200 px-5 pt-[calc(env(safe-area-inset-top)+2rem)] pb-[calc(env(safe-area-inset-bottom)+2rem)]"
+      className="grid min-h-dvh lg:grid-cols-[1.1fr_1fr]"
       data-testid="welcome"
     >
-      {FLOATERS.map((f) => (
-        <motion.span
-          key={f.icon}
-          aria-hidden
-          className={`absolute opacity-60 ${f.className}`}
-          animate={{ y: [0, -10, 0] }}
-          transition={{ repeat: Infinity, duration: 4, delay: f.delay, ease: 'easeInOut' }}
-        >
-          <Icon name={f.icon} size={56} />
-        </motion.span>
-      ))}
-
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="relative flex w-full max-w-sm flex-col items-center text-center"
+      <section
+        className="flex flex-col justify-between gap-12 bg-night px-6 pt-[calc(env(safe-area-inset-top)+2rem)] pb-10 text-white sm:px-12 lg:py-14"
+        style={{
+          backgroundImage: 'radial-gradient(rgba(255,255,255,0.09) 1.2px, transparent 1.2px)',
+          backgroundSize: '18px 18px',
+        }}
       >
-        <img src="/icon.svg" alt="" width={96} height={96} className="rounded-[1.6rem] shadow-lg" />
-        <h1 className="mt-4 font-display text-5xl font-extrabold tracking-tight">
-          Bio <span className="text-brand-dark">Bites</span>
-        </h1>
-        <p className="mt-2 text-lg font-semibold text-ink-soft">
-          Biology is not hard, you just have to learn it.
-        </p>
+        <div className="flex items-center gap-3">
+          <img src="/icon.svg" alt="" width={44} height={44} className="rounded-lg" />
+          <h1 className="font-display text-3xl font-extrabold tracking-tight">Bio Bites</h1>
+        </div>
 
-        <div className="card mt-8 flex w-full flex-col gap-3 p-5 text-left">
-          <h2 className="text-center text-xl font-extrabold">Welcome!</h2>
-          <p className="text-center text-sm text-ink-soft">
-            Sign in to save your progress and pick it up on any device.
+        <div>
+          <p className="max-w-[16ch] font-display text-[clamp(2.4rem,6vw,4.25rem)] leading-[1.02] font-extrabold tracking-tight">
+            Biology is not hard, you just have to learn it.
           </p>
+          <p className="mt-5 max-w-[46ch] text-lg text-white/80">
+            Drag, drop and break living systems to see how they work, then check what stuck with a
+            quick quiz.
+          </p>
+        </div>
+
+        <div className="hidden items-end justify-between gap-6 sm:flex">
+          <dl className="flex gap-10 text-white/80">
+            <div>
+              <dt className="text-sm">Interactive concepts</dt>
+              <dd className="font-display text-3xl font-bold text-white">{CONCEPTS.length}</dd>
+            </div>
+            <div>
+              <dt className="text-sm">High school topics</dt>
+              <dd className="font-display text-3xl font-bold text-white">{HS_LESSONS.length}</dd>
+            </div>
+          </dl>
+          <div className="flex gap-2" aria-hidden>
+            {TILES.map((t) => (
+              <span key={t} className="grid h-11 w-11 place-items-center rounded-lg bg-white">
+                <Icon name={t} size={30} />
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="flex items-center justify-center px-6 py-10 pb-[calc(env(safe-area-inset-bottom)+2.5rem)] sm:px-12">
+        <div className="flex w-full max-w-sm flex-col gap-4">
+          <div>
+            <h2 className="text-3xl font-extrabold">Save your progress</h2>
+            <p className="mt-1.5 text-ink-soft">
+              Sign in to pick up where you left off on any device.
+            </p>
+          </div>
           <EmailAccountForm collapsible large onSignedIn={finishWelcome} />
-          <div className="flex items-center gap-3 text-xs font-bold text-ink-soft uppercase">
-            <span className="h-px flex-1 bg-black/10" />
+          <div className="flex items-center gap-3 text-sm font-medium text-ink-soft">
+            <span className="h-px flex-1 bg-line" />
             or
-            <span className="h-px flex-1 bg-black/10" />
+            <span className="h-px flex-1 bg-line" />
           </div>
           <SignInButtons large onSignedIn={finishWelcome} />
-          <div className="flex items-center gap-3 text-xs font-bold text-ink-soft uppercase">
-            <span className="h-px flex-1 bg-black/10" />
+          <div className="flex items-center gap-3 text-sm font-medium text-ink-soft">
+            <span className="h-px flex-1 bg-line" />
             or
-            <span className="h-px flex-1 bg-black/10" />
+            <span className="h-px flex-1 bg-line" />
           </div>
           <button className="btn-ghost py-3 text-lg" onClick={finishWelcome}>
             Continue as guest
           </button>
-          <p className="text-center text-xs text-ink-soft">
+          <p className="text-sm text-ink-soft">
             Guests can sign in later from the Profile page and keep everything they’ve earned.
           </p>
         </div>
-      </motion.div>
+      </section>
     </main>
   );
 }

@@ -90,7 +90,7 @@ function Intro({ spec, query }: { spec: OlyTestSpec; query?: string }) {
       <Link to="/olympiad" className="text-sm font-bold text-ink-soft hover:underline">
         ← Bio Olympiad
       </Link>
-      <section className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-indigo-700 via-violet-700 to-fuchsia-700 p-6 text-white shadow-xl sm:p-8">
+      <section className="overflow-hidden rounded-3xl bg-night p-6 text-white shadow-xl sm:p-8">
         <span className="chip bg-white/15 text-white ring-1 ring-white/25">
           <Icon name="medal" size={18} /> Practice test
         </span>
@@ -103,7 +103,7 @@ function Intro({ spec, query }: { spec: OlyTestSpec; query?: string }) {
         </div>
       </section>
 
-      <section className="card p-5">
+      <section className="border-t border-line pt-4">
         <h2 className="mb-2 text-xl font-extrabold">Rules</h2>
         <ul className="flex flex-col gap-1.5 text-ink-soft">
           <li>• Multiple choice: one best answer, worth 1 point.</li>
@@ -146,7 +146,7 @@ function Intro({ spec, query }: { spec: OlyTestSpec; query?: string }) {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl bg-white/10 p-3 ring-1 ring-white/20">
-      <p className="text-xs font-extrabold tracking-wider text-white/70 uppercase">{label}</p>
+      <p className="text-xs font-extrabold text-white/70">{label}</p>
       <p className="font-display text-2xl font-extrabold">{value}</p>
     </div>
   );
@@ -232,7 +232,7 @@ function Running({ active }: { active: OlyActive }) {
   return (
     <div className="flex flex-col gap-4" data-testid="oly-test">
       {/* Exam bar */}
-      <div className="sticky top-[calc(3.6rem+env(safe-area-inset-top))] z-30 -mx-1 flex items-center gap-3 rounded-2xl bg-ink px-4 py-2.5 text-white shadow-lg">
+      <div className="sticky top-[calc(3.6rem+env(safe-area-inset-top))] z-30 -mx-1 flex items-center gap-3 rounded-2xl bg-night px-4 py-2.5 text-white shadow-lg">
         <span className="min-w-0 truncate font-display text-lg font-extrabold">{active.title}</span>
         <span className="hidden text-sm font-bold text-white/70 sm:inline">
           {answered} / {questions.length} answered
@@ -245,7 +245,7 @@ function Running({ active }: { active: OlyActive }) {
           <Icon name="clock" size={18} /> {remaining === null ? 'Untimed' : clock(remaining)}
         </span>
         <button
-          className="btn bg-amber-400 px-3 py-1.5 text-sm text-amber-950 shadow-[0_3px_0_#b45309]"
+          className="btn bg-amber-400 px-3 py-1.5 text-sm text-amber-950"
           onClick={() => setConfirming(true)}
         >
           Submit
@@ -263,7 +263,7 @@ function Running({ active }: { active: OlyActive }) {
           aria-label={`Question ${index + 1} of ${questions.length}`}
         >
           <div className="flex flex-wrap items-center gap-2">
-            <span className="font-display text-sm font-extrabold tracking-wider text-ink-soft uppercase">
+            <span className="font-display text-sm font-extrabold text-ink-soft">
               Question {index + 1} of {questions.length}
             </span>
             <QuestionMeta q={q} />
@@ -279,7 +279,7 @@ function Running({ active }: { active: OlyActive }) {
               ← Previous
             </button>
             <button
-              className={`btn text-sm ring-1 ${flagged ? 'bg-amber-300 text-amber-950 ring-amber-400' : 'bg-white text-ink-soft ring-black/10'}`}
+              className={`btn text-sm ring-1 ${flagged ? 'bg-amber-300 text-amber-950 ring-amber-400' : 'bg-surface text-ink-soft ring-black/10'}`}
               aria-pressed={flagged}
               onClick={() =>
                 update({
@@ -304,7 +304,7 @@ function Running({ active }: { active: OlyActive }) {
         </motion.section>
 
         <aside className="card p-4 lg:sticky lg:top-36" aria-label="Question navigator">
-          <h2 className="mb-2 text-xs font-extrabold tracking-wider text-ink-soft uppercase">
+          <h2 className="mb-2 text-xs font-extrabold text-ink-soft">
             Questions
           </h2>
           <div className="grid grid-cols-8 gap-1.5 sm:grid-cols-10 lg:grid-cols-5">
@@ -346,7 +346,7 @@ function Running({ active }: { active: OlyActive }) {
       <AnimatePresence>
         {confirming && (
           <motion.div
-            className="fixed inset-0 z-[90] grid place-items-center bg-ink/60 p-4"
+            className="fixed inset-0 z-[90] grid place-items-center bg-night/60 p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

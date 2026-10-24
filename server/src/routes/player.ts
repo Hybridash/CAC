@@ -3,13 +3,15 @@ import { z } from 'zod';
 import type { SessionResponse } from '@bioplay/shared';
 import { HttpError, requireUser, type AppContext } from '../http.js';
 import { createUser, playerState } from '../repo.js';
+import { LIMITS } from '../limits.js';
+import { rateLimit } from '../security.js';
 
 export function playerRoutes(ctx: AppContext) {
   const r = Router();
   const auth = requireUser(ctx);
 
   /** Create an anonymous player. The returned token is the only credential, so the client keeps it. */
-  r.post('/session', (_req, res) => {
+  r.post('/session', rateLimit(ctx.limiter, 'session', ...LIMITS.session), (_req, res) => {
     const { user, token } = createUser(ctx.db, ctx.clock());
     const body: SessionResponse = { token, state: playerState(ctx.db, user.id) };
     res.status(201).json(body);

@@ -8,7 +8,7 @@ export function PlayerAvatar({ size = 40 }: { size?: number }) {
   const avatar = AVATAR_BY_ID[equipped] ?? AVATAR_BY_ID[STARTER_AVATAR];
   return (
     <span
-      className="grid place-items-center rounded-full bg-white ring-2 ring-emerald-200"
+      className="grid place-items-center rounded-full bg-surface ring-2 ring-emerald-200"
       style={{ width: size, height: size }}
       title={avatar.name}
     >

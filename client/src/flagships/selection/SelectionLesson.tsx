@@ -186,7 +186,7 @@ export function SelectionLesson({
           ))}
         </AnimatePresence>
         {!hunting && (
-          <div className="pointer-events-none absolute right-3 bottom-3 rounded-full bg-white/85 px-3 py-1 text-sm font-bold shadow">
+          <div className="pointer-events-none absolute right-3 bottom-3 rounded-full bg-surface/85 px-3 py-1 text-sm font-bold shadow">
             Generation {gen} · {moths.length} moths
           </div>
         )}
@@ -232,7 +232,7 @@ function Histogram({ moths }: { moths: Moth[] }) {
   for (const m of moths) bins[Math.min(4, Math.floor(m.dark * 5))]++;
   const max = Math.max(1, ...bins);
   return (
-    <figure className="rounded-2xl bg-white p-3 ring-1 ring-black/10">
+    <figure className="rounded-2xl bg-surface p-3 ring-1 ring-black/10">
       <figcaption className="mb-2 text-sm font-bold">This generation: moths by color</figcaption>
       <div
         className="flex h-28 items-end gap-2"
@@ -265,7 +265,7 @@ function Trend({ history }: { history: { gen: number; mean: number; bark: Bark }
   const x = (g: number) => 20 + ((g - 1) / (n - 1)) * (W - 30);
   const y = (v: number) => H - 14 - v * (H - 24);
   return (
-    <figure className="rounded-2xl bg-white p-3 ring-1 ring-black/10">
+    <figure className="rounded-2xl bg-surface p-3 ring-1 ring-black/10">
       <figcaption className="mb-1 text-sm font-bold">Average darkness over generations</figcaption>
       <svg
         viewBox={`0 0 ${W} ${H}`}
@@ -290,7 +290,7 @@ function Trend({ history }: { history: { gen: number; mean: number; bark: Bark }
         <polyline
           points={history.map((h) => `${x(h.gen)},${y(h.mean)}`).join(' ')}
           fill="none"
-          stroke="#7c3aed"
+          stroke="#345a80"
           strokeWidth="3"
         />
         {history.map((h) => (
@@ -300,7 +300,7 @@ function Trend({ history }: { history: { gen: number; mean: number; bark: Bark }
             cy={y(h.mean)}
             r="4"
             fill={mothColor(h.mean)}
-            stroke="#4c1d95"
+            stroke="#223448"
             strokeWidth="1.5"
           />
         ))}

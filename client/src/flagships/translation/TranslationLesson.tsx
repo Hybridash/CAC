@@ -207,7 +207,7 @@ export function TranslationLesson({
                       <DropZone id="next-slot" label={`position ${i + 1}`} className="rounded-lg">
                         {({ isOver, armed }) => (
                           <span
-                            className={`grid h-9 w-9 place-items-center rounded-lg border-2 border-dashed text-sm font-bold ${isOver ? 'border-indigo-500 bg-indigo-100' : armed ? 'border-indigo-400 bg-white' : 'animate-pulse border-violet-400 bg-white'}`}
+                            className={`grid h-9 w-9 place-items-center rounded-lg border-2 border-dashed text-sm font-bold ${isOver ? 'border-indigo-500 bg-indigo-100' : armed ? 'border-indigo-400 bg-surface' : 'animate-pulse border-violet-400 bg-surface'}`}
                           >
                             ?
                           </span>
@@ -254,9 +254,9 @@ export function TranslationLesson({
                     >
                       {({ isOver, armed }) => (
                         <div
-                          className={`rounded-2xl p-1.5 ring-4 ${isOver ? 'bg-indigo-100 ring-indigo-500' : armed ? 'bg-white ring-indigo-300' : 'bg-amber-100 ring-amber-400'}`}
+                          className={`rounded-2xl p-1.5 ring-4 ${isOver ? 'bg-indigo-100 ring-indigo-500' : armed ? 'bg-surface ring-indigo-300' : 'bg-amber-100 ring-amber-400'}`}
                         >
-                          <div className="mb-1 text-center text-[10px] font-extrabold text-amber-900">
+                          <div className="mb-1 text-center text-xs font-extrabold text-amber-900">
                             RIBOSOME
                           </div>
                           <Codon c={c} />
@@ -306,14 +306,14 @@ export function TranslationLesson({
                     id={t.id}
                     label={`tRNA with anticodon ${t.anticodon} carrying ${t.aa.name}`}
                   >
-                    <span className="flex flex-col items-center rounded-2xl bg-white px-2 py-1.5 shadow ring-1 ring-black/10">
+                    <span className="flex flex-col items-center rounded-2xl bg-surface px-2 py-1.5 shadow ring-1 ring-black/10">
                       <span
-                        className="grid h-8 w-8 place-items-center rounded-full text-[10px] font-extrabold text-white"
+                        className="grid h-8 w-8 place-items-center rounded-full text-xs font-extrabold text-white"
                         style={{ background: t.aa.color }}
                       >
                         {t.aa.short}
                       </span>
-                      <span className="text-[10px] text-ink-soft">tRNA</span>
+                      <span className="text-xs text-ink-soft">tRNA</span>
                       <span className="font-mono text-sm font-extrabold tracking-wider">
                         {t.anticodon}
                       </span>
@@ -334,7 +334,7 @@ export function TranslationLesson({
 
       {phase === 'done' && (
         <section
-          className="rounded-3xl bg-white p-3 ring-2 ring-rose-200"
+          className="rounded-3xl bg-surface p-3 ring-2 ring-rose-200"
           aria-label="Mutation lab"
         >
           <h3 className="font-extrabold">
@@ -431,7 +431,7 @@ function Codon({ c }: { c: string }) {
           <Tile key={i} b={b} />
         ))}
       </div>
-      <span className="mt-0.5 text-[11px] font-bold text-ink-soft">
+      <span className="mt-0.5 text-xs font-bold text-ink-soft">
         {aa === 'STOP' ? 'STOP' : aa ? aa.short : '?'}
       </span>
     </div>
@@ -465,7 +465,7 @@ function ProteinRow({ title, chain }: { title: string; chain: AminoAcid[] }) {
 
 function CodonChart() {
   return (
-    <details className="rounded-2xl bg-white p-3 ring-1 ring-black/10">
+    <details className="rounded-2xl bg-surface p-3 ring-1 ring-black/10">
       <summary className="cursor-pointer text-sm font-extrabold">
         <Icon name="book" size={20} className="mr-1" /> Codon chart (part of the genetic code)
       </summary>

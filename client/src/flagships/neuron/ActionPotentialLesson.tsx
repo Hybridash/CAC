@@ -162,7 +162,7 @@ export function ActionPotentialLesson({
 
       <svg
         viewBox="0 0 900 250"
-        className="w-full rounded-3xl bg-gradient-to-b from-indigo-950 to-slate-900 ring-1 ring-black/20"
+        className="w-full rounded-3xl bg-night ring-1 ring-black/20"
         role="img"
         aria-label={`Neuron. Membrane voltage ${Math.round(s.v)} millivolts, ${s.phase}. ${s.wave !== null ? 'A signal is travelling down the axon.' : ''}`}
       >
@@ -221,7 +221,7 @@ export function ActionPotentialLesson({
           [858, 130],
           [846, 170],
         ].map(([x, y]) => (
-          <circle key={`${x}${y}`} cx={x} cy={y} r="12" fill={releasing ? '#fde047' : '#818cf8'} />
+          <circle key={`${x}${y}`} cx={x} cy={y} r="12" fill={releasing ? '#fde047' : '#3fa692'} />
         ))}
         {releasing &&
           Array.from({ length: 12 }, (_, i) => {
@@ -262,7 +262,7 @@ export function ActionPotentialLesson({
         <Membrane na={s.na} k={s.k} time={time} ttx={ttx} />
       </div>
 
-      <div className="flex flex-wrap items-end gap-3 rounded-2xl bg-white p-3 ring-1 ring-black/10">
+      <div className="flex flex-wrap items-end gap-3 rounded-2xl bg-surface p-3 ring-1 ring-black/10">
         <label className="flex min-w-48 flex-1 flex-col gap-1">
           <span className="flex justify-between text-sm font-bold">
             Zap strength <span className="text-indigo-700">+{strength} mV</span>
@@ -330,7 +330,7 @@ function Scope({ history, now }: { history: { t: number; v: number }[]; now: num
   const x = (t: number) => 40 + ((t - (now - WINDOW_MS)) / WINDOW_MS) * (W - 50);
   const pts = history.map((p) => `${x(p.t)},${y(p.v)}`).join(' ');
   return (
-    <figure className="rounded-2xl bg-slate-900 p-2 ring-1 ring-black/20">
+    <figure className="rounded-2xl bg-night p-2 ring-1 ring-black/20">
       <figcaption className="px-1 text-xs font-bold text-emerald-300">
         Oscilloscope · membrane voltage (mV)
       </figcaption>
@@ -399,7 +399,7 @@ function Membrane({ na, k, time, ttx }: { na: number; k: number; time: number; t
           cx={cx}
           cy={cy}
           r="6"
-          fill={kind === 'na' ? '#fb923c' : '#a78bfa'}
+          fill={kind === 'na' ? '#fb923c' : '#8fb1ce'}
           stroke="#1e1b2e"
           strokeWidth="1"
         />

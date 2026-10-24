@@ -11,17 +11,11 @@ import {
   type OlyTopic,
 } from '@bioplay/shared';
 import { Icon } from '../components/Icon';
+import { inkFor } from '../lib/color';
 import { useOlympiad } from './store';
 import { fmtPoints, pctOf, TOPIC_ICON } from './QuestionView';
 
 const FEATURED = ['quick-10', 'open-mock', 'semifinal', 'data-drill', 'tf-gauntlet'];
-const FEATURED_STYLE: Record<string, string> = {
-  'quick-10': 'from-emerald-500 to-teal-600',
-  'open-mock': 'from-indigo-600 to-violet-700',
-  semifinal: 'from-fuchsia-600 to-rose-600',
-  'data-drill': 'from-sky-500 to-indigo-600',
-  'tf-gauntlet': 'from-amber-500 to-orange-600',
-};
 
 export function OlympiadPage() {
   const practice = useOlympiad((s) => s.practice);
@@ -33,7 +27,7 @@ export function OlympiadPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <header className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-indigo-900 via-violet-800 to-amber-600 px-5 py-8 text-white sm:px-8">
+      <header className="relative overflow-hidden rounded-3xl bg-night px-5 py-8 text-white sm:px-8">
         <motion.span
           className="absolute -top-6 right-4 opacity-25 sm:right-10"
           animate={{ rotate: [0, 8, 0] }}
@@ -42,10 +36,7 @@ export function OlympiadPage() {
         >
           <Icon name="medal" size={180} />
         </motion.span>
-        <span className="chip bg-white/15 text-white ring-1 ring-white/25">
-          <Icon name="trophy" size={18} /> Competition prep
-        </span>
-        <h1 className="mt-3 text-4xl font-extrabold sm:text-5xl">Bio Olympiad</h1>
+        <h1 className="text-4xl font-extrabold sm:text-5xl">Bio Olympiad</h1>
         <p className="mt-2 max-w-2xl text-lg text-white/85">
           Train for biology olympiad exams with {OLY_QUESTIONS.length} challenging questions across
           the full syllabus: multiple choice, true/false statement sets and data analysis, each with
@@ -62,7 +53,7 @@ export function OlympiadPage() {
       {active && (
         <Link
           to={`/olympiad/test/${active.testId}${active.query ? `?${active.query}` : ''}`}
-          className="card flex items-center gap-3 bg-amber-50 p-4 ring-2 ring-amber-300 transition hover:-translate-y-0.5"
+          className="flex items-center gap-3 rounded-xl bg-amber-50 p-4 transition-colors hover:bg-amber-100"
           data-testid="oly-resume"
         >
           <Icon name="clock" size={36} />
@@ -77,11 +68,11 @@ export function OlympiadPage() {
       )}
 
       <div className="grid gap-5 lg:grid-cols-[1.3fr_1fr]">
-        <section className="card flex flex-col gap-3 p-5" aria-labelledby="practice-h">
-          <div className="flex items-start justify-between gap-3">
-            <div>
+        <section className="flex min-w-0 flex-col gap-3 border-t border-line pt-5" aria-labelledby="practice-h">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0">
               <h2 id="practice-h" className="flex items-center gap-2 text-2xl font-extrabold">
-                <Icon name="target" size={30} /> Practice questions
+                Practice questions
               </h2>
               <p className="text-ink-soft">
                 Filter by topic, level, format or skill. Answer at your own pace with instant
@@ -96,7 +87,7 @@ export function OlympiadPage() {
               Practice →
             </Link>
           </div>
-          <ul className="grid gap-2 sm:grid-cols-2">
+          <ul className="grid grid-cols-[minmax(0,1fr)] gap-2 sm:grid-cols-2">
             {OLY_TOPICS.map((t) => {
               const qs = OLY_QUESTIONS.filter((q) => q.topic === t.id);
               const done = qs.filter((q) => practice[q.id]?.correct).length;
@@ -104,27 +95,32 @@ export function OlympiadPage() {
                 <li key={t.id}>
                   <Link
                     to={`/olympiad/practice?topic=${t.id}`}
-                    className="flex items-center gap-2 rounded-2xl p-2 ring-1 ring-black/5 transition hover:ring-black/15"
-                    style={{ background: t.tint }}
+                    className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-slate-50"
                   >
-                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/70">
+                    <span
+                      className="grid h-10 w-10 shrink-0 place-items-center rounded-lg"
+                      style={{ background: t.tint }}
+                    >
                       <Icon name={TOPIC_ICON[t.id]} size={26} />
                     </span>
                     <span className="min-w-0 flex-1">
                       <span
-                        className="block truncate text-sm font-extrabold"
-                        style={{ color: t.color }}
+                        className="block truncate text-sm font-semibold"
+                        style={{ color: inkFor(t.color) }}
                       >
                         {t.name}
                       </span>
-                      <span className="mt-1 block h-1.5 overflow-hidden rounded-full bg-white/80">
-                        <span
-                          className="block h-full rounded-full"
-                          style={{ width: `${pctOf(done, qs.length)}%`, background: t.color }}
-                        />
+                      <span
+                        className="scale mt-1.5 block"
+                        style={{
+                          ['--v' as string]: `${pctOf(done, qs.length)}%`,
+                          ['--scale-color' as string]: t.color,
+                        }}
+                      >
+                        <i />
                       </span>
                     </span>
-                    <span className="text-xs font-extrabold text-ink-soft">
+                    <span className="text-xs font-medium text-ink-soft tabular-nums">
                       {done}/{qs.length}
                     </span>
                   </Link>
@@ -134,9 +130,9 @@ export function OlympiadPage() {
           </ul>
         </section>
 
-        <section className="card flex flex-col gap-3 p-5" aria-labelledby="rounds-h">
+        <section className="flex flex-col gap-3 border-t border-line pt-5" aria-labelledby="rounds-h">
           <h2 id="rounds-h" className="flex items-center gap-2 text-2xl font-extrabold">
-            <Icon name="book" size={30} /> How olympiad exams work
+            How olympiad exams work
           </h2>
           <ol className="flex flex-col gap-2 text-sm">
             <Round
@@ -162,7 +158,7 @@ export function OlympiadPage() {
 
       <section aria-labelledby="tests-h" className="flex flex-col gap-3">
         <h2 id="tests-h" className="flex items-center gap-2 text-3xl font-extrabold">
-          <Icon name="clock" size={34} /> Practice tests
+          Practice tests
         </h2>
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {OLY_TESTS.filter((t) => FEATURED.includes(t.id)).map((t) => {
@@ -172,17 +168,17 @@ export function OlympiadPage() {
               <li key={t.id}>
                 <Link
                   to={`/olympiad/test/${t.id}`}
-                  className={`flex h-full flex-col gap-2 rounded-3xl bg-gradient-to-br ${FEATURED_STYLE[t.id]} p-5 text-white shadow-lg transition hover:-translate-y-1 hover:shadow-xl`}
+                  className="group flex h-full flex-col gap-2 border-t border-line pt-4 transition-colors"
                 >
-                  <h3 className="text-2xl font-extrabold">{t.title}</h3>
-                  <p className="flex-1 text-sm text-white/85">{t.blurb}</p>
-                  <div className="flex flex-wrap gap-1.5 text-sm">
-                    <span className="chip bg-white/20 text-white">{n} questions</span>
-                    <span className="chip bg-white/20 text-white">
+                  <h3 className="text-2xl font-extrabold group-hover:underline">{t.title}</h3>
+                  <p className="flex-1 text-sm text-ink-soft">{t.blurb}</p>
+                  <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm font-medium text-ink-soft">
+                    <span>{n} questions</span>
+                    <span>
                       {t.minutes ? `${t.minutes} min` : 'Untimed'}
                     </span>
                     {last && (
-                      <span className="chip bg-white text-ink">
+                      <span className="font-semibold text-brand-dark">
                         Last: {pctOf(last.points, last.max)}%
                       </span>
                     )}
@@ -192,7 +188,7 @@ export function OlympiadPage() {
             );
           })}
           <li>
-            <div className="card flex h-full flex-col gap-3 p-5">
+            <div className="flex h-full flex-col gap-3 border-t border-line pt-4">
               <h3 className="text-2xl font-extrabold">Topic tests</h3>
               <p className="text-sm text-ink-soft">10 questions on one area · 18 min</p>
               <div className="flex flex-wrap gap-1.5">
@@ -218,7 +214,7 @@ export function OlympiadPage() {
           <h2 id="history-h" className="mb-3 text-3xl font-extrabold">
             Your results
           </h2>
-          <ul className="card divide-y divide-black/5">
+          <ul className="divide-y divide-line border-y border-line">
             {attempts.slice(0, 8).map((a) => {
               const pct = pctOf(a.points, a.max);
               return (
@@ -258,8 +254,8 @@ export function OlympiadPage() {
 
 function HeroStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl bg-white/10 px-3 py-2 ring-1 ring-white/20">
-      <p className="text-[11px] font-extrabold tracking-wider text-white/70 uppercase">{label}</p>
+    <div>
+      <p className="text-sm font-medium text-white/70">{label}</p>
       <p className="font-display text-2xl font-extrabold">{value}</p>
     </div>
   );
@@ -267,8 +263,8 @@ function HeroStat({ label, value }: { label: string; value: string }) {
 
 function Round({ level, text }: { level: OlyLevel; text: string }) {
   return (
-    <li className="flex gap-3 rounded-2xl bg-slate-50 p-3">
-      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-indigo-600 font-display font-extrabold text-white">
+    <li className="flex gap-3 py-1">
+      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand font-display font-extrabold text-white">
         {level}
       </span>
       <span>
@@ -299,14 +295,14 @@ function CustomBuilder() {
 
   return (
     <div
-      className="card grid gap-x-8 gap-y-3 p-5 ring-2 ring-indigo-100 md:grid-cols-2"
+      className="grid gap-x-8 gap-y-3 border-t border-line pt-5 md:grid-cols-2"
       data-testid="oly-custom"
     >
       <h3 className="flex items-center gap-2 text-2xl font-extrabold md:col-span-2">
-        <Icon name="flask" size={28} /> Build your own test
+        Build your own test
       </h3>
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-extrabold tracking-wider text-ink-soft uppercase">
+        <p className="text-xs font-extrabold text-ink-soft">
           Topics & levels (none = all)
         </p>
         <div className="flex flex-wrap gap-1.5" role="group" aria-label="Topics">
@@ -335,7 +331,7 @@ function CustomBuilder() {
                 type="button"
                 aria-pressed={on}
                 onClick={() => setLevels(toggle(levels, l))}
-                className={`chip py-1 text-xs ring-1 ring-black/10 ${on ? 'bg-indigo-600 text-white' : 'bg-white'}`}
+                className={`chip py-1 text-xs ring-1 ring-black/10 ${on ? 'bg-indigo-600 text-white' : 'bg-surface'}`}
               >
                 {OLY_LEVEL_LABEL[l]}
               </button>

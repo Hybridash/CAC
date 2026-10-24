@@ -82,10 +82,10 @@ export function ChatPanel({ concept }: { concept: Concept }) {
             animate={{ scale: 1 }}
             exit={{ scale: 0 }}
             onClick={() => setOpen(true)}
-            className="fixed right-4 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-40 flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-3 font-extrabold text-white shadow-lg shadow-indigo-900/30 hover:bg-indigo-700 lg:bottom-6"
+            className="fixed right-4 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-40 flex items-center gap-2 rounded-xl bg-brand p-3 font-bold text-white shadow-lg hover:bg-brand-hover sm:px-4 lg:bottom-6"
             data-testid="open-chat"
           >
-            <Icon name="chat" size={24} /> Ask Bio Bot
+            <Icon name="chat" size={24} /> <span className="sr-only sm:not-sr-only">Ask Bio Bot</span>
           </motion.button>
         )}
       </AnimatePresence>
@@ -98,7 +98,7 @@ export function ChatPanel({ concept }: { concept: Concept }) {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 24 }}
-            className="fixed inset-x-2 top-[calc(4.5rem+env(safe-area-inset-top))] bottom-[calc(5rem+env(safe-area-inset-bottom))] z-50 flex flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/10 sm:inset-x-auto sm:right-4 sm:w-[380px] lg:top-auto lg:bottom-6 lg:h-[min(600px,calc(100dvh-7rem))]"
+            className="fixed inset-x-2 top-[calc(4.5rem+env(safe-area-inset-top))] bottom-[calc(5rem+env(safe-area-inset-bottom))] z-50 flex flex-col overflow-hidden rounded-3xl bg-surface shadow-2xl ring-1 ring-black/10 sm:inset-x-auto sm:right-4 sm:w-[380px] lg:top-auto lg:bottom-6 lg:h-[min(600px,calc(100dvh-7rem))]"
             data-testid="chat-panel"
           >
             <header className="flex items-center gap-3 bg-indigo-600 px-4 py-3 text-white">
@@ -154,7 +154,7 @@ export function ChatPanel({ concept }: { concept: Concept }) {
                       key={s}
                       onClick={() => void send(s)}
                       disabled={busy || outOfQuestions}
-                      className="rounded-full bg-white px-3 py-1.5 text-left text-sm font-bold text-indigo-700 ring-1 ring-indigo-200 hover:bg-indigo-50 disabled:opacity-50"
+                      className="rounded-full bg-surface px-3 py-1.5 text-left text-sm font-bold text-indigo-700 ring-1 ring-indigo-200 hover:bg-indigo-50 disabled:opacity-50"
                     >
                       {s}
                     </button>
@@ -207,7 +207,7 @@ export function ChatPanel({ concept }: { concept: Concept }) {
                 Send
               </button>
             </form>
-            <p className="px-3 pb-2 text-center text-[11px] text-ink-soft">
+            <p className="px-3 pb-2 text-center text-xs text-ink-soft">
               Bio Bot is an AI and can make mistakes.
               {status?.enabled && ` ${status.remaining} of ${status.limit} questions left today.`}
             </p>

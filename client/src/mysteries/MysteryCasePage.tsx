@@ -82,7 +82,7 @@ function Case({ m }: { m: Mystery }) {
             <li key={cid}>
               <Link
                 to={`/learn/${cid}`}
-                className={`chip py-1.5 text-base ${done(cid) ? 'bg-emerald-100 text-emerald-800' : 'bg-white ring-1 ring-black/10'}`}
+                className={`chip py-1.5 text-base ${done(cid) ? 'bg-emerald-100 text-emerald-800' : 'bg-surface ring-1 ring-black/10'}`}
               >
                 <Icon name={done(cid) ? 'check' : 'todo'} size={18} /> {CONCEPT_BY_ID[cid]?.title}
               </Link>
@@ -98,11 +98,11 @@ function Case({ m }: { m: Mystery }) {
 
   return (
     <article className="flex flex-col gap-5">
-      <header className="relative overflow-hidden rounded-[2rem] bg-[#3b2f2a] p-6 text-amber-50">
+      <header className="relative overflow-hidden rounded-3xl bg-[#3b2f2a] p-6 text-amber-50">
         <div className="absolute -top-4 -right-4 opacity-20" aria-hidden>
           <Icon name="mystery" size={170} />
         </div>
-        <p className="text-sm font-bold tracking-widest text-amber-300 uppercase">
+        <p className="text-sm font-bold text-amber-300">
           Case file · {cat.name}
         </p>
         <h1 className="text-4xl font-extrabold">{m.title}</h1>
@@ -152,7 +152,7 @@ function Case({ m }: { m: Mystery }) {
             {m.explanations.map((e, i) => (
               <label
                 key={i}
-                className={`flex cursor-pointer items-start gap-3 rounded-2xl p-3 ring-2 ${explanation === i ? 'bg-indigo-50 ring-indigo-400' : 'bg-white ring-black/10'}`}
+                className={`flex cursor-pointer items-start gap-3 rounded-2xl p-3 ring-2 ${explanation === i ? 'bg-indigo-50 ring-indigo-400' : 'bg-surface ring-black/10'}`}
               >
                 <input
                   type="radio"
@@ -174,7 +174,7 @@ function Case({ m }: { m: Mystery }) {
             {m.evidence.map((e, i) => (
               <label
                 key={i}
-                className={`flex cursor-pointer items-start gap-3 rounded-2xl p-3 ring-2 ${evidence.has(i) ? 'bg-emerald-50 ring-emerald-400' : 'bg-white ring-black/10'}`}
+                className={`flex cursor-pointer items-start gap-3 rounded-2xl p-3 ring-2 ${evidence.has(i) ? 'bg-emerald-50 ring-emerald-400' : 'bg-surface ring-black/10'}`}
               >
                 <input
                   type="checkbox"
@@ -389,7 +389,7 @@ function ZoomClue({
           </motion.span>
         </AnimatePresence>
         <div aria-live="polite">
-          <p className="text-xs font-extrabold text-ink-soft uppercase">
+          <p className="text-xs font-extrabold text-ink-soft">
             Zoom {level + 1}/{clue.levels.length}: {lv.label}
           </p>
           <p className="font-semibold">{lv.text}</p>

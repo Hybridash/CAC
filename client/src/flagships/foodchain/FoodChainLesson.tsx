@@ -233,7 +233,7 @@ export function FoodChainLesson({
                     onClick={() => remove(i)}
                     disabled={phase !== 'break' && phase !== 'done'}
                     aria-label={`${c.label}, ${c.role}${phase === 'break' || phase === 'done' ? '. Remove from the meadow' : ''}`}
-                    className={`relative flex w-24 flex-col items-center rounded-2xl p-2 ring-2 transition ${fx === 'gone' ? 'bg-slate-100 opacity-40 ring-slate-300' : energyStep > i ? 'bg-amber-50 ring-amber-400' : 'bg-white ring-emerald-300'} ${phase === 'break' ? 'cursor-pointer hover:ring-rose-400' : ''}`}
+                    className={`relative flex w-24 flex-col items-center rounded-2xl p-2 ring-2 transition ${fx === 'gone' ? 'bg-slate-100 opacity-40 ring-slate-300' : energyStep > i ? 'bg-amber-50 ring-amber-400' : 'bg-surface ring-emerald-300'} ${phase === 'break' ? 'cursor-pointer hover:ring-rose-400' : ''}`}
                   >
                     <motion.span
                       initial={{ scale: 0 }}
@@ -244,13 +244,13 @@ export function FoodChainLesson({
                       <Icon name={c.icon} size={44} />
                     </motion.span>
                     <span className="text-xs font-extrabold">{c.label}</span>
-                    <span className="text-[10px] leading-tight text-ink-soft">{c.role}</span>
+                    <span className="text-xs leading-tight text-ink-soft">{c.role}</span>
                     <AnimatePresence>
                       {energyStep > i && (
                         <motion.span
                           initial={{ y: 8, opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
-                          className="mt-0.5 rounded-full bg-amber-200 px-1.5 text-[11px] font-extrabold text-amber-900"
+                          className="mt-0.5 rounded-full bg-amber-200 px-1.5 text-xs font-extrabold text-amber-900"
                         >
                           <Icon name="bolt" size={14} /> {energy[i]}
                         </motion.span>
@@ -284,7 +284,7 @@ export function FoodChainLesson({
                   >
                     {({ isOver, armed }) => (
                       <div
-                        className={`grid h-24 w-24 place-items-center rounded-2xl border-2 border-dashed text-sm font-bold ${isOver ? 'border-indigo-500 bg-indigo-50' : i === placed.length ? (armed ? 'border-indigo-400 bg-white' : 'border-emerald-400 bg-white/80 text-emerald-700') : 'border-slate-300 bg-white/50 text-slate-300'}`}
+                        className={`grid h-24 w-24 place-items-center rounded-2xl border-2 border-dashed text-sm font-bold ${isOver ? 'border-indigo-500 bg-indigo-50' : i === placed.length ? (armed ? 'border-indigo-400 bg-surface' : 'border-emerald-400 bg-surface/80 text-emerald-700') : 'border-slate-300 bg-white/50 text-slate-300'}`}
                       >
                         {i === placed.length ? 'next?' : '?'}
                       </div>
@@ -300,7 +300,7 @@ export function FoodChainLesson({
           <DropZone id="decomposer" label="the decomposer spot" className="rounded-2xl">
             {({ isOver, armed }) => (
               <div
-                className={`flex items-center gap-2 rounded-2xl p-2 ring-2 ${decomposer ? 'bg-amber-50 ring-amber-300' : isOver ? 'bg-indigo-50 ring-indigo-400' : armed ? 'bg-white ring-indigo-300 ring-dashed' : 'bg-white ring-dashed ring-slate-300'}`}
+                className={`flex items-center gap-2 rounded-2xl p-2 ring-2 ${decomposer ? 'bg-amber-50 ring-amber-300' : isOver ? 'bg-indigo-50 ring-indigo-400' : armed ? 'bg-surface ring-indigo-300 ring-dashed' : 'bg-surface ring-dashed ring-slate-300'}`}
               >
                 <span className="text-3xl" aria-hidden>
                   <Icon name={decomposer ? 'mushroom' : 'refresh'} size={34} />
@@ -318,7 +318,7 @@ export function FoodChainLesson({
               .filter((t) => !placed.includes(t.id) && !(t.id === DECOMPOSER.id && decomposer))
               .map((t) => (
                 <Draggable key={t.id} id={t.id} label={t.label}>
-                  <span className="flex flex-col items-center rounded-2xl bg-white px-3 py-1.5 shadow ring-1 ring-black/10">
+                  <span className="flex flex-col items-center rounded-2xl bg-surface px-3 py-1.5 shadow ring-1 ring-black/10">
                     <Icon name={t.icon} size={38} />
                     <span className="text-xs font-bold">{t.label}</span>
                   </span>
@@ -376,7 +376,7 @@ function Goal({ done, children }: { done: boolean; children: React.ReactNode }) 
 function EnergyPyramid() {
   const levels = [...CHAIN].reverse();
   return (
-    <figure className="rounded-2xl bg-white p-3 ring-1 ring-black/10">
+    <figure className="rounded-2xl bg-surface p-3 ring-1 ring-black/10">
       <figcaption className="mb-2 text-sm font-bold">
         The energy pyramid: each level gets about 10% of the one below
       </figcaption>
@@ -388,7 +388,7 @@ function EnergyPyramid() {
             animate={{ width: `${22 + (i / (levels.length - 1)) * 78}%` }}
             transition={{ delay: i * 0.1 }}
             className="flex items-center justify-center gap-1 rounded-lg py-1 text-xs font-bold text-white"
-            style={{ background: ['#7c3aed', '#2563eb', '#0d9488', '#65a30d', '#16a34a'][i] }}
+            style={{ background: ['#345a80', '#2563eb', '#0d9488', '#65a30d', '#16a34a'][i] }}
           >
             <Icon name={c.icon} size={16} /> {c.label}
           </motion.div>

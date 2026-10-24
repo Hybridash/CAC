@@ -75,7 +75,7 @@ export function KnowledgeMapPage() {
       </header>
 
       <div className="grid gap-4 lg:grid-cols-[1fr_300px]">
-        <div className="card overflow-auto p-2" style={{ maxHeight: '75vh' }}>
+        <div data-theme="light" className="card overflow-auto bg-paper p-2" style={{ maxHeight: '75vh' }}>
           <svg
             viewBox={`0 0 ${layout.width} ${layout.height}`}
             style={{ width: `${zoom * 100}%`, minWidth: zoom * 760 }}
@@ -174,7 +174,7 @@ export function KnowledgeMapPage() {
                   key={i}
                   d={`M ${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}`}
                   fill="none"
-                  stroke={hot ? '#4f46e5' : done(e.from) ? '#10b981' : '#94a3b8'}
+                  stroke={hot ? '#0b6558' : done(e.from) ? '#10b981' : '#94a3b8'}
                   strokeWidth={hot ? 3 : 1.4}
                   strokeOpacity={focus ? (hot ? 0.95 : 0.08) : 0.35}
                   strokeDasharray={done(e.from) ? undefined : '4 4'}
@@ -202,7 +202,7 @@ export function KnowledgeMapPage() {
                     height="22"
                     rx="4"
                     transform={`rotate(45 ${x} ${y})`}
-                    fill={isSolved ? '#fde047' : unlocked ? '#a78bfa' : '#e2e8f0'}
+                    fill={isSolved ? '#fde047' : unlocked ? '#8fb1ce' : '#e2e8f0'}
                     stroke="#1e1b2e"
                     strokeWidth="2"
                   />
@@ -287,7 +287,7 @@ export function KnowledgeMapPage() {
         <aside className="flex flex-col gap-3 lg:sticky lg:top-20 lg:self-start" aria-live="polite">
           {focused ? (
             <div className="card p-4">
-              <p className="text-xs font-extrabold text-ink-soft uppercase">
+              <p className="text-xs font-extrabold text-ink-soft">
                 {CATEGORIES.find((k) => k.id === focused.category)?.name}
               </p>
               <h2 className="text-2xl font-extrabold">{focused.title}</h2>
@@ -301,7 +301,7 @@ export function KnowledgeMapPage() {
               <p className="text-sm text-ink-soft">{focused.summary}</p>
               {(focused.prerequisites?.length ?? 0) > 0 && (
                 <div className="mt-2">
-                  <p className="text-xs font-extrabold text-ink-soft uppercase">
+                  <p className="text-xs font-extrabold text-ink-soft">
                     Recommended first
                   </p>
                   <ul className="text-sm">
@@ -340,7 +340,7 @@ export function KnowledgeMapPage() {
                 In progress
               </li>
               <li className="flex items-center gap-2">
-                <span className="inline-block h-4 w-4 rounded-full border-[3px] border-emerald-600 bg-white" />{' '}
+                <span className="inline-block h-4 w-4 rounded-full border-[3px] border-emerald-600 bg-surface" />{' '}
                 Not started
               </li>
               <li className="flex items-center gap-2">

@@ -1,0 +1,32 @@
+name: security
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '17 6 * * 1' # weekly, so a newly published advisory is caught without a push
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # secret scanning reads history, not just the latest commit
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # Fails on known HIGH or CRITICAL vulnerabilities in installed packages.
+      - run: npm audit --audit-level=high
+      # Build first: the security tests also scan the built bundle for leaked secrets and source maps.
+      - run: npm run build
+      - run: npm test
+      # Scans the whole git history for committed secrets.
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

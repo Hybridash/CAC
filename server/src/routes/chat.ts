@@ -10,6 +10,8 @@ import {
 import { HttpError, requireUser, type AppContext } from '../http.js';
 import type { DB } from '../db.js';
 import { dayKey } from '../time.js';
+import { LIMITS } from '../limits.js';
+import { rateLimit, securityLog, tag } from '../security.js';
 
 /** Questions each player may ask per UTC day (CHAT_DAILY_LIMIT overrides). */
 export const DEFAULT_CHAT_DAILY_LIMIT = 30;
@@ -66,10 +68,33 @@ The lesson:
 ${lesson}`;
 }
 
+/** Questions the whole server will answer per UTC day, whoever asks (CHAT_GLOBAL_DAILY_LIMIT). */
+const globalLimit = () => Number(process.env.CHAT_GLOBAL_DAILY_LIMIT) || LIMITS.chat.globalDaily;
+
+/** Atomically reserve one question from the server-wide daily budget; false if it is spent. */
+function reserveGlobal(db: DB, day: string): boolean {
+  const row = db
+    .prepare(
+      `INSERT INTO chat_global (day, count) VALUES (?, 1)
+       ON CONFLICT (day) DO UPDATE SET count = count + 1 RETURNING count`,
+    )
+    .get(day) as { count: number };
+  if (row.count > globalLimit()) {
+    db.prepare('UPDATE chat_global SET count = count - 1 WHERE day = ?').run(day);
+    return false;
+  }
+  return true;
+}
+const refundGlobal = (db: DB, day: string) =>
+  db.prepare('UPDATE chat_global SET count = MAX(0, count - 1) WHERE day = ?').run(day);
+
 export function chatRoutes(ctx: AppContext) {
   const r = Router();
   r.use(requireUser(ctx));
   const limit = () => Number(process.env.CHAT_DAILY_LIMIT) || DEFAULT_CHAT_DAILY_LIMIT;
+  // Cost protection, in layers: per-IP (many fake players behind one address), per-player burst,
+  // simultaneous AI calls, the player's daily quota, and a server-wide daily ceiling.
+  const perIp = rateLimit(ctx.limiter, 'chat-ip', ...LIMITS.chat.perIp);
 
   r.get('/status', (req, res) => {
     const remaining = Math.max(0, limit() - used(ctx.db, req.user!.id, dayKey(ctx.clock())));
@@ -77,7 +102,8 @@ export function chatRoutes(ctx: AppContext) {
     res.json(body);
   });
 
-  r.post('/', async (req, res, next) => {
+  r.post('/', perIp, async (req, res, next) => {
+    let release: (() => void) | null = null;
     try {
       const parsed = chatBody.safeParse(req.body);
       if (!parsed.success) throw new HttpError(400, 'Invalid message');
@@ -89,6 +115,16 @@ export function chatRoutes(ctx: AppContext) {
 
       const userId = req.user!.id;
       const day = dayKey(ctx.clock());
+      const burst = ctx.limiter.consume(`chat-user:${userId}`, LIMITS.chat.perUserBurst);
+      if (!burst.ok) {
+        res.setHeader('Retry-After', String(burst.retryAfter));
+        throw new HttpError(429, 'You’re asking quickly. Wait a few seconds and try again.');
+      }
+      release = ctx.chatGate.enter(userId);
+      if (!release) {
+        res.setHeader('Retry-After', '5');
+        throw new HttpError(429, 'Bio Bot is answering you already. Wait for the reply first.');
+      }
       // Reserve this question before calling the AI, so parallel requests can't overshoot the limit.
       const count = (delta: number) =>
         ctx.db
@@ -100,10 +136,16 @@ export function chatRoutes(ctx: AppContext) {
       count(1);
       if (used(ctx.db, userId, day) > limit()) {
         count(-1);
+        securityLog('chat_quota_exhausted', { user: tag(userId), ip: req.ip });
         throw new HttpError(
           429,
           `You’ve asked Bio Bot ${limit()} questions today, the daily limit. Come back tomorrow!`,
         );
+      }
+      if (!reserveGlobal(ctx.db, day)) {
+        count(-1);
+        securityLog('chat_global_cap_hit', { day });
+        throw new HttpError(503, 'Bio Bot has answered a lot of questions today and is resting. Try again tomorrow!');
       }
 
       // Gemini expects the conversation to start with the user, so drop any leading bot greeting.
@@ -119,6 +161,7 @@ export function chatRoutes(ctx: AppContext) {
         );
       } catch (e) {
         count(-1); // A failed answer doesn't use up a question.
+        refundGlobal(ctx.db, day);
         throw e;
       }
       const body: ChatResponse = {
@@ -128,6 +171,8 @@ export function chatRoutes(ctx: AppContext) {
       res.json(body);
     } catch (e) {
       next(e);
+    } finally {
+      release?.();
     }
   });
 

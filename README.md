@@ -108,9 +108,10 @@ Like Google/Apple sign-in, creating an account keeps everything earned as a gues
 loads the same progress. Passwords are stored only as salted scrypt hashes, and after 10 wrong passwords for one email
 the server refuses further tries for 15 minutes.
 
-**Demo login:** the server creates `demo@gmail.com` / `demo123` on startup (the login form has a one-tap “Try the demo
-account” button). Anyone who knows it can use it, so set `DEMO_ACCOUNT=off` in `server/.env` on a public server and
-remove the button from `client/src/components/EmailAccountForm.tsx`.
+**Demo login (development only):** the server creates `demo@gmail.com` / `demo123` on startup in development (the login form has a one-tap “Try the demo
+account” button). In production the demo account is **off** unless you set `DEMO_ACCOUNT=on`. Remove the one-tap button from
+`client/src/components/EmailAccountForm.tsx` before a public launch. See [SECURITY.md](SECURITY.md) for the security audit,
+the deployment checklist and known limits.
 
 ## Sign in with Google or Apple
 

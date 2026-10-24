@@ -9,7 +9,34 @@ import { shuffled } from './framework/shuffle';
 import { sfx } from '../lib/sound';
 import { Icon } from '../components/Icon';
 
-const STATION_COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#06b6d4'];
+
+/** Ion and molecule badges: sodium is amber, potassium steel blue, energy gold, the rest teal. */
+function symbolTone(symbol: string) {
+  if (symbol.startsWith('Na')) return { bg: '#fdf0cf', fg: '#6b4300', ring: '#d99a06' };
+  if (symbol.startsWith('K')) return { bg: '#dae7f1', fg: '#1f3f5c', ring: '#345a80' };
+  if (symbol === 'ATP' || symbol === 'Pᵢ') return { bg: '#fff3c4', fg: '#6b4300', ring: '#b97d00' };
+  return { bg: '#ddf0ea', fg: '#095a4e', ring: '#0e7c6b' };
+}
+
+function SymbolBadge({ symbol, size = 40 }: { symbol: string; size?: number }) {
+  const t = symbolTone(symbol);
+  return (
+    <span
+      aria-hidden
+      className="grid shrink-0 place-items-center rounded-full font-display leading-none font-bold"
+      style={{
+        width: size,
+        height: size,
+        background: t.bg,
+        color: t.fg,
+        boxShadow: `inset 0 0 0 1.5px ${t.ring}`,
+        fontSize: symbol.length > 2 ? size * 0.3 : size * 0.4,
+      }}
+    >
+      {symbol}
+    </span>
+  );
+}
 
 /** Drag parts into the correct order to build a process or structure. */
 export function AssemblyLine({
@@ -100,7 +127,7 @@ export function AssemblyLine({
             {parts.map((_, i) => station(i))}
           </CycleLayout>
         ) : (
-          <div className="scene-bg rounded-3xl bg-gradient-to-br from-indigo-50 via-white to-fuchsia-50 p-3 ring-1 ring-black/5 sm:p-4">
+          <div className="py-3 sm:py-4">
             <ol className="flex flex-wrap items-center justify-center gap-y-3">
               {parts.map((_, i) => (
                 <li key={parts[i].id} className="flex items-center">
@@ -114,15 +141,15 @@ export function AssemblyLine({
           </div>
         )}
 
-        <div className="overflow-hidden rounded-3xl bg-slate-100 ring-1 ring-black/5">
-          <div className="px-3 pt-3">
+        <div>
+          <div>
             <PanelTitle icon="bag">
               {inTray.length
                 ? 'Parts — drag into the right step (or tap, then tap a step)'
                 : 'All parts placed!'}
             </PanelTitle>
           </div>
-          <div className="belt flex min-h-24 flex-wrap items-center gap-2.5 border-y-4 border-slate-300 px-3 py-3">
+          <div className="mt-2 flex min-h-24 flex-wrap items-center gap-2.5 border-y border-line py-3">
             {inTray.map((p) => (
               <motion.div
                 key={p.id}
@@ -142,7 +169,6 @@ export function AssemblyLine({
               </span>
             )}
           </div>
-          <div className="h-3" />
         </div>
       </DndArena>
       <Feedback
@@ -182,32 +208,27 @@ function Station({
   compact: boolean;
 }) {
   const { immersive } = useStage();
-  const color = STATION_COLORS[index % STATION_COLORS.length];
+  const color = '#0e7c6b';
   const size = compact ? 'w-24 min-h-24' : immersive ? 'w-36 min-h-32' : 'w-28 min-h-28';
   return (
-    <DropZone id={`slot-${index}`} label={`step ${index + 1}`} className="rounded-3xl">
+    <DropZone id={`slot-${index}`} label={`step ${index + 1}`} className="rounded-xl">
       {({ isOver, armed }) => (
         <motion.div
           animate={lit ? { scale: 1.08, y: -4 } : { scale: 1, y: 0 }}
           transition={{ type: 'spring', stiffness: 300, damping: 18 }}
-          className={`relative flex ${size} flex-col items-center justify-center rounded-3xl border-[3px] p-2 text-center transition ${
+          className={`relative flex ${size} flex-col items-center justify-center rounded-xl border-2 p-2 text-center transition-colors ${
             filled
-              ? 'border-solid bg-white'
-              : `border-dashed ${isOver ? 'bg-indigo-50' : 'bg-white'}`
-          } ${!filled && isNext ? 'glow-pulse' : ''}`}
+              ? 'border-solid bg-surface'
+              : `border-dashed ${isOver ? 'bg-brand-tint' : 'bg-transparent'}`
+          }`}
           style={{
-            borderColor: filled || isOver || armed ? color : '#cbd5e1',
-            boxShadow: filled
-              ? `0 5px 0 ${color}66${lit ? `, 0 0 26px ${color}` : ''}`
-              : isOver
-                ? `0 0 18px ${color}88`
-                : undefined,
+            borderColor: filled || isOver || armed || isNext ? color : '#b9c6c2',
           }}
         >
           <Burst trigger={hit} />
           <span
-            className="absolute -top-3 left-1/2 grid h-7 w-7 -translate-x-1/2 place-items-center rounded-full text-xs font-extrabold text-white shadow ring-2 ring-white"
-            style={{ background: filled ? color : '#94a3b8' }}
+            className="absolute -top-3 left-1/2 grid h-6 w-6 -translate-x-1/2 place-items-center rounded-full text-xs font-bold text-white ring-2 ring-paper"
+            style={{ background: filled ? color : '#8c9c98' }}
           >
             {index + 1}
           </span>
@@ -220,15 +241,19 @@ function Station({
                 transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                 className="flex flex-col items-center gap-0.5"
               >
-                {filled.emoji && (
-                  <span className={immersive ? 'text-4xl' : 'text-3xl'} aria-hidden>
-                    {filled.emoji}
-                  </span>
+                {filled.symbol ? (
+                  <SymbolBadge symbol={filled.symbol} size={immersive ? 48 : 40} />
+                ) : (
+                  filled.emoji && (
+                    <span className={immersive ? 'text-4xl' : 'text-3xl'} aria-hidden>
+                      {filled.emoji}
+                    </span>
+                  )
                 )}
                 <span className="text-sm leading-tight font-extrabold">{filled.label}</span>
               </motion.span>
             ) : (
-              <motion.span key="e" className="text-2xl font-extrabold text-slate-300" aria-hidden>
+              <motion.span key="e" className="text-2xl font-bold text-slate-300" aria-hidden>
                 ?
               </motion.span>
             )}
@@ -242,14 +267,14 @@ function Station({
 function Pipe({ on, active }: { on: boolean; active: boolean }) {
   return (
     <svg width="34" height="20" viewBox="0 0 34 20" className="mx-0.5 shrink-0" aria-hidden>
-      <rect x="0" y="6" width="34" height="8" rx="4" fill={on ? '#c7d2fe' : '#e2e8f0'} />
+      <rect x="0" y="6" width="34" height="8" rx="4" fill={on ? '#a9dbcf' : '#d6dfdc'} />
       {on && (
         <line
           x1="2"
           y1="10"
           x2="32"
           y2="10"
-          stroke={active ? '#f59e0b' : '#6366f1'}
+          stroke={active ? '#b97d00' : '#0e7c6b'}
           strokeWidth="4"
           strokeLinecap="round"
           strokeDasharray="4 6"
@@ -257,7 +282,7 @@ function Pipe({ on, active }: { on: boolean; active: boolean }) {
           style={{ animationDirection: 'reverse' }}
         />
       )}
-      <path d="M26 3l7 7-7 7" fill="none" stroke={on ? '#6366f1' : '#cbd5e1'} strokeWidth="2.5" />
+      <path d="M26 3l7 7-7 7" fill="none" stroke={on ? '#0e7c6b' : '#cbd5e1'} strokeWidth="2.5" />
     </svg>
   );
 }
@@ -275,23 +300,17 @@ function CycleLayout({
 }) {
   const reduce = useReducedMotion();
   return (
-    <div className="scene-bg relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-50 via-white to-emerald-50 p-2 ring-1 ring-black/5">
+    <div className="relative overflow-hidden p-2">
       <div className="relative mx-auto aspect-square w-full max-w-[min(32rem,62vh)]">
         <svg className="absolute inset-0" viewBox="0 0 100 100" aria-hidden>
-          <defs>
-            <linearGradient id="cycle-ring" x1="0" x2="1" y1="0" y2="1">
-              <stop offset="0" stopColor="#818cf8" />
-              <stop offset="1" stopColor="#34d399" />
-            </linearGradient>
-          </defs>
-          <circle cx="50" cy="50" r="36" fill="none" stroke="#e0e7ff" strokeWidth="5" />
+          <circle cx="50" cy="50" r="36" fill="none" stroke="#d3dcd9" strokeWidth="4" />
           <circle
             cx="50"
             cy="50"
             r="36"
             fill="none"
-            stroke="url(#cycle-ring)"
-            strokeWidth="5"
+            stroke="#0e7c6b"
+            strokeWidth="4"
             strokeLinecap="round"
             strokeDasharray={`${(placed / count) * 226} 226`}
             transform="rotate(-90 50 50)"
@@ -299,7 +318,7 @@ function CycleLayout({
           />
           {done && !reduce && (
             <g>
-              <circle cx="50" cy="14" r="3" fill="#f59e0b">
+              <circle cx="50" cy="14" r="3" fill="#b97d00">
                 <animateTransform
                   attributeName="transform"
                   type="rotate"
@@ -320,7 +339,7 @@ function CycleLayout({
             >
               <Icon name="refresh" size={44} />
             </motion.span>
-            <span className="text-sm font-extrabold text-indigo-900">
+            <span className="text-sm font-bold text-brand-dark">
               {done ? 'Cycle running!' : `${placed} / ${count}`}
             </span>
           </div>
@@ -344,8 +363,9 @@ function CycleLayout({
 
 function PartChip({ part }: { part: AssemblyPart }) {
   return (
-    <span className="flex items-center gap-2 rounded-2xl bg-white px-3 py-2 font-extrabold shadow-[0_4px_0_rgba(30,27,46,0.15)] ring-2 ring-black/5 transition hover:-translate-y-0.5">
-      {part.emoji && (
+    <span className="flex items-center gap-2 rounded-xl bg-surface px-3 py-2 font-bold ring-1 ring-ink/20 transition-colors hover:ring-ink/40">
+      {part.symbol && <SymbolBadge symbol={part.symbol} size={32} />}
+      {!part.symbol && part.emoji && (
         <span aria-hidden className="text-2xl">
           {part.emoji}
         </span>

@@ -38,7 +38,7 @@ export function ProfilePage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <header className="card flex flex-wrap items-center gap-5 p-5">
+      <header className="flex flex-wrap items-center gap-5">
         <PlayerAvatar size={96} />
         <div className="min-w-48 flex-1">
           {editing ? (
@@ -76,15 +76,15 @@ export function ProfilePage() {
             </h1>
           )}
           {err && <p className="text-sm text-amber-800">{err}</p>}
-          <div className="mt-2 flex flex-wrap gap-2">
-            <span className="chip bg-amber-100 py-1 text-amber-900">
+          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+            <span className="inline-flex items-center gap-1 font-semibold text-amber-900">
               <AtpIcon /> {player.atp} ATP
             </span>
-            <span className="chip bg-violet-100 py-1 text-violet-900">
+            <span className="inline-flex items-center gap-1 font-semibold text-violet-800">
               <NucleotideIcon /> {player.nucleotides} nucleotides
             </span>
             <InstallApp className="py-1 text-sm" />
-            <span className="chip bg-sky-100 py-1 text-sky-900">
+            <span className="inline-flex items-center gap-1 font-semibold text-sky-900">
               <Icon name="cards" size={18} /> {owned}/{AVATARS.length} avatars
             </span>
           </div>
@@ -93,15 +93,15 @@ export function ProfilePage() {
 
       <AccountCard />
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-x-10 gap-y-6 border-y border-line py-6 md:grid-cols-3">
         <Stat
           big={`${completed.length}`}
           label={`of ${CONCEPTS.length} concepts completed`}
           icon="book"
         />
-        <div className="card flex flex-col gap-1 p-5" data-testid="streak-card">
-          <Icon name="flame" size={44} />
-          <span className="text-4xl font-extrabold">{player.streak}-day streak</span>
+        <div className="flex flex-col gap-1" data-testid="streak-card">
+          <Icon name="flame" size={32} />
+          <span className="font-display text-3xl">{player.streak}-day streak</span>
           <span className="text-sm text-ink-soft">
             Longest: {player.longestStreak} day{player.longestStreak === 1 ? '' : 's'}
           </span>
@@ -119,7 +119,7 @@ export function ProfilePage() {
         />
       </div>
 
-      <section className="card p-5" aria-labelledby="diff-h">
+      <section className="border-t border-line pt-5" aria-labelledby="diff-h">
         <h2 id="diff-h" className="mb-3 text-2xl font-extrabold">
           By difficulty
         </h2>
@@ -140,7 +140,7 @@ export function ProfilePage() {
         </div>
       </section>
 
-      <section className="card p-5" aria-labelledby="cat-h">
+      <section className="border-t border-line pt-5" aria-labelledby="cat-h">
         <h2 id="cat-h" className="mb-3 text-2xl font-extrabold">
           By category
         </h2>
@@ -188,17 +188,17 @@ function Stat({
 }) {
   const inner = (
     <>
-      <Icon name={icon} size={44} />
-      <span className="text-4xl font-extrabold">{big}</span>
+      <Icon name={icon} size={32} />
+      <span className="font-display text-3xl">{big}</span>
       <span className="text-sm text-ink-soft">{label}</span>
     </>
   );
   return link ? (
-    <Link to={link} className="card flex flex-col gap-1 p-5 hover:-translate-y-0.5">
+    <Link to={link} className="flex flex-col gap-1 hover:underline">
       {inner}
     </Link>
   ) : (
-    <div className="card flex flex-col gap-1 p-5">{inner}</div>
+    <div className="flex flex-col gap-1">{inner}</div>
   );
 }
 

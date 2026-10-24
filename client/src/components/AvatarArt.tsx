@@ -741,7 +741,7 @@ function Accessory({
         <g>
           <path
             d={`M${x - 20} ${top + 4}h40l-16 -34z`}
-            fill="#6d28d9"
+            fill="#2b4a68"
             stroke={INK}
             strokeWidth="2"
             strokeLinejoin="round"

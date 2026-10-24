@@ -117,7 +117,7 @@ export function Timeline({
     <div className="flex flex-col gap-4">
       <Prompt>{config.prompt}</Prompt>
       {/* The "screen" */}
-      <div className="rounded-[1.75rem] bg-slate-900 p-2 shadow-xl sm:p-2.5">
+      <div className="rounded-[1.75rem] bg-night p-2 shadow-xl sm:p-2.5">
         <div className="relative">
           <Scene
             elements={elements}
@@ -125,20 +125,20 @@ export function Timeline({
             height={320}
             label={`${frame.label}: ${frame.text}`}
           >
-            <div className="absolute top-3 left-3 flex items-center gap-2 rounded-full bg-slate-900/85 px-3 py-1 font-mono text-sm font-bold text-white shadow">
+            <div className="absolute top-3 left-3 flex items-center gap-2 rounded-full bg-night/85 px-3 py-1 font-mono text-sm font-bold text-white shadow">
               <span
                 className={`h-2 w-2 rounded-full ${playing ? 'animate-pulse bg-rose-500' : 'bg-slate-400'}`}
               />
               {frame.time ?? `Stage ${idx + 1}`}
             </div>
-            <div className="absolute top-3 right-3 rounded-full bg-white/90 px-3 py-1 text-sm font-extrabold text-fuchsia-800 shadow">
+            <div className="absolute top-3 right-3 rounded-full bg-surface/90 px-3 py-1 text-sm font-extrabold text-fuchsia-800 shadow">
               {idx + 1} / {frames.length}
             </div>
             <AnimatePresence>
               {flash > 0 && (
                 <motion.div
                   key={flash}
-                  className="pointer-events-none absolute inset-0 bg-white"
+                  className="pointer-events-none absolute inset-0 bg-surface"
                   initial={{ opacity: 0.85 }}
                   animate={{ opacity: 0 }}
                   transition={{ duration: 0.5 }}
@@ -148,7 +148,7 @@ export function Timeline({
             </AnimatePresence>
           </Scene>
         </div>
-        <div className="mt-2 min-h-16 rounded-2xl bg-slate-800 px-4 py-2.5" aria-live="polite">
+        <div className="mt-2 min-h-16 rounded-2xl bg-night px-4 py-2.5" aria-live="polite">
           <AnimatePresence mode="wait">
             <motion.p
               key={frame.id}
@@ -168,7 +168,7 @@ export function Timeline({
         {/* Transport controls */}
         <div className="mt-2 flex items-center gap-3 px-1 pb-1">
           <button
-            className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-gradient-to-b from-fuchsia-500 to-violet-600 text-white shadow-[0_4px_0_#4c1d95] transition active:translate-y-0.5"
+            className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-surface text-white transition active:translate-y-0.5"
             onClick={togglePlay}
             aria-label={playing ? 'Pause' : 'Play'}
           >
@@ -182,7 +182,7 @@ export function Timeline({
               {frames.map((f, i) => (
                 <span
                   key={f.id}
-                  className={`h-2 w-2 rounded-full ${i === idx ? 'bg-white' : visited.has(i) ? 'bg-fuchsia-400' : 'bg-slate-600'}`}
+                  className={`h-2 w-2 rounded-full ${i === idx ? 'bg-surface' : visited.has(i) ? 'bg-fuchsia-400' : 'bg-slate-600'}`}
                 />
               ))}
             </div>
@@ -213,7 +213,7 @@ export function Timeline({
                   {
                     ...rangeFill(pos, 0, last),
                     '--c1': '#e879f9',
-                    '--c2': '#8b5cf6',
+                    '--c2': '#43729d',
                   } as React.CSSProperties
                 }
               />
@@ -237,10 +237,10 @@ export function Timeline({
                 ? 'border-fuchsia-500 bg-fuchsia-600 text-white shadow-lg'
                 : visited.has(i)
                   ? 'border-fuchsia-200 bg-fuchsia-50 text-fuchsia-950'
-                  : 'border-dashed border-slate-300 bg-white text-slate-500'
+                  : 'border-dashed border-slate-300 bg-surface text-slate-500'
             }`}
           >
-            <span className="text-[10px] font-extrabold tracking-wider uppercase opacity-75">
+            <span className="text-xs font-extrabold opacity-75">
               {f.time ?? `Stage ${i + 1}`}
             </span>
             <span className="text-sm leading-tight font-extrabold">{f.label}</span>
@@ -262,7 +262,7 @@ export function Timeline({
             <Icon name="target" size={24} />
           </span>
           <p className="flex-1 font-bold text-amber-950">
-            <span className="block text-xs font-extrabold tracking-wider text-amber-700 uppercase">
+            <span className="block text-xs font-extrabold text-amber-700">
               Spot the moment {cp + 1} / {config.checkpoints.length}
             </span>
             {checkpoint.prompt}

@@ -117,12 +117,12 @@ export function Quiz({
   }
 
   return (
-    <div className="card flex flex-col gap-4 p-5" data-testid="quiz">
+    <div className="flex flex-col gap-4" data-testid="quiz">
       <div className="flex items-center justify-between text-sm font-bold text-ink-soft">
         <span>
           Question {index + 1} of {concept.quiz.length}
         </span>
-        <span className="chip bg-slate-100">
+        <span className="font-medium">
           {q.kind === 'mc'
             ? 'Multiple choice'
             : q.kind === 'predict'
@@ -162,7 +162,7 @@ export function Quiz({
                       ? 'bg-amber-50 ring-amber-400'
                       : chosen
                         ? 'bg-indigo-50 ring-indigo-400'
-                        : 'bg-white ring-black/10 hover:ring-indigo-200'
+                        : 'bg-surface ring-black/10 hover:ring-indigo-200'
                 }`}
               >
                 {showRight && <Icon name="check" size={20} className="mr-1.5 -mt-0.5" />}
@@ -244,7 +244,7 @@ function LabelQ({
         )}
         {unplaced.map((t) => (
           <Draggable key={t} id={`term-${t}`} label={q.pairs[t].term} disabled={checked}>
-            <span className="block rounded-xl bg-white px-3 py-2 font-bold shadow ring-1 ring-black/10">
+            <span className="block rounded-xl bg-surface px-3 py-2 font-bold shadow ring-1 ring-black/10">
               {q.pairs[t].term}
             </span>
           </Draggable>
@@ -268,7 +268,7 @@ function LabelQ({
                           ? 'bg-indigo-50 ring-indigo-400'
                           : armed
                             ? 'ring-indigo-200'
-                            : 'bg-white ring-black/10'
+                            : 'bg-surface ring-black/10'
                     }`}
                   >
                     <span className="min-w-32 flex-1 font-semibold">{p.definition}</span>

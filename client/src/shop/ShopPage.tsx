@@ -66,11 +66,11 @@ export function ShopPage() {
             Spend the ATP you earn from lessons on card packs. No real money — ever.
           </p>
         </div>
-        <div className="flex gap-2">
-          <span className="chip bg-amber-100 py-2 text-lg text-amber-900">
+        <div className="flex gap-5 text-lg font-semibold tabular-nums">
+          <span className="inline-flex items-center gap-1.5">
             <AtpIcon size={22} /> {atp} ATP
           </span>
-          <span className="chip bg-violet-100 py-2 text-lg text-violet-900">
+          <span className="inline-flex items-center gap-1.5">
             <NucleotideIcon size={20} /> {nucleotides}
           </span>
         </div>
@@ -94,12 +94,12 @@ export function ShopPage() {
           Card packs{' '}
           <span className="text-base font-bold text-ink-soft">· {CARDS_PER_PACK} avatars each</span>
         </h2>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-x-10 gap-y-8 md:grid-cols-3">
           {(Object.keys(PACKS) as PackTier[]).map((tier) => {
             const p = PACKS[tier];
             const short = p.cost - atp;
             return (
-              <article key={tier} className="card flex flex-col items-center gap-3 p-5 text-center">
+              <article key={tier} className="flex flex-col items-center gap-3 border-t border-line pt-5 text-center">
                 <div className="animate-float">
                   <PackArt tier={tier} size={110} />
                 </div>
@@ -108,7 +108,7 @@ export function ShopPage() {
                   <p className="text-sm text-ink-soft">{p.blurb}</p>
                 </div>
                 <table className="w-full text-sm" aria-label={`${p.name} odds per card`}>
-                  <caption className="mb-1 text-left text-xs font-extrabold text-ink-soft uppercase">
+                  <caption className="mb-1 text-left text-xs font-extrabold text-ink-soft">
                     Odds per card
                   </caption>
                   <tbody>
@@ -117,14 +117,14 @@ export function ShopPage() {
                         <td className={`py-0.5 text-left font-bold ${RARITY_STYLE[r].text}`}>
                           {RARITY_STYLE[r].label}
                         </td>
-                        <td className="py-0.5 text-right font-mono font-bold">
+                        <td className="py-0.5 text-right font-semibold tabular-nums">
                           {formatOdds(p.odds[r])}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-                <p className="w-full rounded-2xl bg-amber-50 px-3 py-2 text-left text-sm font-bold text-amber-900">
+                <p className="w-full text-left text-sm text-ink-soft">
                   Tap it {PACK_UPGRADE_TAPS}× before opening: each tap has a{' '}
                   {formatOdds(p.upgradeChance)} chance to raise its rarity. Each step up guarantees
                   a better card.
@@ -154,11 +154,11 @@ export function ShopPage() {
         </div>
       </section>
 
-      <section aria-labelledby="nuc-h" className="card p-5">
+      <section aria-labelledby="nuc-h" className="border-t border-line pt-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h2 id="nuc-h" className="flex items-center gap-2 text-2xl font-extrabold">
-              <NucleotideIcon size={26} /> Nucleotide exchange
+              Nucleotide exchange
             </h2>
             <p className="max-w-2xl text-sm text-ink-soft">
               Pulled a duplicate? It turns into nucleotides (

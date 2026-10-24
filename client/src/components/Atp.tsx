@@ -24,7 +24,7 @@ export function AtpIcon({ size = 20, className = '' }: { size?: number; classNam
 export function NucleotideIcon({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" role="img" aria-label="Nucleotides">
-      <path d="M12 2l8 5v10l-8 5-8-5V7z" fill="#a78bfa" stroke="#6d28d9" strokeWidth="1.5" />
+      <path d="M12 2l8 5v10l-8 5-8-5V7z" fill="#8fb1ce" stroke="#2b4a68" strokeWidth="1.5" />
       <path d="M8 9l8 6M16 9l-8 6" stroke="#ede9fe" strokeWidth="1.6" strokeLinecap="round" />
     </svg>
   );

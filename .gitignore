@@ -49,3 +49,10 @@ Thumbs.db
 client/ios/build/
 client/ios/App/App/public/
 client/.env.native.local
+
+# Database backups (contain player data)
+backups/
+
+# Local tool state
+.claude/
+client/.impeccable/hook.cache.json

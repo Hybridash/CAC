@@ -254,33 +254,49 @@ export const cellLibrary: Concept[] = [
     interaction: assembly(
       'Put the steps of one pump cycle in order. It repeats over and over!',
       [
-        ['3 Na⁺ bind inside', '🟠', 'Three sodium ions from inside the cell slot into the pump.'],
+        [
+          '3 Na⁺ bind inside',
+          '',
+          'Three sodium ions from inside the cell slot into the pump.',
+          'Na⁺',
+        ],
         [
           'ATP adds a phosphate',
-          '⚡',
+          '',
           'ATP is split and its phosphate attaches to the pump, providing the energy.',
+          'ATP',
         ],
         [
           'Pump flips outward',
-          '🔄',
+          '',
           'The pump changes shape, opening to the outside and releasing the 3 Na⁺.',
+          '↻',
         ],
-        ['2 K⁺ bind outside', '🟣', 'Two potassium ions from outside the cell bind to the pump.'],
+        [
+          '2 K⁺ bind outside',
+          '',
+          'Two potassium ions from outside the cell bind to the pump.',
+          'K⁺',
+        ],
         [
           'Phosphate leaves',
-          '💨',
+          '',
           'The phosphate falls off and the pump flips back to face inside.',
+          'Pᵢ',
         ],
         [
           '2 K⁺ released inside',
-          '🏠',
+          '',
           'Potassium is released into the cell. Ready for the next cycle!',
+          'K⁺',
         ],
       ],
       'Cycle complete: 3 Na⁺ out, 2 K⁺ in, 1 ATP spent. Your neurons run this pump constantly.',
       {
         layout: 'cycle',
-        distractors: [['Glucose enters', '🍬', 'Glucose uses other transporters — not this pump.']],
+        distractors: [
+          ['Glucose enters', '', 'Glucose uses other transporters — not this pump.', 'C₆'],
+        ],
       },
     ),
     goDeeper:

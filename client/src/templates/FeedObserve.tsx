@@ -140,9 +140,9 @@ export function FeedObserve({ config, onComplete, alreadyDone }: TemplateProps<F
               className={`relative flex-1 rounded-xl px-3 py-2 text-sm font-extrabold whitespace-nowrap transition ${
                 mode === m.id
                   ? i === 0
-                    ? 'bg-emerald-500 text-white shadow-[0_3px_0_#047857]'
-                    : 'bg-rose-500 text-white shadow-[0_3px_0_#be123c]'
-                  : 'text-ink-soft hover:bg-white'
+                    ? 'bg-emerald-500 text-white'
+                    : 'bg-rose-500 text-white'
+                  : 'text-ink-soft hover:bg-surface'
               }`}
             >
               {m.label}
@@ -184,14 +184,14 @@ export function FeedObserve({ config, onComplete, alreadyDone }: TemplateProps<F
                     }}
                   >
                     <span
-                      className={immersive ? 'text-[8.5rem]' : 'text-8xl'}
+                      className={immersive ? 'text-9xl' : 'text-8xl'}
                       style={{ lineHeight: 1 }}
                       aria-hidden
                     >
                       {config.subject.emoji}
                     </span>
                   </motion.span>
-                  <span className="mt-3 rounded-full bg-white/90 px-3 py-0.5 font-extrabold shadow ring-1 ring-black/5">
+                  <span className="mt-3 rounded-full bg-surface/90 px-3 py-0.5 font-extrabold shadow ring-1 ring-black/5">
                     {config.subject.label}
                   </span>
                   <span
@@ -243,7 +243,7 @@ export function FeedObserve({ config, onComplete, alreadyDone }: TemplateProps<F
               </div>
             )}
           </DropZone>
-          <div className="flex justify-center gap-4 rounded-3xl bg-slate-900 p-4 shadow-inner md:flex-col md:justify-start">
+          <div className="flex justify-center gap-4 rounded-3xl bg-night p-4 shadow-inner md:flex-col md:justify-start">
             {config.meters.map((m) => (
               <MeterTube key={m.id} meter={m} value={values[m.id]} tall={immersive} />
             ))}
@@ -257,7 +257,7 @@ export function FeedObserve({ config, onComplete, alreadyDone }: TemplateProps<F
             {config.items.map((item) => (
               <Draggable key={item.id} id={item.id} label={item.label}>
                 <span
-                  className={`flex min-w-24 flex-col items-center rounded-2xl bg-white px-3 py-2 shadow-[0_4px_0_rgba(30,27,46,0.12)] ring-2 transition hover:-translate-y-1 ${lastFed === item.id ? 'ring-indigo-300' : 'ring-black/5'}`}
+                  className={`flex min-w-24 flex-col items-center rounded-2xl bg-surface px-3 py-2 ring-2 transition hover:-translate-y-1 ${lastFed === item.id ? 'ring-indigo-300' : 'ring-black/5'}`}
                 >
                   <span className="text-4xl" aria-hidden>
                     {item.emoji}
@@ -348,7 +348,7 @@ function MeterTube({ meter, value, tall }: { meter: Meter; value: number; tall: 
   return (
     <div className="flex flex-col items-center gap-1.5">
       <div
-        className={`relative w-14 overflow-hidden rounded-full bg-slate-800 ring-4 ring-slate-700 ${tall ? 'h-80' : 'h-52'}`}
+        className={`relative w-14 overflow-hidden rounded-full bg-night ring-4 ring-slate-700 ${tall ? 'h-80' : 'h-52'}`}
         role="meter"
         aria-label={meter.label}
         aria-valuemin={meter.min}
@@ -399,7 +399,7 @@ function MeterTube({ meter, value, tall }: { meter: Meter; value: number; tall: 
         {meter.label}
       </span>
       <span
-        className={`text-[10px] font-extrabold tracking-wider uppercase ${healthy ? 'text-emerald-400' : 'text-rose-400'}`}
+        className={`text-xs font-extrabold ${healthy ? 'text-emerald-400' : 'text-rose-400'}`}
       >
         {status}
       </span>

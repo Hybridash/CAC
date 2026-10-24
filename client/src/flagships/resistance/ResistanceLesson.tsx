@@ -196,7 +196,7 @@ export function ResistanceLesson({
                 title="Drug level builds up with each day in a row"
               >
                 Drug level
-                <span className="h-2 flex-1 overflow-hidden rounded-full bg-white">
+                <span className="h-2 flex-1 overflow-hidden rounded-full bg-surface">
                   <span
                     className="block h-full rounded-full bg-sky-500"
                     style={{ width: `${Math.min(100, (streak / 5) * 100)}%` }}
@@ -216,7 +216,7 @@ export function ResistanceLesson({
               ))}
             </ul>
             <Draggable id="pill" label="Antibiotic pill" disabled={dosedToday || pop.length === 0}>
-              <span className="flex items-center justify-center gap-2 rounded-2xl bg-white px-3 py-2 font-bold shadow ring-1 ring-black/10">
+              <span className="flex items-center justify-center gap-2 rounded-2xl bg-surface px-3 py-2 font-bold shadow ring-1 ring-black/10">
                 <Icon name="pill" size={28} />
                 {dosedToday ? 'Taken today ✓' : 'Antibiotic pill'}
               </span>
@@ -272,7 +272,7 @@ function Goal({ done, children }: { done: boolean; children: React.ReactNode }) 
 function History({ log }: { log: DayLog[] }) {
   const max = 90;
   return (
-    <figure className="rounded-2xl bg-white p-3 ring-1 ring-black/10">
+    <figure className="rounded-2xl bg-surface p-3 ring-1 ring-black/10">
       <figcaption className="mb-2 text-sm font-bold">
         Bacteria at the end of each day (● = pill taken)
       </figcaption>
@@ -297,8 +297,8 @@ function History({ log }: { log: DayLog[] }) {
                 />
               ))}
             </div>
-            <span className="text-[10px] font-bold">{l.dosed ? '●' : '·'}</span>
-            <span className="text-[10px] text-ink-soft">d{l.day}</span>
+            <span className="text-xs font-bold">{l.dosed ? '●' : '·'}</span>
+            <span className="text-xs text-ink-soft">d{l.day}</span>
           </div>
         ))}
       </div>

@@ -5,12 +5,12 @@ import { Icon, type IconName } from '../../components/Icon';
 /** The mission banner at the top of every interaction. */
 export function Prompt({ children }: { children: ReactNode }) {
   return (
-    <div className="sheen flex items-center gap-3 rounded-2xl bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 px-4 py-3 text-white shadow-[0_4px_0_#3730a3]">
+    <div className="flex items-center gap-3 rounded-xl bg-night px-4 py-3 text-white">
       <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/20 ring-1 ring-white/30">
         <Icon name="target" size={26} />
       </span>
       <div className="min-w-0">
-        <span className="block text-[11px] font-extrabold tracking-[0.18em] text-white/75 uppercase">
+        <span className="block text-xs font-semibold text-white/75">
           Your mission
         </span>
         <p className="leading-snug font-bold">{children}</p>
@@ -24,7 +24,7 @@ export type FeedbackTone = 'info' | 'good' | 'hint';
 /** Short feedback bubble: celebratory on success, gentle on mistakes. */
 export function Feedback({ text, tone = 'info' }: { text: string | null; tone?: FeedbackTone }) {
   const styles = {
-    info: { box: 'bg-white text-ink ring-indigo-200', badge: 'bg-indigo-100' },
+    info: { box: 'bg-surface text-ink ring-indigo-200', badge: 'bg-indigo-100' },
     good: { box: 'bg-emerald-50 text-emerald-950 ring-emerald-300', badge: 'bg-emerald-200' },
     hint: { box: 'bg-amber-50 text-amber-950 ring-amber-300', badge: 'bg-amber-200' },
   }[tone];
@@ -39,7 +39,7 @@ export function Feedback({ text, tone = 'info' }: { text: string | null; tone?: 
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ type: 'spring', stiffness: 380, damping: 26 }}
-            className={`flex items-start gap-3 rounded-2xl px-3 py-2.5 font-semibold shadow-sm ring-2 ${styles.box}`}
+            className={`flex items-start gap-3 rounded-xl px-3 py-2.5 font-semibold ring-1 ${styles.box}`}
           >
             <span
               className={`grid h-9 w-9 shrink-0 place-items-center rounded-full ${styles.badge}`}
@@ -60,9 +60,9 @@ export function Progress({ value, max, label }: { value: number; max: number; la
   const pct = Math.min(100, (value / Math.max(1, max)) * 100);
   const full = shown >= max;
   return (
-    <div className="flex items-center gap-3 text-sm font-extrabold text-ink-soft">
+    <div className="flex items-center gap-3 text-sm font-semibold text-ink-soft">
       <div
-        className="relative h-4 min-w-28 flex-1 overflow-hidden rounded-full bg-slate-200 shadow-inner sm:max-w-64"
+        className="relative h-3 min-w-28 flex-1 overflow-hidden rounded-sm bg-slate-200 sm:max-w-64"
         role="progressbar"
         aria-valuemin={0}
         aria-valuemax={max}
@@ -70,7 +70,7 @@ export function Progress({ value, max, label }: { value: number; max: number; la
         aria-label={label}
       >
         <motion.div
-          className={`sheen h-full rounded-full ${full ? 'bg-gradient-to-r from-emerald-400 to-teal-500' : 'bg-gradient-to-r from-indigo-400 to-fuchsia-500'}`}
+          className={`h-full ${full ? 'bg-emerald-500' : 'bg-brand'}`}
           initial={false}
           animate={{ width: `${pct}%` }}
           transition={{ type: 'spring', stiffness: 120, damping: 20 }}
@@ -96,7 +96,7 @@ export function Progress({ value, max, label }: { value: number; max: number; la
 export function GoalChip({ done, children }: { done: boolean; children: ReactNode }) {
   return (
     <span
-      className={`chip py-1 transition ${done ? 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-300' : 'bg-white text-ink-soft ring-1 ring-black/10'}`}
+      className={`chip py-1 transition ${done ? 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-300' : 'bg-surface text-ink-soft ring-1 ring-black/10'}`}
     >
       <Icon name={done ? 'check' : 'todo'} size={18} /> {children}
     </span>
@@ -106,14 +106,14 @@ export function GoalChip({ done, children }: { done: boolean; children: ReactNod
 /** A bold panel heading with an icon, used for trays, readouts and side panels. */
 export function PanelTitle({ icon, children }: { icon?: IconName; children: ReactNode }) {
   return (
-    <h3 className="mb-2 flex items-center gap-1.5 text-xs font-extrabold tracking-[0.14em] text-ink-soft uppercase">
+    <h3 className="mb-2 flex items-center gap-1.5 text-xs font-extrabold text-ink-soft">
       {icon && <Icon name={icon} size={18} />}
       {children}
     </h3>
   );
 }
 
-const BURST_COLORS = ['#f59e0b', '#10b981', '#6366f1', '#ec4899', '#22d3ee', '#a3e635'];
+const BURST_COLORS = ['#f59e0b', '#10b981', '#0e7c6b', '#ec4899', '#22d3ee', '#a3e635'];
 
 /**
  * A ring of particles that pops out from the middle of its (relatively positioned) parent.

@@ -22,8 +22,8 @@ export default defineConfig(({ mode }) => ({
           scope: '/',
           display: 'standalone',
           orientation: 'any',
-          background_color: '#fff9ef',
-          theme_color: '#10b981',
+          background_color: '#edf1e8',
+          theme_color: '#2f6b3f',
           categories: ['education', 'games'],
           icons: [
             { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },

@@ -8,7 +8,6 @@ import {
 } from '@bioplay/shared';
 import { AtpAmount } from './Atp';
 import { usePlayer } from '../store/player';
-import { inkFor } from '../lib/color';
 import { CategoryIcon, Icon } from './Icon';
 
 export function Stars({ difficulty }: { difficulty: Difficulty }) {
@@ -30,12 +29,16 @@ export function Stars({ difficulty }: { difficulty: Difficulty }) {
 export function CategoryChip({ id }: { id: Concept['category'] }) {
   const c = CATEGORY_BY_ID[id];
   return (
-    <span className="chip" style={{ background: c.tint, color: inkFor(c.color) }}>
+    <span className="inline-flex items-center gap-1.5">
       <CategoryIcon id={id} size={18} /> {c.name}
     </span>
   );
 }
 
+/**
+ * A concept in a catalog: a plain row with a hairline above it, no box. The category is shown in
+ * the meta line, not as a label over the title.
+ */
 export function ConceptCard({ concept, badge }: { concept: Concept; badge?: string }) {
   const progress = usePlayer((s) => s.player?.progress[concept.id]);
   const cat = CATEGORY_BY_ID[concept.category];
@@ -43,33 +46,19 @@ export function ConceptCard({ concept, badge }: { concept: Concept; badge?: stri
   return (
     <Link
       to={`/learn/${concept.id}`}
-      className="card group relative flex flex-col overflow-hidden transition hover:-translate-y-1 hover:shadow-lg"
+      className="group flex gap-4 border-t border-line pt-4 pb-2 transition-colors"
     >
-      <div className="flex h-20 items-center justify-between px-4" style={{ background: cat.tint }}>
-        <span className="transition group-hover:scale-110">
-          <CategoryIcon id={concept.category} size={48} />
-        </span>
-        <div className="flex flex-col items-end gap-1">
-          {badge && <span className="chip bg-amber-300 text-amber-950 shadow-sm">{badge}</span>}
-          {concept.flagship && (
-            <span className="chip bg-white/80 text-ink">
-              <Icon name="sparkle" size={16} /> Flagship
-            </span>
-          )}
-          {concept.rarity === 'obscure' && (
-            <span className="chip bg-fuchsia-100 text-fuchsia-800">
-              <Icon name="gem" size={16} /> Obscure
-            </span>
-          )}
-        </div>
-      </div>
-      <div className="flex flex-1 flex-col gap-1 p-4">
-        <h3 className="text-lg font-bold">{concept.title}</h3>
-        <p className="line-clamp-2 flex-1 text-sm text-ink-soft">{concept.summary}</p>
-        <div className="mt-2 flex items-center justify-between">
+      <span className="mt-0.5 shrink-0">
+        <CategoryIcon id={concept.category} size={48} />
+      </span>
+      <span className="flex min-w-0 flex-1 flex-col gap-1">
+        <h3 className="text-lg group-hover:underline">{concept.title}</h3>
+        <span className="line-clamp-2 text-sm text-ink-soft">{concept.summary}</span>
+        <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-soft">
+          <span className="font-medium">{cat.name}</span>
           <Stars difficulty={concept.difficulty} />
           {done ? (
-            <span className="chip bg-emerald-100 text-emerald-800">
+            <span className="inline-flex items-center gap-1 font-semibold text-emerald-700">
               <Icon name="check" size={16} /> Done
             </span>
           ) : (
@@ -78,8 +67,19 @@ export function ConceptCard({ concept, badge }: { concept: Concept; badge?: stri
               prefix="up to "
             />
           )}
-        </div>
-      </div>
+          {badge && <span className="font-semibold text-amber-800">{badge}</span>}
+          {concept.flagship && (
+            <span className="inline-flex items-center gap-1">
+              <Icon name="sparkle" size={14} /> Flagship
+            </span>
+          )}
+          {concept.rarity === 'obscure' && (
+            <span className="inline-flex items-center gap-1 text-fuchsia-800">
+              <Icon name="gem" size={14} /> Obscure
+            </span>
+          )}
+        </span>
+      </span>
     </Link>
   );
 }

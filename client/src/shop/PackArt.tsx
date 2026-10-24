@@ -55,7 +55,7 @@ export function PackArt({
       />
       <Icon name={c.icon} x={35} y={47} size={30} />
       <text x="50" y="100" textAnchor="middle" fontSize="11" fontWeight="900" fill={c.ink}>
-        BIOPLAY
+        BIO BITES
       </text>
       {tier === 'legendary' && (
         <path

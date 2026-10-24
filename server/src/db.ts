@@ -112,11 +112,32 @@ const MIGRATIONS: string[] = [
     created_at TEXT NOT NULL
   );
   `,
+  `
+  -- Sessions expire: idle after 90 days, or 365 days after creation. Existing sessions start fresh.
+  ALTER TABLE sessions ADD COLUMN last_used_at TEXT;
+  UPDATE sessions SET last_used_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now');
+  CREATE INDEX sessions_user ON sessions(user_id);
+
+  -- A server-wide Bio Bot question counter per UTC day, so total AI spend has a hard ceiling.
+  CREATE TABLE chat_global (
+    day TEXT PRIMARY KEY,
+    count INTEGER NOT NULL DEFAULT 0
+  );
+  `,
 ];
 
 export function openDatabase(file: string): DB {
-  if (file !== ':memory:') fs.mkdirSync(path.dirname(path.resolve(file)), { recursive: true });
+  // The data directory and database file are private to the server's user (no group/other access).
+  if (file !== ':memory:')
+    fs.mkdirSync(path.dirname(path.resolve(file)), { recursive: true, mode: 0o700 });
   const db = new Database(file);
+  if (file !== ':memory:') {
+    try {
+      fs.chmodSync(file, 0o600);
+    } catch {
+      /* best effort: some filesystems (e.g. Windows) ignore POSIX modes */
+    }
+  }
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
   migrate(db);

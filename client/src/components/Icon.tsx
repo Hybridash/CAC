@@ -31,7 +31,7 @@ const ICONS = {
       <path d="M24 13c5-4 12-4 18-2v26c-6-2-13-2-18 2z" fill="#c7d2fe" {...line} />
       <path
         d="M11 18h8M11 23h8M29 18h8M29 23h8"
-        stroke="#6366f1"
+        stroke="#0e7c6b"
         strokeWidth="2"
         strokeLinecap="round"
       />
@@ -246,14 +246,14 @@ const ICONS = {
   chat: (
     <>
       <path d="M8 12h32v20H22l-9 7v-7H8z" fill="#fff" {...line} />
-      <circle cx="17" cy="22" r="2.3" fill="#6366f1" />
-      <circle cx="24" cy="22" r="2.3" fill="#6366f1" />
-      <circle cx="31" cy="22" r="2.3" fill="#6366f1" />
+      <circle cx="17" cy="22" r="2.3" fill="#0e7c6b" />
+      <circle cx="24" cy="22" r="2.3" fill="#0e7c6b" />
+      <circle cx="31" cy="22" r="2.3" fill="#0e7c6b" />
     </>
   ),
   party: (
     <>
-      <path d="M8 40l8-24 16 16z" fill="#a78bfa" {...line} />
+      <path d="M8 40l8-24 16 16z" fill="#8fb1ce" {...line} />
       <path d="M12 28l8 8M14 22l12 12" stroke="#fde047" strokeWidth="2.4" strokeLinecap="round" />
       <path d="M28 10l2 4M36 14l-3 3M38 24l-4-1" {...line} />
       <circle cx="40" cy="8" r="2" fill="#f472b6" />
@@ -261,7 +261,7 @@ const ICONS = {
       <circle cx="42" cy="32" r="2" fill="#38bdf8" />
     </>
   ),
-  pointer: <path d="M6 18h20V9l16 15-16 15v-9H6z" fill="#818cf8" {...line} />,
+  pointer: <path d="M6 18h20V9l16 15-16 15v-9H6z" fill="#3fa692" {...line} />,
   star: (
     <>
       <path
@@ -278,7 +278,7 @@ const ICONS = {
       <path
         d="M24 13v14M18 22l6 6 6-6"
         fill="none"
-        stroke="#6366f1"
+        stroke="#0e7c6b"
         strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -508,7 +508,7 @@ const ICONS = {
       <path
         d="M15 6c18 6-18 12 0 18s-18 12 0 18"
         fill="none"
-        stroke="#a78bfa"
+        stroke="#8fb1ce"
         strokeWidth="3.5"
         strokeLinecap="round"
       />
@@ -676,7 +676,7 @@ const ICONS = {
       <path d="M8 22c3-5 9-7 16-7s13 2 16 7" fill="#fde68a" {...line} />
       <circle cx="18" cy="19" r="1.6" fill="#a16207" />
       <circle cx="26" cy="18" r="1.6" fill="#a16207" />
-      <circle cx="31" cy="20" r="1.6" fill="#7c3aed" />
+      <circle cx="31" cy="20" r="1.6" fill="#345a80" />
       <path d="M33 8l-6 12" stroke="#94a3b8" strokeWidth="3.4" strokeLinecap="round" />
     </>
   ),
@@ -883,7 +883,7 @@ const ICONS = {
   ),
   kidB: (
     <>
-      <path d="M9 44c0-9 7-14 15-14s15 5 15 14z" fill="#a78bfa" {...line} />
+      <path d="M9 44c0-9 7-14 15-14s15 5 15 14z" fill="#8fb1ce" {...line} />
       <circle cx="24" cy="19" r="11" fill="#fcd7b6" {...line} />
       <path
         d="M12 21c-1-10 5-14 12-14s13 4 12 14c-2-4-5-7-9-7-1 3-4 4-8 4-3 0-5 1-7 3z"
@@ -947,15 +947,8 @@ export const CATEGORY_ICON: Record<CategoryId, IconName> = {
   weird: 'octopus',
 };
 
-export const CategoryIcon = ({
-  id,
-  size = 24,
-  className,
-}: {
-  id: CategoryId;
-  size?: number;
-  className?: string;
-}) => <Icon name={CATEGORY_ICON[id]} size={size} className={className} />;
+/** Topic art: the redrawn line set. See `CategoryArt`. */
+export { CategoryArt as CategoryIcon } from './CategoryArt';
 
 /** A checklist item used by lessons to show goals. */
 export function GoalItem({ done, children }: { done: boolean; children: ReactNode }) {

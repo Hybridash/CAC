@@ -11,10 +11,10 @@ const fmt = (v: number) =>
   Math.abs(v) >= 100 ? Math.round(v).toString() : (Math.round(v * 10) / 10).toString();
 
 const SLIDER_COLORS: [string, string][] = [
-  ['#818cf8', '#c084fc'],
+  ['#3fa692', '#8fb1ce'],
   ['#34d399', '#22d3ee'],
   ['#fbbf24', '#fb7185'],
-  ['#60a5fa', '#a78bfa'],
+  ['#60a5fa', '#8fb1ce'],
 ];
 
 const HOLD_MS = 700;
@@ -118,7 +118,7 @@ export function SliderSim({
           {config.readouts.map((r) => (
             <span
               key={r.label}
-              className="chip bg-slate-900 py-1.5 font-mono text-emerald-300 ring-1 ring-black/10"
+              className="chip bg-night py-1.5 font-mono text-emerald-300 ring-1 ring-black/10"
             >
               <span className="font-sans text-slate-300">{r.label}:</span>{' '}
               <b>{fmt(evalExpr(r.expr, vals))}</b> {r.unit}
@@ -126,7 +126,7 @@ export function SliderSim({
           ))}
         </div>
       )}
-      <div className="rounded-3xl bg-white p-3 ring-1 ring-black/10 sm:p-4">
+      <div className="rounded-3xl bg-surface p-3 ring-1 ring-black/10 sm:p-4">
         <PanelTitle icon="flask">Controls</PanelTitle>
         <div className="grid gap-x-5 gap-y-3 sm:grid-cols-2">
           {config.inputs.map((i, n) => {
@@ -347,7 +347,7 @@ function Chamber({
       <div className="absolute bottom-3 left-3 rounded-xl bg-black/50 px-3 py-1.5 font-mono text-sm font-bold text-emerald-300 ring-1 ring-white/10">
         {label}: {value}
       </div>
-      <div className="absolute top-3 right-3 flex items-center gap-1.5 rounded-full bg-black/40 px-2.5 py-1 text-[11px] font-extrabold tracking-wider text-white/80 uppercase">
+      <div className="absolute top-3 right-3 flex items-center gap-1.5 rounded-full bg-black/40 px-2.5 py-1 text-xs font-extrabold text-white/80">
         <span className="h-2 w-2 animate-pulse rounded-full bg-rose-500" /> Live
       </div>
     </div>
@@ -380,12 +380,12 @@ function Gauge({
   };
   const [nx, ny] = pt(value, R - 14);
   return (
-    <div className="flex items-center gap-3 rounded-3xl bg-white p-3 ring-1 ring-black/10">
+    <div className="flex items-center gap-3 rounded-3xl bg-surface p-3 ring-1 ring-black/10">
       <svg viewBox="0 0 200 112" className="w-44 shrink-0" aria-hidden>
         <defs>
           <linearGradient id="gauge-g" x1="0" x2="1">
             <stop offset="0" stopColor="#60a5fa" />
-            <stop offset="0.5" stopColor="#a78bfa" />
+            <stop offset="0.5" stopColor="#8fb1ce" />
             <stop offset="1" stopColor="#f472b6" />
           </linearGradient>
         </defs>
@@ -419,7 +419,7 @@ function Gauge({
         <circle cx="100" cy="100" r="9" fill={inTarget ? '#10b981' : '#1e1b2e'} />
       </svg>
       <div className="min-w-0" aria-live="polite">
-        <p className="text-xs font-extrabold tracking-wider text-ink-soft uppercase">{label}</p>
+        <p className="text-xs font-extrabold text-ink-soft">{label}</p>
         <p className="font-display text-4xl leading-none font-extrabold text-indigo-700">
           {fmt(value)} <span className="text-base text-ink-soft">{unit}</span>
         </p>
@@ -470,7 +470,7 @@ function Graph({
   const line = curve.map(([a, b]) => `${sx(a)},${sy(b)}`).join(' ');
   const area = `${sx(curve[0][0])},${H - P.b} ${line} ${sx(curve[curve.length - 1][0])},${H - P.b}`;
   return (
-    <figure className="flex-1 rounded-3xl bg-white p-2 ring-1 ring-black/10">
+    <figure className="flex-1 rounded-3xl bg-surface p-2 ring-1 ring-black/10">
       <svg
         viewBox={`0 0 ${W} ${H}`}
         className="w-full"
@@ -479,8 +479,8 @@ function Graph({
       >
         <defs>
           <linearGradient id="graph-fill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stopColor="#818cf8" stopOpacity="0.45" />
-            <stop offset="1" stopColor="#818cf8" stopOpacity="0.02" />
+            <stop offset="0" stopColor="#3fa692" stopOpacity="0.45" />
+            <stop offset="1" stopColor="#3fa692" stopOpacity="0.02" />
           </linearGradient>
         </defs>
         {[0.25, 0.5, 0.75, 1].map((f) => (
@@ -523,7 +523,7 @@ function Graph({
         <polyline
           points={line}
           fill="none"
-          stroke="#6366f1"
+          stroke="#0e7c6b"
           strokeWidth="3"
           strokeLinejoin="round"
         />

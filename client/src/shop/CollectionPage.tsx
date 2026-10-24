@@ -59,7 +59,7 @@ export function CollectionPage() {
             return (
               <span
                 key={r}
-                className={`chip bg-white py-1 ring-1 ring-black/10 ${RARITY_STYLE[r].text}`}
+                className={`chip bg-surface py-1 ring-1 ring-black/10 ${RARITY_STYLE[r].text}`}
               >
                 {RARITY_STYLE[r].label} {have}/{all.length}
               </span>
@@ -68,7 +68,7 @@ export function CollectionPage() {
         </div>
       </header>
 
-      <div className="card flex flex-wrap items-center gap-4 p-3">
+      <div className="flex flex-wrap items-center gap-4 border-y border-line py-3">
         <Segment
           label="Show"
           value={show}
@@ -150,16 +150,16 @@ function Segment<T extends string>({
   options: [T, string][];
 }) {
   return (
-    <div className="flex items-center gap-2" role="radiogroup" aria-label={label}>
+    <div className="flex flex-wrap items-center gap-2" role="radiogroup" aria-label={label}>
       <span className="text-sm font-bold">{label}</span>
-      <div className="flex rounded-xl bg-slate-100 p-0.5">
+      <div className="flex flex-wrap rounded-xl bg-slate-100 p-0.5">
         {options.map(([v, l]) => (
           <button
             key={v}
             role="radio"
             aria-checked={value === v}
             onClick={() => onChange(v)}
-            className={`rounded-lg px-2.5 py-1 text-sm font-bold ${value === v ? 'bg-white shadow' : 'text-ink-soft'}`}
+            className={`rounded-lg px-2.5 py-1 text-sm font-bold ${value === v ? 'bg-surface shadow' : 'text-ink-soft'}`}
           >
             {l}
           </button>
@@ -213,7 +213,7 @@ function AvatarDetail({ avatar, onClose }: { avatar: Avatar; onClose: () => void
           <AvatarArt avatar={avatar} size={160} silhouette={!owned} />
         </div>
         <h2 className="mt-3 text-2xl font-extrabold">{owned ? avatar.name : '???'}</h2>
-        <p className={`text-sm font-extrabold uppercase ${r.text}`}>{r.label}</p>
+        <p className={`text-sm font-extrabold ${r.text}`}>{r.label}</p>
         {owned ? (
           <p className="mt-2 text-ink-soft">
             <Icon name="microscope" size={20} className="mr-1 -mt-0.5" />

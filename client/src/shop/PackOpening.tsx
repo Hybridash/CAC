@@ -147,7 +147,7 @@ export function PackOpening({
             initial={{ scale: level > 0 ? 1.6 : 1, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 300, damping: 14 }}
-            className="font-display text-3xl font-extrabold uppercase"
+            className="font-display text-3xl font-extrabold"
             style={{ color: AURA[packRarity] }}
             data-testid="pack-rarity"
           >
@@ -265,7 +265,7 @@ export function PackOpening({
               <PackArt tier={tier} size={190} half="right" />
             </motion.div>
             <motion.div
-              className="absolute h-40 w-40 rounded-full bg-white"
+              className="absolute h-40 w-40 rounded-full bg-surface"
               initial={{ scale: 0, opacity: 0.9 }}
               animate={{ scale: 3, opacity: 0 }}
               transition={{ duration: 0.8 }}
@@ -320,7 +320,7 @@ export function PackOpening({
                     animate={{ rotateY: flipped[i] ? 180 : 0 }}
                     transition={{ duration: 0.6 }}
                   >
-                    <div className="absolute inset-0 grid place-items-center rounded-3xl bg-gradient-to-br from-indigo-500 to-violet-700 ring-4 ring-white/40 [backface-visibility:hidden]">
+                    <div className="absolute inset-0 grid place-items-center rounded-3xl bg-surface ring-4 ring-white/40 [backface-visibility:hidden]">
                       <Icon name="dna" size={72} />
                       <span className="absolute bottom-4 text-sm font-extrabold text-white/80">
                         tap!
@@ -360,7 +360,7 @@ export function PackOpening({
                   </motion.div>
                   {flipped[i] && (isChosen || isWorn) && (
                     <span
-                      className={`absolute -top-3 left-1/2 z-10 -translate-x-1/2 chip py-0.5 text-xs shadow ${isChosen ? 'bg-emerald-400 text-emerald-950' : 'bg-white text-ink'}`}
+                      className={`absolute -top-3 left-1/2 z-10 -translate-x-1/2 chip py-0.5 text-xs shadow ${isChosen ? 'bg-emerald-400 text-emerald-950' : 'bg-surface text-ink'}`}
                     >
                       <Icon name="check" size={14} /> {isChosen ? 'Chosen' : 'Wearing'}
                     </span>

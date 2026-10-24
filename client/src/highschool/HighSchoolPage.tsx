@@ -33,7 +33,7 @@ export function HighSchoolPage() {
             <a
               key={u.id}
               href={`#unit-${u.id}`}
-              className="chip bg-white py-1 text-sm ring-1 ring-black/10 hover:ring-2"
+              className="chip bg-surface py-1 text-sm ring-1 ring-black/10 hover:ring-2"
               style={{ color: CATEGORY_BY_ID[u.category].color }}
               onClick={(e) => {
                 e.preventDefault();
@@ -57,27 +57,29 @@ export function HighSchoolPage() {
             aria-labelledby={`unit-${u.id}-h`}
             className="scroll-mt-24"
           >
-            <div
-              className="mb-3 flex flex-wrap items-end justify-between gap-2 rounded-2xl px-4 py-3"
-              style={{ background: cat.tint }}
-            >
+            <div className="mb-4 flex flex-wrap items-end justify-between gap-x-6 gap-y-3 border-b border-line pb-3">
               <div>
-                <p
-                  className="text-xs font-extrabold tracking-wide uppercase"
-                  style={{ color: cat.color }}
-                >
-                  Unit {i + 1}
-                </p>
                 <h2 id={`unit-${u.id}-h`} className="text-2xl font-extrabold">
-                  {u.name}
+                  Unit {i + 1}: {u.name}
                 </h2>
                 <p className="text-sm text-ink-soft">{u.blurb}</p>
               </div>
-              <span className="chip bg-white text-ink">
-                {unitDone} / {lessons.length} done
-              </span>
+              <div className="w-40">
+                <p className="mb-1 text-sm font-medium text-ink-soft">
+                  {unitDone} / {lessons.length} done
+                </p>
+                <div
+                  className="scale"
+                  style={{
+                    ['--v' as string]: `${(unitDone / Math.max(1, lessons.length)) * 100}%`,
+                    ['--scale-color' as string]: cat.color,
+                  }}
+                >
+                  <i />
+                </div>
+              </div>
             </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-x-10 gap-y-3 lg:grid-cols-2">
               {lessons.map((l) => (
                 <ConceptCard key={l.id} concept={l} />
               ))}

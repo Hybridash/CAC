@@ -19,7 +19,7 @@ export function DiagramView({ diagram }: { diagram: Diagram }) {
         <h3 className="text-xl font-extrabold">{diagram.title}</h3>
         <p className="text-ink-soft">{diagram.caption}</p>
       </div>
-      <div className="overflow-hidden rounded-2xl bg-white ring-1 ring-black/10">
+      <div data-theme="light" className="pebble overflow-hidden bg-surface ring-1 ring-black/10">
         <svg
           viewBox={`0 0 ${diagram.width} ${diagram.height}`}
           className="block h-auto w-full select-none"

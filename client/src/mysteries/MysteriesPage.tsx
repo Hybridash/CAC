@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import {
-  CATEGORY_BY_ID,
   CONCEPT_BY_ID,
   isMysteryUnlocked,
   MYSTERIES,
@@ -20,7 +19,7 @@ export function MysteriesPage() {
     <div className="flex flex-col gap-5">
       <header>
         <h1 className="flex items-center gap-2 text-4xl font-extrabold">
-          <Icon name="mystery" size={44} /> Bio Mysteries
+          Bio Mysteries
         </h1>
         <p className="max-w-2xl text-ink-soft">
           Real-world puzzles that combine what you’ve learned. Examine the clues, pick an
@@ -31,52 +30,51 @@ export function MysteriesPage() {
           {solved.size} of {MYSTERIES.length} cases solved
         </p>
       </header>
-      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid gap-x-10 gap-y-3 lg:grid-cols-2">
         {MYSTERIES.map((m) => {
           const unlocked = isMysteryUnlocked(m, done);
           const isSolved = solved.has(m.id);
-          const cat = CATEGORY_BY_ID[m.category];
           return (
             <li key={m.id}>
               <Link
                 to={`/mysteries/${m.id}`}
-                className={`card relative flex h-full flex-col gap-2 overflow-hidden p-4 transition hover:-translate-y-1 ${unlocked ? '' : 'opacity-90'}`}
+                className={`group flex h-full gap-4 border-t border-line pt-4 pb-2 ${unlocked ? '' : 'opacity-85'}`}
                 aria-label={`${m.title}. ${isSolved ? 'Solved' : unlocked ? 'Unlocked' : 'Locked'}`}
               >
-                <div className="flex items-start justify-between">
-                  <span
-                    className="grid h-14 w-14 place-items-center rounded-2xl"
-                    style={{ background: cat.tint }}
-                    aria-hidden
-                  >
-                    {unlocked ? (
-                      <CategoryIcon id={m.category} size={38} />
-                    ) : (
-                      <Icon name="lock" size={34} />
-                    )}
-                  </span>
-                  <span
-                    className={`chip ${isSolved ? 'bg-amber-300 text-amber-950' : unlocked ? 'bg-violet-100 text-violet-900' : 'bg-slate-100 text-slate-600'}`}
-                  >
-                    {isSolved ? '✓ Solved' : unlocked ? 'Open case' : 'Locked'}
-                  </span>
-                </div>
-                <h2 className="text-xl font-extrabold">{m.title}</h2>
-                <p className="line-clamp-3 text-sm text-ink-soft">{m.scenario}</p>
-                <div className="mt-auto flex items-center justify-between pt-2">
-                  <Stars difficulty={m.difficulty} />
-                  <AtpAmount amount={mysteryReward(m.difficulty)} prefix="+" />
-                </div>
-                <div className="flex flex-wrap gap-1">
-                  {m.requires.map((id) => (
+                <span className="mt-0.5 shrink-0" aria-hidden>
+                  {unlocked ? (
+                    <CategoryIcon id={m.category} size={48} />
+                  ) : (
+                    <Icon name="lock" size={44} />
+                  )}
+                </span>
+                <span className="flex min-w-0 flex-1 flex-col gap-1">
+                  <h2 className="text-xl leading-snug font-extrabold group-hover:underline">
+                    {m.title}
+                  </h2>
+                  <span className="line-clamp-3 text-sm text-ink-soft">{m.scenario}</span>
+                  <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
                     <span
-                      key={id}
-                      className={`chip text-[11px] ${done(id) ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'}`}
+                      className={`font-semibold ${isSolved ? 'text-emerald-700' : unlocked ? 'text-brand-dark' : 'text-ink-soft'}`}
                     >
-                      {done(id) ? '✓' : '○'} {CONCEPT_BY_ID[id]?.title}
+                      {isSolved ? 'Solved' : unlocked ? 'Open case' : 'Locked'}
                     </span>
-                  ))}
-                </div>
+                    <Stars difficulty={m.difficulty} />
+                    <AtpAmount amount={mysteryReward(m.difficulty)} prefix="+" />
+                  </span>
+                  {!isSolved && (
+                    <span className="text-sm text-ink-soft">
+                      Needs:{' '}
+                      {m.requires.map((id, i) => (
+                        <span key={id} className={done(id) ? 'text-emerald-700' : ''}>
+                          {i > 0 && ', '}
+                          {CONCEPT_BY_ID[id]?.title}
+                          {done(id) && ' (done)'}
+                        </span>
+                      ))}
+                    </span>
+                  )}
+                </span>
               </Link>
             </li>
           );

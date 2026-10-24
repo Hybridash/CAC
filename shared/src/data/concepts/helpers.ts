@@ -85,17 +85,18 @@ export function sorting(
 /** Assembly line: parts in the correct order as [label, emoji, description]. */
 export function assembly(
   prompt: string,
-  parts: [label: string, emoji: string, description: string][],
+  parts: [label: string, emoji: string, description: string, symbol?: string][],
   successMessage: string,
   opts: {
     layout?: 'line' | 'cycle';
-    distractors?: [label: string, emoji: string, description: string][];
+    distractors?: [label: string, emoji: string, description: string, symbol?: string][];
   } = {},
 ): Interaction {
-  const toPart = ([l, emoji, description]: [string, string, string]) => ({
+  const toPart = ([l, emoji, description, symbol]: [string, string, string, string?]) => ({
     id: slug(l),
     label: l,
     emoji,
+    symbol,
     description,
   });
   const config: AssemblyConfig = {

@@ -84,7 +84,7 @@ export function PracticePage() {
           ← Bio Olympiad
         </Link>
         <h1 className="mt-1 flex items-center gap-2 text-4xl font-extrabold">
-          <Icon name="target" size={40} /> Practice questions
+          Practice questions
         </h1>
         <p className="max-w-2xl text-ink-soft">
           Filter the question bank, answer at your own pace and read the full explanation after each
@@ -92,7 +92,7 @@ export function PracticePage() {
         </p>
       </header>
 
-      <section className="card flex flex-col gap-3 p-4" aria-label="Filters">
+      <section className="flex flex-col gap-3 border-y border-line py-4" aria-label="Filters">
         <label className="relative">
           <span className="sr-only">Search questions</span>
           <input
@@ -105,7 +105,7 @@ export function PracticePage() {
               update(p);
             }}
             placeholder="Search: e.g. “Hardy-Weinberg”, “stomata”, “kidney”…"
-            className="w-full rounded-2xl bg-slate-50 py-2.5 pr-4 pl-10 font-semibold ring-1 ring-black/10 outline-none focus:ring-2 focus:ring-indigo-400"
+            className="w-full rounded-2xl bg-slate-50 py-2.5 pr-4 pl-10 font-semibold ring-1 ring-black/10 outline-none focus:ring-2 focus:ring-brand"
           />
           <span className="absolute top-1/2 left-3 -translate-y-1/2 text-ink-soft" aria-hidden>
             🔎
@@ -213,7 +213,7 @@ export function PracticePage() {
 function FilterRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center">
-      <span className="w-16 shrink-0 text-xs font-extrabold tracking-wider text-ink-soft uppercase">
+      <span className="w-16 shrink-0 text-xs font-extrabold text-ink-soft">
         {label}
       </span>
       <div className="flex flex-wrap gap-1.5" role="group" aria-label={label}>
@@ -226,7 +226,7 @@ function FilterRow({ label, children }: { label: string; children: React.ReactNo
 function Chip({
   on,
   onClick,
-  color = '#4f46e5',
+  color = '#0b6558',
   children,
 }: {
   on: boolean;
@@ -288,7 +288,7 @@ function PracticeCard({ q, number }: { q: OlyQuestion; number: number }) {
             aria-pressed={saved}
             aria-label={saved ? 'Remove bookmark' : 'Bookmark this question'}
             onClick={() => toggleBookmark(q.id)}
-            className={`grid h-9 w-9 place-items-center rounded-full text-lg ring-1 transition ${saved ? 'bg-amber-300 ring-amber-400' : 'bg-white ring-black/10 hover:bg-amber-50'}`}
+            className={`grid h-9 w-9 place-items-center rounded-full text-lg ring-1 transition ${saved ? 'bg-amber-300 ring-amber-400' : 'bg-surface ring-black/10 hover:bg-amber-50'}`}
           >
             {saved ? '★' : '☆'}
           </button>

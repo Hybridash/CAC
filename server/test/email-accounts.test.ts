@@ -82,7 +82,7 @@ describe('Bio Bites email accounts', () => {
       .set(b.auth)
       .send({ email: 'new@gmail.com', password: '123' })
       .expect(400);
-    expect(short.body.error).toMatch(/at least 6/);
+    expect(short.body.error).toMatch(/at least 8/);
     await request(t.app)
       .post('/api/auth/email/register')
       .set(b.auth)

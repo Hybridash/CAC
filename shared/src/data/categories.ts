@@ -13,8 +13,8 @@ export const CATEGORIES: Category[] = [
     id: 'genetics',
     name: 'Molecular Biology & Genetics',
     emoji: '🧬',
-    color: '#7c3aed',
-    tint: '#ede9fe',
+    color: '#2563eb',
+    tint: '#dbeafe',
     blurb: 'How DNA stores, copies and uses instructions.',
   },
   {
@@ -37,8 +37,8 @@ export const CATEGORIES: Category[] = [
     id: 'neuro',
     name: 'Neuroscience',
     emoji: '🧠',
-    color: '#4f46e5',
-    tint: '#e0e7ff',
+    color: '#475569',
+    tint: '#e2e8f0',
     blurb: 'Neurons, senses, memory and the electric brain.',
   },
   {
@@ -93,8 +93,8 @@ export const CATEGORIES: Category[] = [
     id: 'weird',
     name: 'Weird & Wonderful',
     emoji: '🐙',
-    color: '#c026d3',
-    tint: '#fae8ff',
+    color: '#8a6238',
+    tint: '#f1e7da',
     blurb: 'Life at its strangest and most surprising.',
   },
 ];

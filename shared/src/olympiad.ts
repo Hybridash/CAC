@@ -88,8 +88,8 @@ export const OLY_TOPICS: {
     id: 'genetics',
     name: 'Genetics & Evolution',
     short: 'Genetics',
-    color: '#7c3aed',
-    tint: '#ede9fe',
+    color: '#0369a1',
+    tint: '#e0f2fe',
     weight: 20,
   },
   {

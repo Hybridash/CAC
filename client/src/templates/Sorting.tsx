@@ -9,7 +9,7 @@ import { shuffled } from './framework/shuffle';
 import { sfx } from '../lib/sound';
 import { Icon } from '../components/Icon';
 
-const BIN_COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#06b6d4', '#8b5cf6'];
+const BIN_COLORS = ['#0e7c6b', '#10b981', '#f59e0b', '#ec4899', '#06b6d4', '#43729d'];
 
 /** A card-deck sorting game: send each card into the right bin, build a combo. */
 export function Sorting({
@@ -95,7 +95,7 @@ export function Sorting({
       <DndArena onDrop={onDrop}>
         {/* The deck */}
         <div
-          className={`relative flex flex-col items-center justify-center gap-3 overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-950 via-violet-900 to-fuchsia-900 px-4 py-6 ${immersive ? 'min-h-80' : 'min-h-64'}`}
+          className={`relative flex flex-col items-center justify-center gap-3 overflow-hidden rounded-3xl bg-night px-4 py-6 ${immersive ? 'min-h-80' : 'min-h-64'}`}
           aria-label="Card to sort"
         >
           <div className="scene-bg absolute inset-0 opacity-40" />
@@ -111,7 +111,7 @@ export function Sorting({
                 initial={{ scale: 0.4, opacity: 0, rotate: -10 }}
                 animate={{ scale: 1, opacity: 1, rotate: 0 }}
                 exit={{ opacity: 0 }}
-                className="absolute top-3 right-3 chip bg-gradient-to-r from-amber-300 to-orange-400 py-1 text-amber-950 shadow-lg"
+                className="absolute top-3 right-3 chip bg-amber-300 py-1 text-amber-950 shadow-lg"
               >
                 <Icon name="flame" size={18} /> Combo ×{combo}
               </motion.span>
@@ -142,7 +142,7 @@ export function Sorting({
                   >
                     <Draggable id={current.id} label={current.label} className="rounded-3xl">
                       <span
-                        className={`flex flex-col items-center justify-center gap-1 rounded-3xl bg-white px-6 shadow-2xl ring-4 ring-white/60 ${immersive ? 'h-56 w-52' : 'h-44 w-44'}`}
+                        className={`flex flex-col items-center justify-center gap-1 rounded-3xl bg-surface px-6 shadow-2xl ring-4 ring-white/60 ${immersive ? 'h-56 w-52' : 'h-44 w-44'}`}
                       >
                         <span
                           className={`bob ${immersive ? 'text-8xl' : 'text-7xl'}`}
@@ -210,7 +210,7 @@ export function Sorting({
                   <motion.div
                     animate={wrongBin === b.id ? { x: [0, -8, 8, -5, 5, 0] } : {}}
                     transition={{ duration: 0.4 }}
-                    className={`relative flex h-full min-h-44 flex-col overflow-hidden rounded-3xl bg-white p-3 transition ${isOver ? 'scale-[1.02]' : ''}`}
+                    className={`relative flex h-full min-h-44 flex-col overflow-hidden rounded-3xl bg-surface p-3 transition ${isOver ? 'scale-[1.02]' : ''}`}
                     style={{
                       boxShadow: `0 5px 0 ${color}55, 0 0 0 ${isOver ? 4 : armed ? 3 : 2}px ${wrongBin === b.id ? '#f43f5e' : isOver || armed ? color : `${color}55`}${isOver ? `, 0 0 24px ${color}88` : ''}`,
                     }}

@@ -1,8 +1,8 @@
 {
   "name": "bioplay",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
-  "description": "BioPlay — interactive biology made simple",
+  "description": "BioPlay \u2014 interactive biology made simple",
   "type": "module",
   "engines": {
     "node": ">=24.0.0",
@@ -25,7 +25,10 @@
     "format:check": "prettier --check .",
     "app": "node scripts/app.mjs",
     "ios": "node scripts/ios.mjs",
-    "ios:live": "node scripts/ios.mjs --live"
+    "ios:live": "node scripts/ios.mjs --live",
+    "backup": "node scripts/backup-db.mjs",
+    "audit": "npm audit --audit-level=high",
+    "test:security": "npm run test -w server -- security"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

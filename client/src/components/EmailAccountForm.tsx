@@ -6,7 +6,12 @@ import { RequestError } from '../lib/api';
 type Mode = 'register' | 'login';
 
 export const DEMO_LOGIN = { email: 'demo@gmail.com', password: 'demo123' };
-const MIN_PASSWORD = 6;
+const MIN_PASSWORD = 8;
+/**
+ * The demo login has a public password, so the server only creates it in development (or with
+ * DEMO_ACCOUNT=on). Show its button in the same cases: dev builds, or VITE_SHOW_DEMO_LOGIN=on.
+ */
+const SHOW_DEMO = import.meta.env.DEV || import.meta.env.VITE_SHOW_DEMO_LOGIN === 'on';
 
 /**
  * Create a Bio Bites account (email + password) or log in to one. With `collapsible`, it starts
@@ -95,7 +100,7 @@ export function EmailAccountForm({
               setMode(m);
               setError(null);
             }}
-            className={`flex-1 rounded-lg py-1.5 text-sm font-bold ${mode === m ? 'bg-white shadow' : 'text-ink-soft'}`}
+            className={`flex-1 rounded-lg py-1.5 text-sm font-bold ${mode === m ? 'bg-surface shadow' : 'text-ink-soft'}`}
           >
             {m === 'register' ? 'Create account' : 'Log in'}
           </button>
@@ -115,14 +120,14 @@ export function EmailAccountForm({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@gmail.com"
-          className="rounded-xl bg-white px-3 py-2.5 ring-1 ring-black/15 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+          className="rounded-xl bg-surface px-3 py-2.5 ring-1 ring-black/15 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
         />
       </div>
       <div className="flex flex-col gap-1">
         <label htmlFor={`${uid}-password`} className="text-sm font-bold">
           Password
         </label>
-        <div className="flex items-center gap-2 rounded-xl bg-white pr-2 ring-1 ring-black/15 focus-within:ring-2 focus-within:ring-indigo-400">
+        <div className="flex items-center gap-2 rounded-xl bg-surface pr-2 ring-1 ring-black/15 focus-within:ring-2 focus-within:ring-indigo-400">
           <input
             id={`${uid}-password`}
             aria-describedby={mode === 'register' ? `${uid}-hint` : undefined}
@@ -162,7 +167,7 @@ export function EmailAccountForm({
           Everything you’ve earned so far is kept and saved to your new account.
         </p>
       )}
-      {mode === 'login' && (
+      {mode === 'login' && SHOW_DEMO && (
         <button
           type="button"
           className="rounded-xl bg-amber-50 px-3 py-2 text-left text-sm ring-1 ring-amber-200 hover:bg-amber-100"

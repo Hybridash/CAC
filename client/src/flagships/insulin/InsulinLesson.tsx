@@ -248,14 +248,14 @@ export function InsulinLesson({
             role="radio"
             aria-checked={mode === m.id}
             onClick={() => switchMode(m.id)}
-            className={`chip py-1.5 text-sm transition ${mode === m.id ? 'bg-indigo-600 text-white shadow' : 'bg-white ring-1 ring-black/10 hover:bg-indigo-50'}`}
+            className={`chip py-1.5 text-sm transition ${mode === m.id ? 'bg-indigo-600 text-white shadow' : 'bg-surface ring-1 ring-black/10 hover:bg-indigo-50'}`}
           >
             {m.label}
           </button>
         ))}
         <button
           onClick={reset}
-          className="chip ml-auto bg-white py-1.5 text-sm ring-1 ring-black/10"
+          className="chip ml-auto bg-surface py-1.5 text-sm ring-1 ring-black/10"
         >
           ↺ Reset
         </button>
@@ -278,7 +278,7 @@ export function InsulinLesson({
               />
             )}
           </DropZone>
-          <div className="pointer-events-none absolute bottom-2 left-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-bold text-ink-soft shadow-sm">
+          <div className="pointer-events-none absolute bottom-2 left-3 rounded-full bg-surface/90 px-2.5 py-1 text-xs font-bold text-ink-soft shadow-sm">
             <Icon name="clock" size={18} /> {simClock(s.t)}{' '}
             <span className="font-normal">(1 s ≈ 3 min)</span>
           </div>
@@ -290,9 +290,9 @@ export function InsulinLesson({
             <div className="flex flex-wrap gap-2">
               {FOODS.map((food) => (
                 <Draggable key={food.id} id={food.id} label={food.label}>
-                  <span className="flex w-[4.6rem] flex-col items-center rounded-2xl bg-white px-1.5 py-1.5 shadow ring-1 ring-black/10">
+                  <span className="flex w-[4.6rem] flex-col items-center rounded-2xl bg-surface px-1.5 py-1.5 shadow ring-1 ring-black/10">
                     <Icon name={food.icon} size={38} />
-                    <span className="text-[11px] leading-tight font-bold">{food.label}</span>
+                    <span className="text-xs leading-tight font-bold">{food.label}</span>
                     <SpeedTag speed={food.speed} />
                   </span>
                 </Draggable>
@@ -301,7 +301,7 @@ export function InsulinLesson({
                 <Draggable key={a.id} id={a.id} label={a.label}>
                   <span className="flex w-[4.6rem] flex-col items-center rounded-2xl bg-sky-50 px-1.5 py-1.5 shadow ring-1 ring-sky-200">
                     <Icon name={a.icon} size={38} />
-                    <span className="text-[11px] leading-tight font-bold">{a.label}</span>
+                    <span className="text-xs leading-tight font-bold">{a.label}</span>
                   </span>
                 </Draggable>
               ))}
@@ -338,7 +338,7 @@ function SpeedTag({ speed }: { speed: 'fast' | 'medium' | 'slow' | 'minimal' }) 
   }[speed];
   const text = { fast: 'fast', medium: 'medium', slow: 'slow', minimal: 'minimal' }[speed];
   return (
-    <span className={`mt-0.5 rounded-full px-1.5 text-[10px] font-extrabold ${style}`}>{text}</span>
+    <span className={`mt-0.5 rounded-full px-1.5 text-xs font-extrabold ${style}`}>{text}</span>
   );
 }
 
@@ -416,7 +416,7 @@ function BodyScene({ s, mode, time }: { s: ModelState; mode: InsulinMode; time: 
           />
         </g>
         <g id="glucagon">
-          <polygon points="0,-6 6,5 -6,5" fill="#c084fc" stroke="#6b21a8" strokeWidth="1.5" />
+          <polygon points="0,-6 6,5 -6,5" fill="#8fb1ce" stroke="#263e56" strokeWidth="1.5" />
         </g>
       </defs>
 
@@ -535,7 +535,7 @@ function BodyScene({ s, mode, time }: { s: ModelState; mode: InsulinMode; time: 
           liver{storing ? ' (storing)' : ''}
         </text>
         {releasing && (
-          <circle cx="106" cy="228" r="6" fill="#a855f7" stroke="#581c87" strokeWidth="2">
+          <circle cx="106" cy="228" r="6" fill="#c93c80" stroke="#223448" strokeWidth="2">
             <animate attributeName="r" values="5;7;5" dur="0.8s" repeatCount="indefinite" />
           </circle>
         )}
@@ -830,7 +830,7 @@ function Sparkline({ values }: { values: number[] }) {
   const y = (g: number) => h - ((Math.min(300, Math.max(40, g)) - 40) / 260) * h;
   const pts = values.map((v, i) => `${(i / 239) * w},${y(v)}`).join(' ');
   return (
-    <figure className="rounded-2xl bg-white p-2 ring-1 ring-black/10">
+    <figure className="rounded-2xl bg-surface p-2 ring-1 ring-black/10">
       <figcaption className="mb-1 text-xs font-bold text-ink-soft">
         Blood sugar, last minute
       </figcaption>

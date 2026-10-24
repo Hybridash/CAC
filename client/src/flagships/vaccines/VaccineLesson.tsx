@@ -150,7 +150,7 @@ export function VaccineLesson({
       <DndArena onDrop={onDrop}>
         <div className="flex flex-wrap items-center gap-2 rounded-2xl bg-slate-50 p-2">
           <Draggable id="vaccine" label="Vaccine" disabled={stage === 'running'}>
-            <span className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 font-bold shadow ring-1 ring-black/10">
+            <span className="flex items-center gap-1.5 rounded-xl bg-surface px-3 py-2 font-bold shadow ring-1 ring-black/10">
               <Icon name="syringe" size={28} />
               Vaccine{' '}
               {doses > 0 && <span className="text-xs text-ink-soft">(drop again = booster)</span>}
@@ -233,7 +233,7 @@ function PersonCard({
     <DropZone id={id} label={name} className="rounded-3xl">
       {({ isOver, armed }) => (
         <div
-          className={`flex flex-col gap-2 rounded-3xl bg-white p-3 ring-2 transition ${isOver ? 'ring-indigo-400' : armed ? 'ring-indigo-300 ring-dashed' : sick ? 'ring-rose-300' : 'ring-black/10'}`}
+          className={`flex flex-col gap-2 rounded-3xl bg-surface p-3 ring-2 transition ${isOver ? 'ring-indigo-400' : armed ? 'ring-indigo-300 ring-dashed' : sick ? 'ring-rose-300' : 'ring-black/10'}`}
         >
           <div className="flex items-center gap-3">
             <motion.span
@@ -269,7 +269,7 @@ function PersonCard({
               className="flex flex-col items-end gap-0.5"
               aria-label={`${memoryCells} memory cells`}
             >
-              <span className="text-[10px] font-extrabold text-violet-700 uppercase">
+              <span className="text-xs font-extrabold text-violet-700">
                 Memory cells
               </span>
               <span className="flex gap-0.5">

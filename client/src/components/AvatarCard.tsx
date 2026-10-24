@@ -29,7 +29,7 @@ export const RARITY_STYLE: Record<
   epic: {
     label: 'Epic',
     ring: 'ring-purple-500',
-    bg: 'bg-gradient-to-br from-purple-50 to-fuchsia-100',
+    bg: 'bg-surface',
     glow: 'shadow-[0_0_22px_rgba(168,85,247,0.55)]',
     text: 'text-purple-700',
   },
@@ -63,21 +63,21 @@ export function AvatarCard({
       className={`relative flex flex-col items-center rounded-3xl p-2.5 ring-4 ${locked ? 'bg-slate-100 ring-slate-200' : `${r.bg} ${r.ring} ${r.glow}`}`}
     >
       {equipped && (
-        <span className="chip absolute -top-2 left-1/2 -translate-x-1/2 bg-indigo-600 text-[10px] text-white">
+        <span className="chip absolute -top-2 left-1/2 -translate-x-1/2 bg-indigo-600 text-xs text-white">
           Equipped
         </span>
       )}
       {count && count > 1 ? (
-        <span className="chip absolute top-1.5 right-1.5 bg-white/90 text-[10px]">×{count}</span>
+        <span className="chip absolute top-1.5 right-1.5 bg-surface/90 text-xs">×{count}</span>
       ) : null}
       <AvatarArt avatar={avatar} size={art} silhouette={locked} />
       <span
-        className={`mt-1 text-center leading-tight font-extrabold ${size === 'sm' ? 'text-[11px]' : 'text-sm'}`}
+        className={`mt-1 text-center leading-tight font-extrabold ${size === 'sm' ? 'text-xs' : 'text-sm'}`}
       >
         {locked ? '???' : avatar.name}
       </span>
       <span
-        className={`text-[10px] font-extrabold uppercase ${locked ? 'text-slate-400' : r.text}`}
+        className={`text-xs font-extrabold ${locked ? 'text-slate-400' : r.text}`}
       >
         {r.label}
       </span>

@@ -1,69 +1,925 @@
 @import 'tailwindcss';
 
+/* `dark:` follows the app's own theme switch, not the OS setting alone. */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *):not(:where([data-theme='light'] *)));
+
+/*
+ * Bio Bites design tokens.
+ * Direction: a clean lab slide. Cool glass-white surfaces, deep teal-black ink, one disciplined
+ * accent (eosin pink, the dye biologists use to stain cytoplasm). Cards are labelled specimens;
+ * progress is a micrometer scale bar. Nothing is chunky, glossy or gradient-filled.
+ */
 @theme {
-  --font-display: 'Baloo 2', ui-rounded, system-ui, sans-serif;
-  --font-sans: 'Nunito', ui-rounded, system-ui, sans-serif;
-  --color-paper: #fff9ef;
-  --color-ink: #1e1b2e;
-  --color-ink-soft: #4b4763;
-  --color-atp: #f59e0b;
-  --color-atp-dark: #b45309;
-  --color-nuc: #8b5cf6;
-  --color-brand: #10b981;
-  --color-brand-dark: #047857;
-  --color-common: #94a3b8;
-  --color-uncommon: #22c55e;
-  --color-rare: #3b82f6;
-  --color-epic: #a855f7;
-  --color-legendary: #f59e0b;
+  --font-display: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+  --font-sans: 'Instrument Sans', 'Avenir Next', 'Segoe UI', sans-serif;
+
+  /*
+   * One type scale (about 1.2) with a 13px floor. Weight does not make hierarchy here: size and
+   * the serif/sans split do. The heavy weights are pinned down so no screen can shout.
+   */
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.4;
+  --text-sm: 0.9063rem;
+  --text-sm--line-height: 1.5;
+  --text-base: 1rem;
+  --text-base--line-height: 1.6;
+  --text-lg: 1.25rem;
+  --text-lg--line-height: 1.35;
+  --text-xl: 1.5rem;
+  --text-xl--line-height: 1.25;
+  --text-2xl: 1.875rem;
+  --text-2xl--line-height: 1.15;
+  --text-3xl: 2.375rem;
+  --text-3xl--line-height: 1.1;
+  --text-4xl: 3rem;
+  --text-4xl--line-height: 1.05;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 600;
+  --font-weight-extrabold: 600;
+  --font-weight-black: 600;
+
+  --color-eosin: #d9406b;
+  --color-atp: #d99a06;
+  --color-night: var(--t-night);
+  --color-nuc: #345a80;
+  --color-common: #8c9c98;
+  --color-uncommon: #3f9139;
+  --color-rare: #2f6fb0;
+  --color-epic: #c93c80;
+  --color-legendary: #d99a06;
+
+  /* Corners: one small radius for controls and panels; rounded-full stays for avatars and dots. */
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.5rem;
+  --radius-2xl: 0.5rem;
+  --radius-3xl: 0.75rem;
+
+  /* Shadow is an accent, not a texture. */
+  --shadow-xs: 0 1px 0 rgb(27 42 32 / 0.06);
+  --shadow-sm: 0 1px 2px rgb(27 42 32 / 0.1);
+  --shadow-md: 0 3px 10px -3px rgb(27 42 32 / 0.16);
+  --shadow-lg: 0 10px 26px -10px rgb(27 42 32 / 0.28);
+  --shadow-xl: 0 18px 40px -16px rgb(27 42 32 / 0.34);
+
+  /* Themeable colors read a per-scope variable, so dark mode (and light plates inside it) just re-declare it. */
+  --color-paper: var(--t-paper);
+  --color-surface: var(--t-surface);
+  --color-ink: var(--t-ink);
+  --color-ink-soft: var(--t-ink-soft);
+  --color-line: var(--t-line);
+  --color-brand: var(--t-brand);
+  --color-brand-hover: var(--t-brand-hover);
+  --color-brand-dark: var(--t-brand-dark);
+  --color-brand-tint: var(--t-brand-tint);
+  --color-atp-dark: var(--t-atp-dark);
+  --color-indigo-50: var(--t-indigo-50);
+  --color-indigo-100: var(--t-indigo-100);
+  --color-indigo-200: var(--t-indigo-200);
+  --color-indigo-300: var(--t-indigo-300);
+  --color-indigo-400: var(--t-indigo-400);
+  --color-indigo-500: var(--t-indigo-500);
+  --color-indigo-600: var(--t-indigo-600);
+  --color-indigo-700: var(--t-indigo-700);
+  --color-indigo-800: var(--t-indigo-800);
+  --color-indigo-900: var(--t-indigo-900);
+  --color-indigo-950: var(--t-indigo-950);
+  --color-violet-50: var(--t-violet-50);
+  --color-violet-100: var(--t-violet-100);
+  --color-violet-200: var(--t-violet-200);
+  --color-violet-300: var(--t-violet-300);
+  --color-violet-400: var(--t-violet-400);
+  --color-violet-500: var(--t-violet-500);
+  --color-violet-600: var(--t-violet-600);
+  --color-violet-700: var(--t-violet-700);
+  --color-violet-800: var(--t-violet-800);
+  --color-violet-900: var(--t-violet-900);
+  --color-violet-950: var(--t-violet-950);
+  --color-purple-50: var(--t-purple-50);
+  --color-purple-100: var(--t-purple-100);
+  --color-purple-200: var(--t-purple-200);
+  --color-purple-300: var(--t-purple-300);
+  --color-purple-400: var(--t-purple-400);
+  --color-purple-500: var(--t-purple-500);
+  --color-purple-600: var(--t-purple-600);
+  --color-purple-700: var(--t-purple-700);
+  --color-purple-800: var(--t-purple-800);
+  --color-purple-900: var(--t-purple-900);
+  --color-purple-950: var(--t-purple-950);
+  --color-fuchsia-50: var(--t-fuchsia-50);
+  --color-fuchsia-100: var(--t-fuchsia-100);
+  --color-fuchsia-200: var(--t-fuchsia-200);
+  --color-fuchsia-300: var(--t-fuchsia-300);
+  --color-fuchsia-400: var(--t-fuchsia-400);
+  --color-fuchsia-500: var(--t-fuchsia-500);
+  --color-fuchsia-600: var(--t-fuchsia-600);
+  --color-fuchsia-700: var(--t-fuchsia-700);
+  --color-fuchsia-800: var(--t-fuchsia-800);
+  --color-fuchsia-900: var(--t-fuchsia-900);
+  --color-fuchsia-950: var(--t-fuchsia-950);
+  --color-rose-50: var(--t-rose-50);
+  --color-rose-100: var(--t-rose-100);
+  --color-rose-200: var(--t-rose-200);
+  --color-rose-300: var(--t-rose-300);
+  --color-rose-400: var(--t-rose-400);
+  --color-rose-500: var(--t-rose-500);
+  --color-rose-600: var(--t-rose-600);
+  --color-rose-700: var(--t-rose-700);
+  --color-rose-800: var(--t-rose-800);
+  --color-rose-900: var(--t-rose-900);
+  --color-rose-950: var(--t-rose-950);
+  --color-emerald-50: var(--t-emerald-50);
+  --color-emerald-100: var(--t-emerald-100);
+  --color-emerald-200: var(--t-emerald-200);
+  --color-emerald-300: var(--t-emerald-300);
+  --color-emerald-400: var(--t-emerald-400);
+  --color-emerald-500: var(--t-emerald-500);
+  --color-emerald-600: var(--t-emerald-600);
+  --color-emerald-700: var(--t-emerald-700);
+  --color-emerald-800: var(--t-emerald-800);
+  --color-emerald-900: var(--t-emerald-900);
+  --color-emerald-950: var(--t-emerald-950);
+  --color-slate-50: var(--t-slate-50);
+  --color-slate-100: var(--t-slate-100);
+  --color-slate-200: var(--t-slate-200);
+  --color-slate-300: var(--t-slate-300);
+  --color-slate-400: var(--t-slate-400);
+  --color-slate-500: var(--t-slate-500);
+  --color-slate-600: var(--t-slate-600);
+  --color-slate-700: var(--t-slate-700);
+  --color-slate-800: var(--t-slate-800);
+  --color-slate-900: var(--t-slate-900);
+  --color-slate-950: var(--t-slate-950);
+  --color-amber-50: var(--t-amber-50);
+  --color-amber-100: var(--t-amber-100);
+  --color-amber-200: var(--t-amber-200);
+  --color-amber-300: var(--t-amber-300);
+  --color-amber-400: var(--t-amber-400);
+  --color-amber-500: var(--t-amber-500);
+  --color-amber-600: var(--t-amber-600);
+  --color-amber-700: var(--t-amber-700);
+  --color-amber-800: var(--t-amber-800);
+  --color-amber-900: var(--t-amber-900);
+  --color-amber-950: var(--t-amber-950);
+  --color-sky-50: var(--t-sky-50);
+  --color-sky-100: var(--t-sky-100);
+  --color-sky-200: var(--t-sky-200);
+  --color-sky-300: var(--t-sky-300);
+  --color-sky-400: var(--t-sky-400);
+  --color-sky-500: var(--t-sky-500);
+  --color-sky-600: var(--t-sky-600);
+  --color-sky-700: var(--t-sky-700);
+  --color-sky-800: var(--t-sky-800);
+  --color-sky-900: var(--t-sky-900);
+  --color-sky-950: var(--t-sky-950);
+  --color-teal-50: var(--t-teal-50);
+  --color-teal-100: var(--t-teal-100);
+  --color-teal-200: var(--t-teal-200);
+  --color-teal-300: var(--t-teal-300);
+  --color-teal-400: var(--t-teal-400);
+  --color-teal-500: var(--t-teal-500);
+  --color-teal-600: var(--t-teal-600);
+  --color-teal-700: var(--t-teal-700);
+  --color-teal-800: var(--t-teal-800);
+  --color-teal-900: var(--t-teal-900);
+  --color-teal-950: var(--t-teal-950);
+  --color-orange-50: var(--t-orange-50);
+  --color-orange-100: var(--t-orange-100);
+  --color-orange-200: var(--t-orange-200);
+  --color-orange-300: var(--t-orange-300);
+  --color-orange-400: var(--t-orange-400);
+  --color-orange-500: var(--t-orange-500);
+  --color-orange-600: var(--t-orange-600);
+  --color-orange-700: var(--t-orange-700);
+  --color-orange-800: var(--t-orange-800);
+  --color-orange-900: var(--t-orange-900);
+  --color-orange-950: var(--t-orange-950);
+  --color-lime-50: var(--t-lime-50);
+  --color-lime-100: var(--t-lime-100);
+  --color-lime-200: var(--t-lime-200);
+  --color-lime-300: var(--t-lime-300);
+  --color-lime-400: var(--t-lime-400);
+  --color-lime-500: var(--t-lime-500);
+  --color-lime-600: var(--t-lime-600);
+  --color-lime-700: var(--t-lime-700);
+  --color-lime-800: var(--t-lime-800);
+  --color-lime-900: var(--t-lime-900);
+  --color-lime-950: var(--t-lime-950);
+}
+
+/* Living Earth, light: lichen ground, humus ink, moss green. */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+  /* Re-resolve the color aliases in this scope so nested light plates inside dark mode pick up their own values. */
+  --color-night: var(--t-night);
+  --color-paper: var(--t-paper);
+  --color-surface: var(--t-surface);
+  --color-ink: var(--t-ink);
+  --color-ink-soft: var(--t-ink-soft);
+  --color-line: var(--t-line);
+  --color-brand: var(--t-brand);
+  --color-brand-hover: var(--t-brand-hover);
+  --color-brand-dark: var(--t-brand-dark);
+  --color-brand-tint: var(--t-brand-tint);
+  --color-atp-dark: var(--t-atp-dark);
+  --color-indigo-50: var(--t-indigo-50);
+  --color-indigo-100: var(--t-indigo-100);
+  --color-indigo-200: var(--t-indigo-200);
+  --color-indigo-300: var(--t-indigo-300);
+  --color-indigo-400: var(--t-indigo-400);
+  --color-indigo-500: var(--t-indigo-500);
+  --color-indigo-600: var(--t-indigo-600);
+  --color-indigo-700: var(--t-indigo-700);
+  --color-indigo-800: var(--t-indigo-800);
+  --color-indigo-900: var(--t-indigo-900);
+  --color-indigo-950: var(--t-indigo-950);
+  --color-violet-50: var(--t-violet-50);
+  --color-violet-100: var(--t-violet-100);
+  --color-violet-200: var(--t-violet-200);
+  --color-violet-300: var(--t-violet-300);
+  --color-violet-400: var(--t-violet-400);
+  --color-violet-500: var(--t-violet-500);
+  --color-violet-600: var(--t-violet-600);
+  --color-violet-700: var(--t-violet-700);
+  --color-violet-800: var(--t-violet-800);
+  --color-violet-900: var(--t-violet-900);
+  --color-violet-950: var(--t-violet-950);
+  --color-purple-50: var(--t-purple-50);
+  --color-purple-100: var(--t-purple-100);
+  --color-purple-200: var(--t-purple-200);
+  --color-purple-300: var(--t-purple-300);
+  --color-purple-400: var(--t-purple-400);
+  --color-purple-500: var(--t-purple-500);
+  --color-purple-600: var(--t-purple-600);
+  --color-purple-700: var(--t-purple-700);
+  --color-purple-800: var(--t-purple-800);
+  --color-purple-900: var(--t-purple-900);
+  --color-purple-950: var(--t-purple-950);
+  --color-fuchsia-50: var(--t-fuchsia-50);
+  --color-fuchsia-100: var(--t-fuchsia-100);
+  --color-fuchsia-200: var(--t-fuchsia-200);
+  --color-fuchsia-300: var(--t-fuchsia-300);
+  --color-fuchsia-400: var(--t-fuchsia-400);
+  --color-fuchsia-500: var(--t-fuchsia-500);
+  --color-fuchsia-600: var(--t-fuchsia-600);
+  --color-fuchsia-700: var(--t-fuchsia-700);
+  --color-fuchsia-800: var(--t-fuchsia-800);
+  --color-fuchsia-900: var(--t-fuchsia-900);
+  --color-fuchsia-950: var(--t-fuchsia-950);
+  --color-rose-50: var(--t-rose-50);
+  --color-rose-100: var(--t-rose-100);
+  --color-rose-200: var(--t-rose-200);
+  --color-rose-300: var(--t-rose-300);
+  --color-rose-400: var(--t-rose-400);
+  --color-rose-500: var(--t-rose-500);
+  --color-rose-600: var(--t-rose-600);
+  --color-rose-700: var(--t-rose-700);
+  --color-rose-800: var(--t-rose-800);
+  --color-rose-900: var(--t-rose-900);
+  --color-rose-950: var(--t-rose-950);
+  --color-emerald-50: var(--t-emerald-50);
+  --color-emerald-100: var(--t-emerald-100);
+  --color-emerald-200: var(--t-emerald-200);
+  --color-emerald-300: var(--t-emerald-300);
+  --color-emerald-400: var(--t-emerald-400);
+  --color-emerald-500: var(--t-emerald-500);
+  --color-emerald-600: var(--t-emerald-600);
+  --color-emerald-700: var(--t-emerald-700);
+  --color-emerald-800: var(--t-emerald-800);
+  --color-emerald-900: var(--t-emerald-900);
+  --color-emerald-950: var(--t-emerald-950);
+  --color-slate-50: var(--t-slate-50);
+  --color-slate-100: var(--t-slate-100);
+  --color-slate-200: var(--t-slate-200);
+  --color-slate-300: var(--t-slate-300);
+  --color-slate-400: var(--t-slate-400);
+  --color-slate-500: var(--t-slate-500);
+  --color-slate-600: var(--t-slate-600);
+  --color-slate-700: var(--t-slate-700);
+  --color-slate-800: var(--t-slate-800);
+  --color-slate-900: var(--t-slate-900);
+  --color-slate-950: var(--t-slate-950);
+  --color-amber-50: var(--t-amber-50);
+  --color-amber-100: var(--t-amber-100);
+  --color-amber-200: var(--t-amber-200);
+  --color-amber-300: var(--t-amber-300);
+  --color-amber-400: var(--t-amber-400);
+  --color-amber-500: var(--t-amber-500);
+  --color-amber-600: var(--t-amber-600);
+  --color-amber-700: var(--t-amber-700);
+  --color-amber-800: var(--t-amber-800);
+  --color-amber-900: var(--t-amber-900);
+  --color-amber-950: var(--t-amber-950);
+  --color-sky-50: var(--t-sky-50);
+  --color-sky-100: var(--t-sky-100);
+  --color-sky-200: var(--t-sky-200);
+  --color-sky-300: var(--t-sky-300);
+  --color-sky-400: var(--t-sky-400);
+  --color-sky-500: var(--t-sky-500);
+  --color-sky-600: var(--t-sky-600);
+  --color-sky-700: var(--t-sky-700);
+  --color-sky-800: var(--t-sky-800);
+  --color-sky-900: var(--t-sky-900);
+  --color-sky-950: var(--t-sky-950);
+  --color-teal-50: var(--t-teal-50);
+  --color-teal-100: var(--t-teal-100);
+  --color-teal-200: var(--t-teal-200);
+  --color-teal-300: var(--t-teal-300);
+  --color-teal-400: var(--t-teal-400);
+  --color-teal-500: var(--t-teal-500);
+  --color-teal-600: var(--t-teal-600);
+  --color-teal-700: var(--t-teal-700);
+  --color-teal-800: var(--t-teal-800);
+  --color-teal-900: var(--t-teal-900);
+  --color-teal-950: var(--t-teal-950);
+  --color-orange-50: var(--t-orange-50);
+  --color-orange-100: var(--t-orange-100);
+  --color-orange-200: var(--t-orange-200);
+  --color-orange-300: var(--t-orange-300);
+  --color-orange-400: var(--t-orange-400);
+  --color-orange-500: var(--t-orange-500);
+  --color-orange-600: var(--t-orange-600);
+  --color-orange-700: var(--t-orange-700);
+  --color-orange-800: var(--t-orange-800);
+  --color-orange-900: var(--t-orange-900);
+  --color-orange-950: var(--t-orange-950);
+  --color-lime-50: var(--t-lime-50);
+  --color-lime-100: var(--t-lime-100);
+  --color-lime-200: var(--t-lime-200);
+  --color-lime-300: var(--t-lime-300);
+  --color-lime-400: var(--t-lime-400);
+  --color-lime-500: var(--t-lime-500);
+  --color-lime-600: var(--t-lime-600);
+  --color-lime-700: var(--t-lime-700);
+  --color-lime-800: var(--t-lime-800);
+  --color-lime-900: var(--t-lime-900);
+  --color-lime-950: var(--t-lime-950);
+  --t-paper: #edf1e8;
+  --t-surface: #fbfcf8;
+  --t-ink: #1b2a20;
+  --t-ink-soft: #4a5b4e;
+  --t-line: #d2d9c8;
+  --t-brand: #2f6b3f;
+  --t-brand-hover: #1f4d2c;
+  --t-brand-dark: #1f4d2c;
+  --t-brand-tint: #dcead5;
+  --t-atp-dark: #7a4f00;
+  --t-night: #1b2a20;
+  --t-indigo-50: #eef6ea;
+  --t-indigo-100: #dcead5;
+  --t-indigo-200: #bcd8b0;
+  --t-indigo-300: #94bf85;
+  --t-indigo-400: #6aa15a;
+  --t-indigo-500: #43854b;
+  --t-indigo-600: #2f6b3f;
+  --t-indigo-700: #265733;
+  --t-indigo-800: #1f4528;
+  --t-indigo-900: #19371f;
+  --t-indigo-950: #0e2113;
+  --t-violet-50: #eef4f9;
+  --t-violet-100: #dae7f1;
+  --t-violet-200: #b9d0e3;
+  --t-violet-300: #8fb1ce;
+  --t-violet-400: #628db4;
+  --t-violet-500: #43729d;
+  --t-violet-600: #345a80;
+  --t-violet-700: #2b4a68;
+  --t-violet-800: #263e56;
+  --t-violet-900: #223448;
+  --t-violet-950: #131f2c;
+  --t-purple-50: #eef4f9;
+  --t-purple-100: #dae7f1;
+  --t-purple-200: #b9d0e3;
+  --t-purple-300: #8fb1ce;
+  --t-purple-400: #628db4;
+  --t-purple-500: #43729d;
+  --t-purple-600: #345a80;
+  --t-purple-700: #2b4a68;
+  --t-purple-800: #263e56;
+  --t-purple-900: #223448;
+  --t-purple-950: #131f2c;
+  --t-fuchsia-50: #fcf0f6;
+  --t-fuchsia-100: #f9dceb;
+  --t-fuchsia-200: #f3b9d6;
+  --t-fuchsia-300: #ea8bba;
+  --t-fuchsia-400: #dd5c9a;
+  --t-fuchsia-500: #c93c80;
+  --t-fuchsia-600: #ad2d69;
+  --t-fuchsia-700: #8d2554;
+  --t-fuchsia-800: #721f46;
+  --t-fuchsia-900: #5e1d3b;
+  --t-fuchsia-950: #380b22;
+  --t-rose-50: #fdf0f3;
+  --t-rose-100: #fadde5;
+  --t-rose-200: #f5bbcb;
+  --t-rose-300: #ee8da8;
+  --t-rose-400: #e5607f;
+  --t-rose-500: #d9406b;
+  --t-rose-600: #c02b57;
+  --t-rose-700: #9e2247;
+  --t-rose-800: #801e3e;
+  --t-rose-900: #6a1d38;
+  --t-rose-950: #3b0c1f;
+  --t-emerald-50: #eef7ec;
+  --t-emerald-100: #daeed5;
+  --t-emerald-200: #b7ddae;
+  --t-emerald-300: #8cc77f;
+  --t-emerald-400: #5fad54;
+  --t-emerald-500: #3f9139;
+  --t-emerald-600: #2e7a2f;
+  --t-emerald-700: #26622a;
+  --t-emerald-800: #214e26;
+  --t-emerald-900: #1b4020;
+  --t-emerald-950: #0d2411;
+  --t-slate-50: #f2f5ee;
+  --t-slate-100: #e7ecdf;
+  --t-slate-200: #d5dccb;
+  --t-slate-300: #b8c4ab;
+  --t-slate-400: #8d9c82;
+  --t-slate-500: #66765f;
+  --t-slate-600: #4e5e49;
+  --t-slate-700: #3b4838;
+  --t-slate-800: #283326;
+  --t-slate-900: #1a251c;
+  --t-slate-950: #0f1711;
+  --t-amber-50: #fffbeb;
+  --t-amber-100: #fef3c7;
+  --t-amber-200: #fde68a;
+  --t-amber-300: #fcd34d;
+  --t-amber-400: #fbbf24;
+  --t-amber-500: #f59e0b;
+  --t-amber-600: #d97706;
+  --t-amber-700: #b45309;
+  --t-amber-800: #92400e;
+  --t-amber-900: #78350f;
+  --t-amber-950: #451a03;
+  --t-sky-50: #f0f9ff;
+  --t-sky-100: #e0f2fe;
+  --t-sky-200: #bae6fd;
+  --t-sky-300: #7dd3fc;
+  --t-sky-400: #38bdf8;
+  --t-sky-500: #0ea5e9;
+  --t-sky-600: #0284c7;
+  --t-sky-700: #0369a1;
+  --t-sky-800: #075985;
+  --t-sky-900: #0c4a6e;
+  --t-sky-950: #082f49;
+  --t-teal-50: #f0fdfa;
+  --t-teal-100: #ccfbf1;
+  --t-teal-200: #99f6e4;
+  --t-teal-300: #5eead4;
+  --t-teal-400: #2dd4bf;
+  --t-teal-500: #14b8a6;
+  --t-teal-600: #0d9488;
+  --t-teal-700: #0f766e;
+  --t-teal-800: #115e59;
+  --t-teal-900: #134e4a;
+  --t-teal-950: #042f2e;
+  --t-orange-50: #fff7ed;
+  --t-orange-100: #ffedd5;
+  --t-orange-200: #fed7aa;
+  --t-orange-300: #fdba74;
+  --t-orange-400: #fb923c;
+  --t-orange-500: #f97316;
+  --t-orange-600: #ea580c;
+  --t-orange-700: #c2410c;
+  --t-orange-800: #9a3412;
+  --t-orange-900: #7c2d12;
+  --t-orange-950: #431407;
+  --t-lime-50: #f7fee7;
+  --t-lime-100: #ecfccb;
+  --t-lime-200: #d9f99d;
+  --t-lime-300: #bef264;
+  --t-lime-400: #a3e635;
+  --t-lime-500: #84cc16;
+  --t-lime-600: #65a30d;
+  --t-lime-700: #4d7c0f;
+  --t-lime-800: #3f6212;
+  --t-lime-900: #365314;
+  --t-lime-950: #1a2e05;
+}
+
+/* Night Garden, dark: its own tuned palette, not an inversion. Light plates (lesson scenes) opt out with data-theme="light". */
+[data-theme='dark'] {
+  color-scheme: dark;
+  --color-night: var(--t-night);
+  --color-paper: var(--t-paper);
+  --color-surface: var(--t-surface);
+  --color-ink: var(--t-ink);
+  --color-ink-soft: var(--t-ink-soft);
+  --color-line: var(--t-line);
+  --color-brand: var(--t-brand);
+  --color-brand-hover: var(--t-brand-hover);
+  --color-brand-dark: var(--t-brand-dark);
+  --color-brand-tint: var(--t-brand-tint);
+  --color-atp-dark: var(--t-atp-dark);
+  --color-indigo-50: var(--t-indigo-50);
+  --color-indigo-100: var(--t-indigo-100);
+  --color-indigo-200: var(--t-indigo-200);
+  --color-indigo-300: var(--t-indigo-300);
+  --color-indigo-400: var(--t-indigo-400);
+  --color-indigo-500: var(--t-indigo-500);
+  --color-indigo-600: var(--t-indigo-600);
+  --color-indigo-700: var(--t-indigo-700);
+  --color-indigo-800: var(--t-indigo-800);
+  --color-indigo-900: var(--t-indigo-900);
+  --color-indigo-950: var(--t-indigo-950);
+  --color-violet-50: var(--t-violet-50);
+  --color-violet-100: var(--t-violet-100);
+  --color-violet-200: var(--t-violet-200);
+  --color-violet-300: var(--t-violet-300);
+  --color-violet-400: var(--t-violet-400);
+  --color-violet-500: var(--t-violet-500);
+  --color-violet-600: var(--t-violet-600);
+  --color-violet-700: var(--t-violet-700);
+  --color-violet-800: var(--t-violet-800);
+  --color-violet-900: var(--t-violet-900);
+  --color-violet-950: var(--t-violet-950);
+  --color-purple-50: var(--t-purple-50);
+  --color-purple-100: var(--t-purple-100);
+  --color-purple-200: var(--t-purple-200);
+  --color-purple-300: var(--t-purple-300);
+  --color-purple-400: var(--t-purple-400);
+  --color-purple-500: var(--t-purple-500);
+  --color-purple-600: var(--t-purple-600);
+  --color-purple-700: var(--t-purple-700);
+  --color-purple-800: var(--t-purple-800);
+  --color-purple-900: var(--t-purple-900);
+  --color-purple-950: var(--t-purple-950);
+  --color-fuchsia-50: var(--t-fuchsia-50);
+  --color-fuchsia-100: var(--t-fuchsia-100);
+  --color-fuchsia-200: var(--t-fuchsia-200);
+  --color-fuchsia-300: var(--t-fuchsia-300);
+  --color-fuchsia-400: var(--t-fuchsia-400);
+  --color-fuchsia-500: var(--t-fuchsia-500);
+  --color-fuchsia-600: var(--t-fuchsia-600);
+  --color-fuchsia-700: var(--t-fuchsia-700);
+  --color-fuchsia-800: var(--t-fuchsia-800);
+  --color-fuchsia-900: var(--t-fuchsia-900);
+  --color-fuchsia-950: var(--t-fuchsia-950);
+  --color-rose-50: var(--t-rose-50);
+  --color-rose-100: var(--t-rose-100);
+  --color-rose-200: var(--t-rose-200);
+  --color-rose-300: var(--t-rose-300);
+  --color-rose-400: var(--t-rose-400);
+  --color-rose-500: var(--t-rose-500);
+  --color-rose-600: var(--t-rose-600);
+  --color-rose-700: var(--t-rose-700);
+  --color-rose-800: var(--t-rose-800);
+  --color-rose-900: var(--t-rose-900);
+  --color-rose-950: var(--t-rose-950);
+  --color-emerald-50: var(--t-emerald-50);
+  --color-emerald-100: var(--t-emerald-100);
+  --color-emerald-200: var(--t-emerald-200);
+  --color-emerald-300: var(--t-emerald-300);
+  --color-emerald-400: var(--t-emerald-400);
+  --color-emerald-500: var(--t-emerald-500);
+  --color-emerald-600: var(--t-emerald-600);
+  --color-emerald-700: var(--t-emerald-700);
+  --color-emerald-800: var(--t-emerald-800);
+  --color-emerald-900: var(--t-emerald-900);
+  --color-emerald-950: var(--t-emerald-950);
+  --color-slate-50: var(--t-slate-50);
+  --color-slate-100: var(--t-slate-100);
+  --color-slate-200: var(--t-slate-200);
+  --color-slate-300: var(--t-slate-300);
+  --color-slate-400: var(--t-slate-400);
+  --color-slate-500: var(--t-slate-500);
+  --color-slate-600: var(--t-slate-600);
+  --color-slate-700: var(--t-slate-700);
+  --color-slate-800: var(--t-slate-800);
+  --color-slate-900: var(--t-slate-900);
+  --color-slate-950: var(--t-slate-950);
+  --color-amber-50: var(--t-amber-50);
+  --color-amber-100: var(--t-amber-100);
+  --color-amber-200: var(--t-amber-200);
+  --color-amber-300: var(--t-amber-300);
+  --color-amber-400: var(--t-amber-400);
+  --color-amber-500: var(--t-amber-500);
+  --color-amber-600: var(--t-amber-600);
+  --color-amber-700: var(--t-amber-700);
+  --color-amber-800: var(--t-amber-800);
+  --color-amber-900: var(--t-amber-900);
+  --color-amber-950: var(--t-amber-950);
+  --color-sky-50: var(--t-sky-50);
+  --color-sky-100: var(--t-sky-100);
+  --color-sky-200: var(--t-sky-200);
+  --color-sky-300: var(--t-sky-300);
+  --color-sky-400: var(--t-sky-400);
+  --color-sky-500: var(--t-sky-500);
+  --color-sky-600: var(--t-sky-600);
+  --color-sky-700: var(--t-sky-700);
+  --color-sky-800: var(--t-sky-800);
+  --color-sky-900: var(--t-sky-900);
+  --color-sky-950: var(--t-sky-950);
+  --color-teal-50: var(--t-teal-50);
+  --color-teal-100: var(--t-teal-100);
+  --color-teal-200: var(--t-teal-200);
+  --color-teal-300: var(--t-teal-300);
+  --color-teal-400: var(--t-teal-400);
+  --color-teal-500: var(--t-teal-500);
+  --color-teal-600: var(--t-teal-600);
+  --color-teal-700: var(--t-teal-700);
+  --color-teal-800: var(--t-teal-800);
+  --color-teal-900: var(--t-teal-900);
+  --color-teal-950: var(--t-teal-950);
+  --color-orange-50: var(--t-orange-50);
+  --color-orange-100: var(--t-orange-100);
+  --color-orange-200: var(--t-orange-200);
+  --color-orange-300: var(--t-orange-300);
+  --color-orange-400: var(--t-orange-400);
+  --color-orange-500: var(--t-orange-500);
+  --color-orange-600: var(--t-orange-600);
+  --color-orange-700: var(--t-orange-700);
+  --color-orange-800: var(--t-orange-800);
+  --color-orange-900: var(--t-orange-900);
+  --color-orange-950: var(--t-orange-950);
+  --color-lime-50: var(--t-lime-50);
+  --color-lime-100: var(--t-lime-100);
+  --color-lime-200: var(--t-lime-200);
+  --color-lime-300: var(--t-lime-300);
+  --color-lime-400: var(--t-lime-400);
+  --color-lime-500: var(--t-lime-500);
+  --color-lime-600: var(--t-lime-600);
+  --color-lime-700: var(--t-lime-700);
+  --color-lime-800: var(--t-lime-800);
+  --color-lime-900: var(--t-lime-900);
+  --color-lime-950: var(--t-lime-950);
+  --t-paper: #0f1711;
+  --t-surface: #172219;
+  --t-ink: #e6eddc;
+  --t-ink-soft: #a6b5a1;
+  --t-line: #2c3a2e;
+  --t-brand: #3a8a4c;
+  --t-brand-hover: #2f7440;
+  --t-brand-dark: #8fd18e;
+  --t-brand-tint: #1d3322;
+  --t-atp-dark: #e6b94d;
+  --t-night: #233628;
+  --t-indigo-50: #0e2113;
+  --t-indigo-100: #19371f;
+  --t-indigo-200: #1f4528;
+  --t-indigo-300: #265733;
+  --t-indigo-400: #6aa15a;
+  --t-indigo-500: #43854b;
+  --t-indigo-600: #2f6b3f;
+  --t-indigo-700: #94bf85;
+  --t-indigo-800: #bcd8b0;
+  --t-indigo-900: #dcead5;
+  --t-indigo-950: #eef6ea;
+  --t-violet-50: #131f2c;
+  --t-violet-100: #223448;
+  --t-violet-200: #263e56;
+  --t-violet-300: #2b4a68;
+  --t-violet-400: #628db4;
+  --t-violet-500: #43729d;
+  --t-violet-600: #345a80;
+  --t-violet-700: #8fb1ce;
+  --t-violet-800: #b9d0e3;
+  --t-violet-900: #dae7f1;
+  --t-violet-950: #eef4f9;
+  --t-purple-50: #131f2c;
+  --t-purple-100: #223448;
+  --t-purple-200: #263e56;
+  --t-purple-300: #2b4a68;
+  --t-purple-400: #628db4;
+  --t-purple-500: #43729d;
+  --t-purple-600: #345a80;
+  --t-purple-700: #8fb1ce;
+  --t-purple-800: #b9d0e3;
+  --t-purple-900: #dae7f1;
+  --t-purple-950: #eef4f9;
+  --t-fuchsia-50: #380b22;
+  --t-fuchsia-100: #5e1d3b;
+  --t-fuchsia-200: #721f46;
+  --t-fuchsia-300: #8d2554;
+  --t-fuchsia-400: #dd5c9a;
+  --t-fuchsia-500: #c93c80;
+  --t-fuchsia-600: #ad2d69;
+  --t-fuchsia-700: #ea8bba;
+  --t-fuchsia-800: #f3b9d6;
+  --t-fuchsia-900: #f9dceb;
+  --t-fuchsia-950: #fcf0f6;
+  --t-rose-50: #3b0c1f;
+  --t-rose-100: #6a1d38;
+  --t-rose-200: #801e3e;
+  --t-rose-300: #9e2247;
+  --t-rose-400: #e5607f;
+  --t-rose-500: #d9406b;
+  --t-rose-600: #c02b57;
+  --t-rose-700: #ee8da8;
+  --t-rose-800: #f5bbcb;
+  --t-rose-900: #fadde5;
+  --t-rose-950: #fdf0f3;
+  --t-emerald-50: #0d2411;
+  --t-emerald-100: #1b4020;
+  --t-emerald-200: #214e26;
+  --t-emerald-300: #26622a;
+  --t-emerald-400: #5fad54;
+  --t-emerald-500: #3f9139;
+  --t-emerald-600: #2e7a2f;
+  --t-emerald-700: #8cc77f;
+  --t-emerald-800: #b7ddae;
+  --t-emerald-900: #daeed5;
+  --t-emerald-950: #eef7ec;
+  --t-slate-50: #1a241c;
+  --t-slate-100: #212d23;
+  --t-slate-200: #2c3a2e;
+  --t-slate-300: #3f4f41;
+  --t-slate-400: #6d7f6b;
+  --t-slate-500: #8a9c86;
+  --t-slate-600: #a6b5a1;
+  --t-slate-700: #bdc9b8;
+  --t-slate-800: #d3dccd;
+  --t-slate-900: #e6eddc;
+  --t-slate-950: #f2f6ec;
+  --t-amber-50: #451a03;
+  --t-amber-100: #78350f;
+  --t-amber-200: #92400e;
+  --t-amber-300: #b45309;
+  --t-amber-400: #fbbf24;
+  --t-amber-500: #f59e0b;
+  --t-amber-600: #d97706;
+  --t-amber-700: #fcd34d;
+  --t-amber-800: #fde68a;
+  --t-amber-900: #fef3c7;
+  --t-amber-950: #fffbeb;
+  --t-sky-50: #082f49;
+  --t-sky-100: #0c4a6e;
+  --t-sky-200: #075985;
+  --t-sky-300: #0369a1;
+  --t-sky-400: #38bdf8;
+  --t-sky-500: #0ea5e9;
+  --t-sky-600: #0284c7;
+  --t-sky-700: #7dd3fc;
+  --t-sky-800: #bae6fd;
+  --t-sky-900: #e0f2fe;
+  --t-sky-950: #f0f9ff;
+  --t-teal-50: #042f2e;
+  --t-teal-100: #134e4a;
+  --t-teal-200: #115e59;
+  --t-teal-300: #0f766e;
+  --t-teal-400: #2dd4bf;
+  --t-teal-500: #14b8a6;
+  --t-teal-600: #0d9488;
+  --t-teal-700: #5eead4;
+  --t-teal-800: #99f6e4;
+  --t-teal-900: #ccfbf1;
+  --t-teal-950: #f0fdfa;
+  --t-orange-50: #431407;
+  --t-orange-100: #7c2d12;
+  --t-orange-200: #9a3412;
+  --t-orange-300: #c2410c;
+  --t-orange-400: #fb923c;
+  --t-orange-500: #f97316;
+  --t-orange-600: #ea580c;
+  --t-orange-700: #fdba74;
+  --t-orange-800: #fed7aa;
+  --t-orange-900: #ffedd5;
+  --t-orange-950: #fff7ed;
+  --t-lime-50: #1a2e05;
+  --t-lime-100: #365314;
+  --t-lime-200: #3f6212;
+  --t-lime-300: #4d7c0f;
+  --t-lime-400: #a3e635;
+  --t-lime-500: #84cc16;
+  --t-lime-600: #65a30d;
+  --t-lime-700: #bef264;
+  --t-lime-800: #d9f99d;
+  --t-lime-900: #ecfccb;
+  --t-lime-950: #f7fee7;
 }
 
 html {
   -webkit-tap-highlight-color: transparent;
+  scroll-padding-top: 5rem;
 }
 
 body {
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  font-size: 17px;
-  line-height: 1.5;
+  font-size: 1rem;
+  line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
+/* Headings are the serif. Newsreader's optical size follows the font size automatically. */
 h1,
 h2,
 h3,
 h4 {
   font-family: var(--font-display);
-  line-height: 1.15;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+h1 {
+  letter-spacing: -0.025em;
+  line-height: 1.04;
+}
+/* Numbers that line up in columns and counters. */
+.tabular,
+[data-testid='atp-balance'] {
+  font-variant-numeric: tabular-nums;
+}
+::selection {
+  background: var(--color-brand-tint);
+  color: var(--color-ink);
+}
+p {
+  text-wrap: pretty;
 }
 
 :focus-visible {
-  outline: 3px solid #6366f1;
+  outline: 2px solid var(--color-brand);
   outline-offset: 2px;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 /* Dotted "petri dish" texture for scenes. */
 .scene-bg {
-  background-image: radial-gradient(rgba(30, 27, 46, 0.07) 1.2px, transparent 1.2px);
+  background-image: radial-gradient(rgba(27, 42, 32, 0.07) 1.2px, transparent 1.2px);
   background-size: 18px 18px;
 }
 
 @utility btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-2.5 font-bold transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-50;
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-4 py-2 font-semibold transition-colors duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50;
 }
 @utility btn-primary {
-  @apply btn bg-brand text-white shadow-[0_4px_0_var(--color-brand-dark)] hover:brightness-105 active:translate-y-0.5 active:shadow-[0_2px_0_var(--color-brand-dark)];
+  @apply btn bg-brand text-white hover:bg-brand-hover;
 }
 @utility btn-ghost {
-  @apply btn bg-white text-ink shadow-[0_3px_0_rgba(30,27,46,0.15)] ring-1 ring-black/10 hover:bg-slate-50;
+  @apply btn bg-surface text-ink ring-1 ring-ink/15 hover:bg-slate-100 hover:ring-ink/30;
 }
 @utility card {
-  @apply rounded-3xl bg-white shadow-[0_4px_0_rgba(30,27,46,0.08)] ring-1 ring-black/5;
+  @apply rounded-2xl bg-surface ring-1 ring-ink/10;
 }
 @utility chip {
-  @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-sm font-bold;
+  @apply inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-sm font-semibold;
+}
+
+/*
+ * The micrometer scale bar: the page's one signature. A filled bar (--v is 0–100%) cut into
+ * ten segments, like the graduations on a slide ruler. Use it for every progress readout.
+ */
+.scale {
+  position: relative;
+  height: 0.5rem;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--color-slate-200);
+}
+.scale > i {
+  display: block;
+  height: 100%;
+  width: var(--v, 0%);
+  background: var(--scale-color, var(--color-brand));
+  transition: width 0.4s ease;
+}
+.scale::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 calc(10% - 1.5px),
+    var(--scale-gap, var(--color-paper)) calc(10% - 1.5px) 10%
+  );
+}
+
+/* Organic shape: a pebble corner set for the few illustrated plates. Everything else keeps the 8px radius. */
+.pebble {
+  border-radius: 30px 12px 32px 12px;
+}
+
+/* A wavy divider, drawn as a mask so it takes the text color and works in both themes. */
+.wave-rule {
+  height: 8px;
+  background-color: var(--color-ink-soft);
+  opacity: 0.4;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='8' viewBox='0 0 36 8'%3E%3Cpath d='M0 4 Q9 -1 18 4 T36 4' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E") repeat-x center;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='8' viewBox='0 0 36 8'%3E%3Cpath d='M0 4 Q9 -1 18 4 T36 4' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E") repeat-x center;
+}
+
+/* A ruler rule: baseline with graduations, for section headings. */
+.ruler {
+  height: 7px;
+  border-bottom: 1px solid var(--color-ink);
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-ink) 0 1px,
+    transparent 1px 10px
+  );
+  background-size: 100% 4px;
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  opacity: 0.55;
 }
 
 /* Draggable items must not scroll the page while dragged on touch screens. */
@@ -214,8 +1070,8 @@ h4 {
   background: transparent;
   cursor: pointer;
   --fill: 50%;
-  --c1: #818cf8;
-  --c2: #c084fc;
+  --c1: #3fa692;
+  --c2: #0e7c6b;
 }
 .bio-range::-webkit-slider-runnable-track {
   height: 0.85rem;
@@ -223,7 +1079,7 @@ h4 {
   background:
     linear-gradient(90deg, var(--c1), var(--c2)) 0 / var(--fill) 100% no-repeat,
     #e2e8f0;
-  box-shadow: inset 0 1px 2px rgba(30, 27, 46, 0.15);
+  box-shadow: inset 0 1px 2px rgba(27, 42, 32, 0.15);
 }
 .bio-range::-moz-range-track {
   height: 0.85rem;
@@ -243,7 +1099,7 @@ h4 {
   border-radius: 999px;
   background: white;
   border: 4px solid var(--c2);
-  box-shadow: 0 3px 8px rgba(30, 27, 46, 0.25);
+  box-shadow: 0 3px 8px rgba(27, 42, 32, 0.25);
   transition: transform 0.15s;
 }
 .bio-range::-moz-range-thumb {
@@ -252,7 +1108,7 @@ h4 {
   border-radius: 999px;
   background: white;
   border: 4px solid var(--c2);
-  box-shadow: 0 3px 8px rgba(30, 27, 46, 0.25);
+  box-shadow: 0 3px 8px rgba(27, 42, 32, 0.25);
 }
 .bio-range:active::-webkit-slider-thumb {
   transform: scale(1.15);
@@ -261,7 +1117,7 @@ h4 {
   outline: none;
 }
 .bio-range:focus-visible::-webkit-slider-thumb {
-  outline: 3px solid #6366f1;
+  outline: 3px solid var(--color-brand);
   outline-offset: 2px;
 }
 
@@ -281,8 +1137,8 @@ html.stage-locked body {
 .belt {
   background-image: repeating-linear-gradient(
     90deg,
-    rgba(30, 27, 46, 0.025) 0 24px,
-    rgba(30, 27, 46, 0.055) 24px 48px
+    rgba(27, 42, 32, 0.025) 0 24px,
+    rgba(27, 42, 32, 0.055) 24px 48px
   );
   animation: belt 2.4s linear infinite;
 }
@@ -291,4 +1147,97 @@ html.stage-locked body {
 .bob:hover,
 .bob:focus-within {
   animation-play-state: paused;
+}
+
+
+/* ------------------------------------------------------------------ motion
+ * Motion explains state or lays out the one authored moment (the path on Home). Arrivals use a
+ * strong ease-out, nothing bounces, and every effect ends in a state that is already visible if
+ * animation is off. The global reduced-motion rule above collapses all of these to instant.
+ */
+@keyframes enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@keyframes route-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes path-draw {
+  from {
+    transform: scaleY(0);
+  }
+}
+@keyframes node-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+}
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}
+@keyframes bar-in {
+  from {
+    transform: scaleX(0.3);
+    opacity: 0;
+  }
+}
+@keyframes scale-fill {
+  from {
+    width: 0;
+  }
+}
+
+/* One arrival sequence: items rise in a short stagger (set --d per item, 200ms total at most). */
+.enter {
+  animation: enter-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+/* Moving between pages: a quick cross-fade, no movement. */
+.route-in {
+  animation: route-in 0.2s ease-out both;
+}
+/* The Home path lays itself out: the line draws down, then nodes arrive in order. */
+.path-line {
+  transform-origin: top;
+  animation: path-draw 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+.node-pop {
+  animation: node-pop 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+.sheet-in {
+  transform-origin: bottom center;
+  animation: sheet-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.bar-in {
+  animation: bar-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+/* Progress bars fill from empty when they first appear. */
+.scale > i {
+  animation: scale-fill 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Switching theme: colors ease over a quarter second, only while the switch happens. */
+@media (prefers-reduced-motion: no-preference) {
+  .theme-anim,
+  .theme-anim *,
+  .theme-anim *::before,
+  .theme-anim *::after {
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease,
+      border-color 0.25s ease,
+      fill 0.25s ease,
+      stroke 0.25s ease,
+      box-shadow 0.25s ease !important;
+  }
 }

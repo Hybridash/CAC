@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-23T20:50:00Z",
+  "title": "Design System: Bio Bites",
+  "extensions": {
+    "colorMeta": {
+      "glass-white": { "role": "neutral", "displayName": "Glass White", "canonical": "#edf1e8" },
+      "slide-ink": { "role": "neutral", "displayName": "Slide Ink", "canonical": "#1b2a20" },
+      "cytoplasm-teal": { "role": "primary", "displayName": "Cytoplasm Teal", "canonical": "#2f6b3f" },
+      "eosin": { "role": "secondary", "displayName": "Eosin", "canonical": "#d9406b" },
+      "atp-gold": { "role": "secondary", "displayName": "ATP Gold", "canonical": "#d99a06" },
+      "stain-blue": { "role": "tertiary", "displayName": "Stain Blue", "canonical": "#345a80" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Home and Welcome headline only." },
+      "body": { "displayName": "Body", "purpose": "All running text and labels." }
+    },
+    "shadows": [
+      { "name": "popover", "value": "0 10px 26px -10px rgb(13 43 42 / 0.28)", "purpose": "Search results and the More sheet." },
+      { "name": "modal", "value": "0 18px 40px -16px rgb(13 43 42 / 0.34)", "purpose": "Dialogs and pack opening." }
+    ],
+    "motion": [
+      { "name": "state", "value": "150ms ease", "purpose": "Hover and press transitions on buttons and rows." },
+      { "name": "scale-fill", "value": "400ms ease", "purpose": "Scale bar fill when progress changes." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main action on a screen: Start lesson, Save, Open pack.",
+      "html": "<button class=\"ds-btn-primary\">Start lesson</button>",
+      "css": ".ds-btn-primary{min-height:44px;padding:8px 16px;border:0;border-radius:8px;background:#2f6b3f;color:#fff;font:600 17px Instrument Sans,sans-serif;cursor:pointer;transition:background-color 150ms ease}.ds-btn-primary:hover{background:#1f4d2c}.ds-btn-primary:focus-visible{outline:2px solid #2f6b3f;outline-offset:2px}.ds-btn-primary:active{transform:translateY(1px)}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action next to a primary one.",
+      "html": "<button class=\"ds-btn-ghost\">Random concept</button>",
+      "css": ".ds-btn-ghost{min-height:44px;padding:8px 16px;border:0;border-radius:8px;background:#fff;color:#1b2a20;box-shadow:0 0 0 1px rgb(13 43 42 / .15);font:600 17px Instrument Sans,sans-serif;cursor:pointer;transition:box-shadow 150ms ease}.ds-btn-ghost:hover{box-shadow:0 0 0 1px rgb(13 43 42 / .3)}.ds-btn-ghost:focus-visible{outline:2px solid #2f6b3f;outline-offset:2px}"
+    },
+    {
+      "name": "Catalog Row",
+      "kind": "card",
+      "description": "A concept in a list: hairline, icon, title, summary, meta. No container.",
+      "html": "<a class=\"ds-row\"><span class=\"ds-icon\"></span><span><b>Mitosis</b><span class=\"ds-sum\">One cell becomes two identical cells.</span><span class=\"ds-meta\">Cell Biology · up to 46 ATP</span></span></a>",
+      "css": ".ds-row{display:flex;gap:16px;border-top:1px solid #d3dcd9;padding:16px 0 8px;color:#1b2a20;font-family:Instrument Sans,sans-serif}.ds-icon{width:48px;height:48px;border-radius:50%;background:#dcead5;flex:none}.ds-row b{display:block;font:700 18px 'Newsreader',sans-serif}.ds-row:hover b{text-decoration:underline}.ds-sum{display:block;color:#465f5d;font-size:15px}.ds-meta{display:block;margin-top:4px;color:#465f5d;font-size:14px}"
+    },
+    {
+      "name": "Scale Bar",
+      "kind": "custom",
+      "description": "Progress readout cut into ten graduations.",
+      "html": "<div class=\"ds-scale\" style=\"--v:40%\"><i></i></div>",
+      "css": ".ds-scale{position:relative;height:8px;width:240px;border-radius:2px;overflow:hidden;background:#d6dfdc}.ds-scale i{display:block;height:100%;width:var(--v);background:#2f6b3f}.ds-scale::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1.5px),#fff calc(10% - 1.5px) 10%)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Living Earth Slide",
+    "overview": "Cool glass-white ground, teal-black ink, one disciplined accent, and content laid out as plain labelled rows rather than boxes. Calm, precise and quietly playful.",
+    "keyCharacteristics": [
+      "Flat rows and hairlines instead of cards; at most one level of container.",
+      "Teal-black ink on cool glass-white, with a single accent per moment.",
+      "Progress is a micrometer scale bar, cut into ten graduations.",
+      "Display type is tight and confident; body type is plain and readable.",
+      "Drawn, colorful icons are the only ornament; chrome carries none."
+    ],
+    "rules": [
+      { "name": "The No Purple Rule", "body": "Indigo, violet and fuchsia are remapped in the Tailwind theme to teal, steel blue and pink. Nothing renders purple.", "section": "colors" },
+      { "name": "The One Voice Rule", "body": "Eosin pink is used on at most one element per screen. Its rarity is the point.", "section": "colors" },
+      { "name": "The No Kicker Rule", "body": "Never put a small label above a heading.", "section": "typography" },
+      { "name": "The No Nesting Rule", "body": "A bordered or filled container never contains another bordered or filled container.", "section": "layout" },
+      { "name": "The Flat-By-Default Rule", "body": "Surfaces are flat at rest. No drop shadows on rows, panels or buttons.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do group content with hairlines and whitespace; use a box only for a single self-contained object.",
+      "Do show progress with the scale bar and a count in text.",
+      "Do keep type in Newsreader (headings) and Instrument Sans (everything else), sentence case, weights 400 to 600.",
+      "Do keep the page quiet so the drawn icons, lesson scenes and ATP rewards stand out.",
+      "Do keep tap targets at least 44px and body contrast at 4.5:1 or better."
+    ],
+    "donts": [
+      "Don't nest cards, tiles or chips inside other boxes.",
+      "Don't use purple, violet or indigo, or any gradient on text, panels or buttons.",
+      "Don't put a small label above a heading, or use all-caps labels.",
+      "Don't use a colored left or right border thicker than 1px on a row or panel.",
+      "Don't add chunky 3D buttons, hard offset shadows, glass blur or glow.",
+      "Don't invent stats, testimonials or user counts to fill space."
+    ]
+  }
+}

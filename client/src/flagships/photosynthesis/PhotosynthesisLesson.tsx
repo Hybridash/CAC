@@ -363,7 +363,7 @@ export function PhotosynthesisLesson({
         <Chloroplast factors={out.factors} limiting={out.limiting} lampOn={inputs.lampOn} />
       </div>
 
-      <div className="grid gap-3 rounded-2xl bg-white p-3 ring-1 ring-black/10 sm:grid-cols-2">
+      <div className="grid gap-3 rounded-2xl bg-surface p-3 ring-1 ring-black/10 sm:grid-cols-2">
         <label className="flex flex-col gap-1">
           <span className="flex justify-between text-sm font-bold">
             Lamp distance <span className="text-indigo-700">{inputs.distance} cm</span>
@@ -408,7 +408,7 @@ export function PhotosynthesisLesson({
           <button
             onClick={() => set({ lampOn: !inputs.lampOn })}
             aria-pressed={!inputs.lampOn}
-            className="chip bg-slate-800 py-1 text-sm text-white"
+            className="chip bg-night py-1 text-sm text-white"
           >
             <Icon name="bulb" size={18} /> {inputs.lampOn ? 'Lights off' : 'Lights on'}
           </button>
@@ -490,7 +490,7 @@ function Chloroplast({
       {(Object.keys(factors) as Factor[]).map((f) => (
         <div key={f} className="flex items-center gap-2 text-sm">
           <span className="w-24 font-bold">{FACTOR_LABEL[f]}</span>
-          <div className="h-3 flex-1 overflow-hidden rounded-full bg-white">
+          <div className="h-3 flex-1 overflow-hidden rounded-full bg-surface">
             <div
               className="h-full rounded-full bg-emerald-500 transition-all"
               style={{ width: `${Math.round(factors[f] * 100)}%` }}

@@ -5,7 +5,7 @@ import { Icon } from '../components/Icon';
 /** Switch between the full library and the High School section. */
 export function LibraryTabs() {
   const tab = ({ isActive }: { isActive: boolean }) =>
-    `flex flex-1 items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-extrabold transition sm:flex-none ${isActive ? 'bg-white text-ink shadow' : 'text-ink-soft hover:text-ink'}`;
+    `flex flex-1 items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-extrabold transition sm:flex-none ${isActive ? 'bg-surface text-ink shadow' : 'text-ink-soft hover:text-ink'}`;
   return (
     <nav
       aria-label="Library sections"

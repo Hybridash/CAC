@@ -83,7 +83,7 @@ export function Punnett({
             <Icon name="target" size={24} />
           </span>
           <p className="font-bold text-amber-950">
-            <span className="block text-xs font-extrabold tracking-wider text-amber-700 uppercase">
+            <span className="block text-xs font-extrabold text-amber-700">
               Challenge {cIndex + 1} of {config.challenges.length}
             </span>
             {challenge.prompt} <span className="font-normal">(choose parents, then hatch)</span>
@@ -105,7 +105,7 @@ export function Punnett({
           key={`${mother}${father}`}
           initial={{ scale: 0.5, rotate: -90 }}
           animate={{ scale: 1, rotate: 0 }}
-          className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-ink font-display text-2xl font-extrabold text-white shadow-lg"
+          className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-night font-display text-2xl font-extrabold text-white shadow-lg"
           aria-hidden
         >
           ×
@@ -122,7 +122,7 @@ export function Punnett({
 
       <div className="grid items-start gap-4 lg:grid-cols-[auto_1fr]">
         {/* The Punnett square */}
-        <div className="mx-auto rounded-3xl bg-white p-3 ring-2 ring-black/5">
+        <div className="mx-auto rounded-3xl bg-surface p-3 ring-2 ring-black/5">
           <PanelTitle icon="dna">Punnett square</PanelTitle>
           <table
             className="border-separate border-spacing-1.5 text-center"
@@ -138,7 +138,7 @@ export function Punnett({
                       initial={{ y: -16, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: i * 0.1 }}
-                      className="mx-auto grid h-11 w-11 place-items-center rounded-full bg-sky-200 font-mono text-lg font-extrabold text-sky-950 shadow-[0_3px_0_#7dd3fc]"
+                      className="mx-auto grid h-11 w-11 place-items-center rounded-full bg-sky-200 font-mono text-lg font-extrabold text-sky-950"
                     >
                       {g}
                     </motion.span>
@@ -155,7 +155,7 @@ export function Punnett({
                       initial={{ x: -16, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: r * 0.1 }}
-                      className="grid h-11 w-11 place-items-center rounded-full bg-pink-200 font-mono text-lg font-extrabold text-pink-950 shadow-[0_3px_0_#f9a8d4]"
+                      className="grid h-11 w-11 place-items-center rounded-full bg-pink-200 font-mono text-lg font-extrabold text-pink-950"
                     >
                       {result.motherGametes[r]}
                     </motion.span>
@@ -173,7 +173,7 @@ export function Punnett({
                         {pheno(g).emoji}
                       </div>
                       <div className="font-mono text-lg font-extrabold">{g}</div>
-                      <div className="text-[10px] leading-tight font-bold">{pheno(g).label}</div>
+                      <div className="text-xs leading-tight font-bold">{pheno(g).label}</div>
                     </motion.td>
                   ))}
                 </tr>
@@ -184,7 +184,7 @@ export function Punnett({
 
         {/* Odds and the nursery */}
         <div className="flex flex-col gap-3">
-          <div className="rounded-3xl bg-white p-3 ring-2 ring-black/5">
+          <div className="rounded-3xl bg-surface p-3 ring-2 ring-black/5">
             <PanelTitle icon="dice">Chances for each baby</PanelTitle>
             <div className="flex flex-col gap-2">
               {Object.entries(result.phenotypes).map(([label, p]) => {
@@ -310,7 +310,7 @@ function ParentCard({
   const ring = tone === 'pink' ? 'ring-pink-200' : 'ring-sky-200';
   const head = tone === 'pink' ? 'text-pink-700' : 'text-sky-700';
   return (
-    <fieldset className={`rounded-3xl bg-white p-3 ring-2 ${ring}`}>
+    <fieldset className={`rounded-3xl bg-surface p-3 ring-2 ${ring}`}>
       <legend className={`px-1 text-sm font-extrabold ${head}`}>{title}</legend>
       <div className="flex items-center gap-3">
         <motion.span
@@ -336,7 +336,7 @@ function ParentCard({
             role="radio"
             aria-checked={value === g}
             onClick={() => onChange(g)}
-            className={`flex items-center gap-1.5 rounded-xl px-2.5 py-1 ring-2 transition ${value === g ? 'ring-indigo-500 shadow-[0_3px_0_#4f46e5]' : 'ring-black/10 hover:-translate-y-0.5'}`}
+            className={`flex items-center gap-1.5 rounded-xl px-2.5 py-1 ring-2 transition ${value === g ? 'ring-indigo-500' : 'ring-black/10 hover:-translate-y-0.5'}`}
             style={{ background: pheno(g).color }}
           >
             <span className="font-mono font-extrabold">{g}</span>

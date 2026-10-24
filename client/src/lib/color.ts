@@ -1,2 +1,5 @@
-/** A darker shade of a category color for text, so small text meets WCAG AA contrast on pale tints. */
-export const inkFor = (color: string) => `color-mix(in srgb, ${color} 62%, #000)`;
+/**
+ * A text-safe shade of a topic color: pulled toward the current ink (dark in light mode, pale in
+ * dark mode) so small text meets WCAG AA on either ground.
+ */
+export const inkFor = (color: string) => `color-mix(in srgb, ${color} 62%, var(--color-ink))`;

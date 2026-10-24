@@ -75,7 +75,7 @@ export function LockKey({
                 'radial-gradient(circle at 20% 30%, rgba(255,255,255,0.7), transparent 40%), linear-gradient(180deg, #cffafe, #e0f2fe)',
             }}
           >
-            <span className="absolute top-2 left-3 text-[11px] font-extrabold tracking-[0.16em] text-sky-800/70 uppercase">
+            <span className="absolute top-2 left-3 text-xs font-extrabold text-sky-800/70">
               Free molecules
             </span>
             <AnimatePresence>
@@ -93,7 +93,7 @@ export function LockKey({
                   }
                 >
                   <Draggable id={m.id} label={m.label} className="rounded-full">
-                    <span className="flex flex-col items-center rounded-3xl bg-white/80 p-1.5 shadow-lg ring-2 ring-white">
+                    <span className="flex flex-col items-center rounded-3xl bg-surface/80 p-1.5 shadow-lg ring-2 ring-white">
                       <LockGlyph
                         shape={m.shape}
                         color={m.color}
@@ -118,7 +118,7 @@ export function LockKey({
           <DockingSurface />
 
           {/* The binding sites. */}
-          <div className="bg-gradient-to-b from-indigo-50 to-violet-50 px-3 pt-1 pb-4">
+          <div className="bg-surface px-3 pt-1 pb-4">
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
               {config.receptors.map((r) => {
                 const m = config.molecules.find((x) => x.id === bound[r.id]);
@@ -128,7 +128,7 @@ export function LockKey({
                       <motion.div
                         animate={bounce?.receptor === r.id ? { x: [0, -10, 10, -6, 6, 0] } : {}}
                         key={bounce?.receptor === r.id ? bounce.n : 'still'}
-                        className={`relative flex h-full flex-col items-center rounded-3xl bg-white p-2 text-center transition ${
+                        className={`relative flex h-full flex-col items-center rounded-3xl bg-surface p-2 text-center transition ${
                           isOver ? 'scale-105' : ''
                         }`}
                         style={{
@@ -177,7 +177,7 @@ export function LockKey({
                 );
               })}
             </div>
-            <p className="mt-3 text-center text-[11px] font-extrabold tracking-[0.16em] text-indigo-900/50 uppercase">
+            <p className="mt-3 text-center text-xs font-extrabold text-indigo-900/50">
               Binding sites
             </p>
           </div>
@@ -201,7 +201,7 @@ function DockingSurface() {
         <pattern id="dock" width="40" height="32" patternUnits="userSpaceOnUse">
           <rect width="40" height="32" fill="#eef2ff" />
           <path d="M0 14 q10 -10 20 0 t20 0 V32 H0 Z" fill="#c7d2fe" />
-          <path d="M0 14 q10 -10 20 0 t20 0" fill="none" stroke="#818cf8" strokeWidth="2.5" />
+          <path d="M0 14 q10 -10 20 0 t20 0" fill="none" stroke="#3fa692" strokeWidth="2.5" />
           <circle cx="10" cy="22" r="2.2" fill="#a5b4fc" />
           <circle cx="30" cy="25" r="1.6" fill="#a5b4fc" />
         </pattern>

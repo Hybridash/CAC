@@ -13,7 +13,7 @@ export function AvatarCheer({ message }: { message: string | null }) {
           key={message ?? 'idle'}
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="relative mb-6 rounded-2xl bg-white px-3 py-2 text-sm font-bold shadow ring-1 ring-black/10"
+          className="relative mb-6 rounded-2xl bg-surface px-3 py-2 text-sm font-bold shadow ring-1 ring-black/10"
           aria-live="polite"
         >
           {message ??

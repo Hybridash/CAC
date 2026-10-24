@@ -62,10 +62,10 @@ export function ReviewPage() {
       <Link to="/olympiad" className="text-sm font-bold text-ink-soft hover:underline">
         ← Bio Olympiad
       </Link>
-      <section className="card flex flex-col items-center gap-5 p-5 sm:flex-row sm:p-7">
+      <section className="flex flex-col items-center gap-5 border-b border-line pb-6 sm:flex-row">
         <ScoreRing pct={pct} size={140} />
         <div className="flex-1 text-center sm:text-left">
-          <p className="text-xs font-extrabold tracking-wider text-ink-soft uppercase">
+          <p className="text-xs font-extrabold text-ink-soft">
             {attempt.title} · {new Date(attempt.finishedAt).toLocaleDateString()}
           </p>
           <h1 className="text-4xl font-extrabold" data-testid="oly-score">
@@ -118,7 +118,7 @@ export function ReviewPage() {
           rows={Object.entries(score.byLevel).map(([l, v]) => ({
             key: l,
             label: OLY_LEVEL_LABEL[Number(l) as OlyLevel],
-            color: ['', '#0ea5e9', '#8b5cf6', '#f59e0b'][Number(l)],
+            color: ['', '#0ea5e9', '#43729d', '#f59e0b'][Number(l)],
             ...v!,
           }))}
         />
@@ -166,8 +166,8 @@ function Breakdown({
   rows: { key: string; label: React.ReactNode; color: string; points: number; max: number }[];
 }) {
   return (
-    <section className="card p-4">
-      <h2 className="mb-3 text-xs font-extrabold tracking-wider text-ink-soft uppercase">
+    <section className="border-t border-line pt-4">
+      <h2 className="mb-3 text-xs font-extrabold text-ink-soft">
         {title}
       </h2>
       <ul className="flex flex-col gap-2">

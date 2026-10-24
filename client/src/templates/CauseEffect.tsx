@@ -90,12 +90,12 @@ export function CauseEffect({
   return (
     <div className="flex flex-col gap-4">
       <Prompt>{config.prompt}</Prompt>
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-900 p-4 sm:p-5">
+      <div className="relative overflow-hidden rounded-3xl bg-night p-4 sm:p-5">
         <div className="scene-bg absolute inset-0 opacity-30" />
         <div className="relative flex flex-wrap items-center gap-3">
           <motion.button
             whileTap={{ scale: 0.92 }}
-            className={`btn relative bg-gradient-to-b from-amber-300 to-orange-500 px-5 py-3 text-lg text-amber-950 shadow-[0_5px_0_#9a3412] disabled:opacity-60 ${running ? '' : 'glow-pulse'}`}
+            className={`btn relative bg-amber-300 px-5 py-3 text-lg text-amber-950 disabled:opacity-60 ${running ? '' : 'glow-pulse'}`}
             onClick={run}
             disabled={running}
           >
@@ -113,7 +113,7 @@ export function CauseEffect({
               <Icon name="refresh" size={18} /> Repair all links
             </button>
           )}
-          <span className="ml-auto text-xs font-extrabold tracking-wider text-white/60 uppercase">
+          <span className="ml-auto text-xs font-extrabold text-white/60">
             {running ? 'Signal travelling…' : broken ? 'A link is cut' : 'All links intact'}
           </span>
         </div>
@@ -149,7 +149,7 @@ export function CauseEffect({
                   {!last && (
                     <span className="relative w-1.5 flex-1 overflow-hidden rounded-full bg-slate-700">
                       <motion.span
-                        className={`absolute inset-x-0 top-0 rounded-full ${isBroken ? 'bg-rose-500' : 'bg-gradient-to-b from-amber-300 to-orange-500'}`}
+                        className={`absolute inset-x-0 top-0 rounded-full ${isBroken ? 'bg-rose-500' : 'bg-amber-300'}`}
                         initial={false}
                         animate={{ height: i < lit ? '100%' : '0%' }}
                         transition={{ duration: STEP_MS / 1000 - 0.15, ease: 'easeInOut' }}
@@ -171,8 +171,8 @@ export function CauseEffect({
                         : isLit
                           ? 'bg-amber-50 ring-amber-300 shadow-[0_0_20px_rgba(251,191,36,0.35)]'
                           : after
-                            ? 'bg-slate-800/60 text-slate-400 ring-slate-700'
-                            : 'bg-white/95 ring-white/20'
+                            ? 'bg-night/60 text-slate-400 ring-slate-700'
+                            : 'bg-surface/95 ring-white/20'
                     }`}
                   >
                     <div className="min-w-0 flex-1">
@@ -237,7 +237,7 @@ export function CauseEffect({
                   <Icon name={outcome.ok ? 'check' : 'warning'} size={26} />
                 </span>
                 <span>
-                  <span className="block text-xs font-extrabold tracking-wider uppercase opacity-80">
+                  <span className="block text-xs font-extrabold opacity-80">
                     {outcome.ok ? 'Result: success' : 'Result: the chain broke'}
                   </span>
                   {outcome.text}

@@ -66,13 +66,13 @@ export function ZoomExplorer({
               aria-current={current ? 'step' : undefined}
               className={`flex min-w-28 flex-1 flex-col items-start rounded-2xl px-3 py-2 text-left transition ${
                 current
-                  ? 'bg-teal-600 text-white shadow-[0_4px_0_#115e59]'
+                  ? 'bg-teal-600 text-white'
                   : seen[l.id]
                     ? 'bg-teal-50 text-teal-900 ring-2 ring-teal-200'
-                    : 'bg-white text-ink-soft ring-2 ring-black/5'
+                    : 'bg-surface text-ink-soft ring-2 ring-black/5'
               }`}
             >
-              <span className="flex items-center gap-1 text-[10px] font-extrabold tracking-wider uppercase opacity-80">
+              <span className="flex items-center gap-1 text-xs font-extrabold opacity-80">
                 <span
                   className="inline-block rounded-full border-2 border-current"
                   style={{ width: 6 + i * 3, height: 6 + i * 3 }}
@@ -88,7 +88,7 @@ export function ZoomExplorer({
 
       <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
         {/* The eyepiece */}
-        <div className="relative rounded-[2rem] bg-slate-900 p-2.5 shadow-xl">
+        <div className="relative rounded-3xl bg-night p-2.5 shadow-xl">
           <div className="relative overflow-hidden rounded-[1.5rem]">
             <AnimatePresence mode="wait" custom={dir}>
               <motion.div
@@ -123,7 +123,7 @@ export function ZoomExplorer({
                           active
                             ? 'scale-110 bg-teal-600 text-white ring-white'
                             : isSeen
-                              ? 'bg-white text-teal-800 ring-teal-300'
+                              ? 'bg-surface text-teal-800 ring-teal-300'
                               : 'glow-pulse bg-amber-300 text-amber-950 ring-white'
                         }`}
                         style={{ left: `${h.x}%`, top: `${h.y}%` }}
@@ -160,8 +160,8 @@ export function ZoomExplorer({
               <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#0f172a" strokeDasharray="4 6" />
               <circle cx="50%" cy="50%" r="18%" fill="none" stroke="#0f172a" strokeWidth="1.5" />
             </svg>
-            <div className="pointer-events-none absolute bottom-3 left-3 flex items-end gap-2 rounded-xl bg-slate-900/80 px-3 py-1.5 text-white">
-              <span className="mb-1 block h-1.5 w-12 rounded-full bg-white" aria-hidden />
+            <div className="pointer-events-none absolute bottom-3 left-3 flex items-end gap-2 rounded-xl bg-night/80 px-3 py-1.5 text-white">
+              <span className="mb-1 block h-1.5 w-12 rounded-full bg-surface" aria-hidden />
               <span className="font-mono text-xs font-bold">{level.scale}</span>
             </div>
           </div>
@@ -169,7 +169,7 @@ export function ZoomExplorer({
 
         {/* The specimen card */}
         <div
-          className="flex flex-col gap-3 rounded-[2rem] bg-white p-4 ring-2 ring-teal-100"
+          className="flex flex-col gap-3 rounded-3xl bg-surface p-4 ring-2 ring-teal-100"
           aria-live="polite"
         >
           <span className="chip self-start bg-teal-100 text-teal-900">
