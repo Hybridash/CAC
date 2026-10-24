@@ -1,4 +1,4 @@
-export const BIOPLAY_VERSION = '0.1.0';
+export const BIOPLAY_VERSION = '0.2.0';
 export * from './api';
 export * from './types';
 export * from './rewards';
