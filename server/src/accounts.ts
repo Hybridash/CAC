@@ -5,6 +5,7 @@ import { createUser } from './repo.js';
 
 export const DEMO_EMAIL = 'demo@gmail.com';
 export const DEMO_PASSWORD = 'demo123';
+export const DEMO_ATP = 750;
 export const MIN_PASSWORD_LENGTH = 8;
 
 const KEY_LENGTH = 32;
@@ -130,9 +131,13 @@ export function shouldCreateDemo(env: NodeJS.ProcessEnv = process.env): boolean 
 
 /** Creates the demo account (demo@gmail.com / demo123) if it doesn't exist yet. */
 export function ensureDemoAccount(db: DB, now: Date) {
-  if (findEmailAccount(db, DEMO_EMAIL)) return;
+  const existing = findEmailAccount(db, DEMO_EMAIL);
+  if (existing) {
+    db.prepare('UPDATE users SET atp = MAX(atp, ?) WHERE id = ?').run(DEMO_ATP, existing.user_id);
+    return;
+  }
   const { user } = createUser(db, now);
-  db.prepare('UPDATE users SET display_name = ? WHERE id = ?').run('Demo', user.id);
+  db.prepare('UPDATE users SET display_name = ?, atp = ? WHERE id = ?').run('Demo', DEMO_ATP, user.id);
   addEmailAccount(db, user.id, DEMO_EMAIL, DEMO_PASSWORD, now);
 }
 

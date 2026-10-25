@@ -16,7 +16,7 @@ export function WelcomePage() {
       data-testid="welcome"
     >
       <section
-        className="flex flex-col justify-between gap-12 bg-night px-6 pt-[calc(env(safe-area-inset-top)+2rem)] pb-10 text-white sm:px-12 lg:py-14"
+        className="flex flex-col justify-between gap-12 bg-night px-6 pt-[calc(env(safe-area-inset-top)+3rem)] pb-10 text-white sm:px-12 lg:pt-[calc(env(safe-area-inset-top)+3.5rem)] lg:pb-14"
         style={{
           backgroundImage: 'radial-gradient(rgba(255,255,255,0.09) 1.2px, transparent 1.2px)',
           backgroundSize: '18px 18px',

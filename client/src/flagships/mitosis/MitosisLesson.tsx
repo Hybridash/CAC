@@ -275,7 +275,8 @@ export function MitosisLesson({
                 disabled={copied.has(c.id)}
                 aria-label={`Copy chromosome ${c.id}${copied.has(c.id) ? ' (copied)' : ''}`}
                 className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full px-2 py-1 text-xs font-extrabold shadow ${copied.has(c.id) ? 'bg-emerald-100 text-emerald-800' : 'animate-pulse bg-amber-300 text-amber-950'}`}
-                style={{ left: `${(c.x / W) * 100}%`, top: `${((c.y - 44) / H) * 100}%` }}
+                // Beside the chromosome (left pair / right pair), so the label never sits on a thread or another label.
+                style={{ left: `${((c.x + (c.x < W / 2 ? -105 : 105)) / W) * 100}%`, top: `${(c.y / H) * 100}%` }}
               >
                 {copied.has(c.id) ? '✓' : 'copy'}
               </button>

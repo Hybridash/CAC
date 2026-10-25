@@ -66,7 +66,7 @@ export function Layout() {
       </a>
 
       {/* Desktop rail */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-line bg-surface px-3 pt-5 pb-4 lg:flex">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-line bg-surface px-3 pt-[calc(env(safe-area-inset-top)+1.25rem)] pb-[calc(env(safe-area-inset-bottom)+1rem)] lg:flex">
         <NavLink
           to="/"
           className="mb-6 flex items-center gap-2.5 px-2"

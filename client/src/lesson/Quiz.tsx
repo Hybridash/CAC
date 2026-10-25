@@ -37,6 +37,12 @@ export function Quiz({
     (!Array.isArray(answer) ||
       (q.kind === 'label' && answer.filter((x) => x >= 0).length === q.pairs.length));
 
+  // Show options in a random order per question; answers stay indexed by the original position.
+  const optionOrder = useMemo(
+    () => (q.kind === 'label' ? [] : shuffled(q.options.map((_, i) => i))),
+    [q],
+  );
+
   const setAnswer = (a: QuizAnswer) => {
     if (checked) return;
     setAnswers((prev) => {
@@ -144,7 +150,8 @@ export function Quiz({
         />
       ) : (
         <div className="grid gap-2" role="radiogroup" aria-label={q.prompt}>
-          {q.options.map((opt, i) => {
+          {optionOrder.map((i) => {
+            const opt = q.options[i];
             const chosen = answer === i;
             const showRight = checked && i === q.answer;
             const showWrong = checked && chosen && i !== q.answer;
@@ -202,6 +209,15 @@ export function Quiz({
       </div>
     </div>
   );
+}
+
+function shuffled<T>(list: T[]): T[] {
+  const a = [...list];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 }
 
 function LabelQ({

@@ -51,7 +51,7 @@ export function SignInButtons({
         {busy === 'apple' ? 'Signing in…' : 'Sign in with Apple'}
       </button>
       <button
-        className={`flex items-center justify-center gap-2 rounded-xl bg-surface px-4 font-bold text-[#1f1f1f] ring-1 ring-[#747775] disabled:opacity-60 ${size}`}
+        className={`flex items-center justify-center gap-2 rounded-xl bg-surface px-4 font-bold text-[#1f1f1f] ring-1 ring-[#747775] dark:bg-[#131314] dark:text-[#e3e3e3] dark:ring-[#8e918f] disabled:opacity-60 ${size}`}
         onClick={() => go('google')}
         disabled={off}
       >
