@@ -21,22 +21,26 @@ export function EmailAccountForm({
   onSignedIn,
   collapsible = false,
   large = false,
+  initialMode,
 }: {
   onSignedIn?: (res: SignInResponse) => void;
   collapsible?: boolean;
   large?: boolean;
+  /** Open straight onto this tab instead of the default. */
+  initialMode?: Mode;
 }) {
   const emailAuth = usePlayer((s) => s.emailAuth);
   const connection = usePlayer((s) => s.connection);
   const hasPlayer = usePlayer((s) => !!s.player);
-  const [mode, setMode] = useState<Mode | null>(collapsible ? null : 'register');
+  const [mode, setMode] = useState<Mode | null>(initialMode ?? (collapsible ? null : 'register'));
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const uid = useId();
-  const size = large ? 'py-3.5 text-lg' : 'py-2.5';
+  // Inputs and buttons share one height so the form lines up as a single column.
+  const size = large ? 'h-13 text-lg' : 'h-11';
 
   const submit = async (m: Mode, e = email, p = password) => {
     setError(null);
@@ -88,7 +92,7 @@ export function EmailAccountForm({
       <div
         role="tablist"
         aria-label="Bio Bites account"
-        className="flex gap-1 rounded-xl bg-slate-100 p-1"
+        className="flex gap-1 rounded-lg bg-slate-100 p-1"
       >
         {(['register', 'login'] as Mode[]).map((m) => (
           <button
@@ -100,7 +104,7 @@ export function EmailAccountForm({
               setMode(m);
               setError(null);
             }}
-            className={`flex-1 rounded-lg py-1.5 text-sm font-bold ${mode === m ? 'bg-surface shadow' : 'text-ink-soft'}`}
+            className={`min-h-9 flex-1 rounded-md text-sm font-bold ${mode === m ? 'bg-surface shadow-sm' : 'text-ink-soft'}`}
           >
             {m === 'register' ? 'Create account' : 'Log in'}
           </button>
@@ -120,14 +124,16 @@ export function EmailAccountForm({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@gmail.com"
-          className="rounded-xl bg-surface px-3 py-2.5 ring-1 ring-black/15 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+          className={`rounded-lg bg-surface px-3 ring-1 ring-black/15 focus:ring-2 focus:ring-brand focus:outline-none ${size}`}
         />
       </div>
       <div className="flex flex-col gap-1">
         <label htmlFor={`${uid}-password`} className="text-sm font-bold">
           Password
         </label>
-        <div className="flex items-center gap-2 rounded-xl bg-surface pr-2 ring-1 ring-black/15 focus-within:ring-2 focus-within:ring-indigo-400">
+        <div
+          className={`flex items-center rounded-lg bg-surface pr-1 ring-1 ring-black/15 focus-within:ring-2 focus-within:ring-brand ${size}`}
+        >
           <input
             id={`${uid}-password`}
             aria-describedby={mode === 'register' ? `${uid}-hint` : undefined}
@@ -136,12 +142,12 @@ export function EmailAccountForm({
             autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="min-w-0 flex-1 rounded-xl bg-transparent px-3 py-2.5 focus:outline-none"
+            className="h-full min-w-0 flex-1 rounded-lg bg-transparent px-3 focus:outline-none"
           />
           <button
             type="button"
             onClick={() => setShow((s) => !s)}
-            className="text-xs font-bold text-ink-soft hover:text-ink"
+            className="grid min-h-11 min-w-11 place-items-center rounded-md px-2 text-xs font-bold text-ink-soft hover:text-ink"
             aria-label={show ? 'Hide password' : 'Show password'}
           >
             {show ? 'Hide' : 'Show'}
@@ -170,7 +176,7 @@ export function EmailAccountForm({
       {mode === 'login' && SHOW_DEMO && (
         <button
           type="button"
-          className="rounded-xl bg-amber-50 px-3 py-2 text-left text-sm ring-1 ring-amber-200 hover:bg-amber-100"
+          className="rounded-lg bg-amber-50 px-3 py-2 text-left text-sm ring-1 ring-amber-200 hover:bg-amber-100"
           onClick={() => {
             setEmail(DEMO_LOGIN.email);
             setPassword(DEMO_LOGIN.password);

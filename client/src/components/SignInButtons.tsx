@@ -39,11 +39,11 @@ export function SignInButtons({
   };
 
   const off = !!busy || connection === 'offline' || !hasPlayer;
-  const size = large ? 'py-3.5 text-lg' : 'py-2.5';
+  const size = large ? 'h-13 text-lg' : 'h-11';
   return (
     <div className="flex flex-col gap-2">
       <button
-        className={`flex items-center justify-center gap-2 rounded-xl bg-black px-4 font-bold text-white disabled:opacity-60 ${size}`}
+        className={`flex items-center justify-center gap-2 rounded-lg bg-black px-4 font-bold text-white disabled:opacity-60 ${size}`}
         onClick={() => go('apple')}
         disabled={off}
       >
@@ -51,7 +51,7 @@ export function SignInButtons({
         {busy === 'apple' ? 'Signing in…' : 'Sign in with Apple'}
       </button>
       <button
-        className={`flex items-center justify-center gap-2 rounded-xl bg-surface px-4 font-bold text-[#1f1f1f] ring-1 ring-[#747775] dark:bg-[#131314] dark:text-[#e3e3e3] dark:ring-[#8e918f] disabled:opacity-60 ${size}`}
+        className={`flex items-center justify-center gap-2 rounded-lg bg-surface px-4 font-bold text-[#1f1f1f] ring-1 ring-[#747775] dark:bg-[#131314] dark:text-[#e3e3e3] dark:ring-[#8e918f] disabled:opacity-60 ${size}`}
         onClick={() => go('google')}
         disabled={off}
       >

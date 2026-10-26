@@ -22,6 +22,28 @@ const STATE_KEY = 'bioplay.state';
 const QUEUE_KEY = 'bioplay.queue';
 const WELCOMED_KEY = 'biobites.welcomed';
 
+/**
+ * Whether the player chose "Continue as guest". Kept for this launch only (sessionStorage), so
+ * every new launch opens on the login screen until the player signs in.
+ */
+const guestChoice = {
+  get: () => {
+    try {
+      return sessionStorage.getItem(WELCOMED_KEY) === '1';
+    } catch {
+      return false;
+    }
+  },
+  set: (on: boolean) => {
+    try {
+      if (on) sessionStorage.setItem(WELCOMED_KEY, '1');
+      else sessionStorage.removeItem(WELCOMED_KEY);
+    } catch {
+      /* storage unavailable: the login screen just shows again next time */
+    }
+  },
+};
+
 type QueuedAction =
   | { kind: 'interaction'; conceptId: string }
   | { kind: 'quiz'; conceptId: string; answers: QuizAnswer[] };
@@ -31,9 +53,9 @@ export type Connection = 'connecting' | 'online' | 'offline';
 interface PlayerStore {
   player: PlayerState | null;
   connection: Connection;
-  /** Whether this device has chosen how to start (signed in or continued as a guest). */
+  /** Whether this launch has got past the login screen (signed in or continued as a guest). */
   welcomed: boolean;
-  /** Leave the welcome screen; it isn't shown again until the player signs out. */
+  /** Leave the login screen for the rest of this launch. */
   finishWelcome: () => void;
   /** Reward lines waiting to be celebrated by the toast. */
   toasts: { id: number; lines: RewardLine[] }[];
@@ -135,11 +157,11 @@ export const usePlayer = create<PlayerStore>((set, get) => {
   return {
     player: loadCached(),
     connection: 'connecting',
-    welcomed: storage.get(WELCOMED_KEY) === '1',
+    welcomed: guestChoice.get(),
     toasts: [],
 
     finishWelcome() {
-      storage.set(WELCOMED_KEY, '1');
+      guestChoice.set(true);
       set({ welcomed: true });
     },
 
@@ -264,7 +286,7 @@ export const usePlayer = create<PlayerStore>((set, get) => {
       clearToken();
       storage.remove(STATE_KEY);
       saveQueue([]);
-      storage.remove(WELCOMED_KEY);
+      guestChoice.set(false);
       set({ player: null, welcomed: false });
       await get().init();
     },

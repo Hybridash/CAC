@@ -1,10 +1,5 @@
 import { Link } from 'react-router-dom';
-import {
-  CONCEPT_BY_ID,
-  isMysteryUnlocked,
-  MYSTERIES,
-  mysteryReward,
-} from '@bioplay/shared';
+import { CONCEPT_BY_ID, isMysteryUnlocked, MYSTERIES, mysteryReward } from '@bioplay/shared';
 import { usePlayer } from '../store/player';
 import { Stars } from '../components/ConceptBits';
 import { AtpAmount } from '../components/Atp';
@@ -18,9 +13,7 @@ export function MysteriesPage() {
   return (
     <div className="flex flex-col gap-5">
       <header>
-        <h1 className="flex items-center gap-2 text-4xl font-extrabold">
-          Bio Mysteries
-        </h1>
+        <h1 className="flex items-center gap-2 text-4xl font-extrabold">Bio Mysteries</h1>
         <p className="max-w-2xl text-ink-soft">
           Real-world puzzles that combine what you’ve learned. Examine the clues, pick an
           explanation and back it up with evidence. Cases unlock when you’ve completed their
@@ -32,7 +25,8 @@ export function MysteriesPage() {
       </header>
       <ul className="grid gap-x-10 gap-y-3 lg:grid-cols-2">
         {MYSTERIES.map((m) => {
-          const unlocked = isMysteryUnlocked(m, done);
+          const unlocked =
+            isMysteryUnlocked(m, done) || !!player?.unlockedMysteries?.includes(m.id);
           const isSolved = solved.has(m.id);
           return (
             <li key={m.id}>

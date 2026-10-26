@@ -4,7 +4,7 @@ import { atp, completeViaApi } from './helpers';
 
 // These tests start past the welcome screen, as a guest (welcome.spec.ts covers that screen).
 test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => localStorage.setItem('biobites.welcomed', '1'));
+  await page.addInitScript(() => sessionStorage.setItem('biobites.welcomed', '1'));
 });
 
 test('home loads and fuzzy search finds insulin from “blood sugar”', async ({ page }) => {
@@ -62,6 +62,32 @@ test('quiz is graded and rewarded', async ({ page }) => {
   await quiz.getByRole('button', { name: /Finish quiz/ }).click();
   await expect(page.getByTestId('quiz-result')).toContainText('3 / 3 correct');
   await expect(page.getByTestId('quiz-result')).toContainText('ATP');
+});
+
+test('a wrong answer explains itself, and the result lists what was missed', async ({ page }) => {
+  await page.goto('/learn/insulin');
+  const quiz = page.getByTestId('quiz');
+  await quiz.getByRole('radio', { name: 'Soda' }).click();
+  await quiz.getByRole('button', { name: 'Check answer' }).click();
+  await quiz.getByRole('button', { name: /Next question/ }).click();
+  await quiz
+    .getByRole('radio')
+    .filter({ hasNotText: /A key that unlocks/ })
+    .first()
+    .click();
+  await quiz.getByRole('button', { name: 'Check answer' }).click();
+  const feedback = quiz.getByRole('status').filter({ hasText: 'Not quite.' });
+  await expect(feedback).toContainText('You chose:');
+  await expect(feedback).toContainText(/Right answer:.*A key that unlocks/);
+  await quiz.getByRole('button', { name: /Next question/ }).click();
+  await quiz.getByRole('radio', { name: /rises and stays high/ }).click();
+  await quiz.getByRole('button', { name: 'Check answer' }).click();
+  await quiz.getByRole('button', { name: /Finish quiz/ }).click();
+
+  const review = page.getByTestId('quiz-review');
+  await expect(review).toContainText('Question 2');
+  await expect(review).toContainText(/A key that unlocks/);
+  await expect(review).not.toContainText('Question 1');
 });
 
 test('earn ATP, open a pack, see the avatars in the collection', async ({ page }) => {
@@ -125,6 +151,22 @@ test('mute toggle and skip link are accessible', async ({ page }) => {
     'aria-pressed',
     'true',
   );
+});
+
+test('the sidebar collapses to icons, still navigates, and stays collapsed after a reload', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const rail = page.getByTestId('rail');
+  await page.getByRole('button', { name: 'Collapse sidebar' }).click();
+  await expect(rail).toHaveCSS('width', '64px');
+  await rail.getByRole('link', { name: 'Library' }).click();
+  await expect(page).toHaveURL(/\/library/);
+
+  await page.reload();
+  await expect(rail).toHaveCSS('width', '64px');
+  await page.getByRole('button', { name: 'Expand sidebar' }).click();
+  await expect(rail).toHaveCSS('width', '240px');
 });
 
 test('@mobile insulin flagship works with taps on a phone', async ({ page }) => {

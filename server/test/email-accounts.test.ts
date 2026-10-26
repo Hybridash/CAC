@@ -1,5 +1,6 @@
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
+import { MYSTERY_BY_ID } from '@bioplay/shared';
 import {
   DEMO_EMAIL,
   DEMO_PASSWORD,
@@ -125,5 +126,30 @@ describe('Bio Bites email accounts', () => {
     expect(res.body.switched).toBe(true);
     expect(res.body.state.displayName).toBe('Demo');
     expect(res.body.state.account).toEqual({ provider: 'email', email: 'demo@gmail.com' });
+    expect(res.body.state.unlockedMysteries).toEqual(['thirsty-patient']);
+  });
+
+  it('only the demo account can open its granted mystery without the concepts', async () => {
+    const t = testApp();
+    ensureDemoAccount(t.db, new Date());
+    const m = MYSTERY_BY_ID['thirsty-patient'];
+    const answer = { explanation: m.answer, evidence: [] };
+
+    const guest = await t.newPlayer();
+    await request(t.app)
+      .post(`/api/mysteries/${m.id}/solve`)
+      .set(guest.auth)
+      .send(answer)
+      .expect(403);
+
+    const demo = await t.newPlayer();
+    const login = await request(t.app)
+      .post('/api/auth/email/login')
+      .set(demo.auth)
+      .send({ email: DEMO_EMAIL, password: DEMO_PASSWORD })
+      .expect(200);
+    const auth = { Authorization: `Bearer ${login.body.token}` };
+    await request(t.app).post(`/api/mysteries/${m.id}/solve`).set(auth).send(answer).expect(200);
+    expect(login.body.state.progress).toEqual({});
   });
 });

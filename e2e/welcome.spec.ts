@@ -1,11 +1,13 @@
 import { expect, test } from '@playwright/test';
 
-test('first launch shows the welcome screen; guests go straight in and stay in', async ({
+test('every launch opens on the login screen; guests go in for the rest of that launch', async ({
   page,
+  context,
 }) => {
   await page.goto('/');
   const welcome = page.getByTestId('welcome');
-  await expect(welcome.getByRole('heading', { name: 'Bio Bites' })).toBeVisible();
+  await expect(welcome.getByRole('heading', { name: 'Log in' })).toBeVisible();
+  await expect(welcome.getByLabel('Email')).toBeVisible();
   await expect(welcome.getByRole('button', { name: 'Sign in with Apple' })).toBeVisible();
   await expect(welcome.getByRole('button', { name: 'Sign in with Google' })).toBeVisible();
 
@@ -15,6 +17,11 @@ test('first launch shows the welcome screen; guests go straight in and stay in',
   await page.reload();
   await expect(page.getByRole('heading', { name: /Biology is not hard/ })).toBeVisible();
   await expect(page.getByTestId('welcome')).toHaveCount(0);
+
+  // A fresh launch asks again.
+  const next = await context.newPage();
+  await next.goto('/');
+  await expect(next.getByTestId('welcome')).toBeVisible();
 });
 
 test('sign-in that isn’t set up explains itself and stays on the welcome screen', async ({
@@ -32,7 +39,7 @@ test('create a Bio Bites account on the welcome screen, then log back in after s
   const email = `student-${Date.now()}@gmail.com`;
   await page.goto('/');
   const welcome = page.getByTestId('welcome');
-  await welcome.getByTestId('create-account').click();
+  await welcome.getByRole('tab', { name: 'Create account' }).click();
   const form = welcome.getByTestId('email-account-form');
   await form.getByLabel('Email').fill(email);
   await form.getByLabel('Password', { exact: true }).fill('mitosis1');
@@ -44,7 +51,6 @@ test('create a Bio Bites account on the welcome screen, then log back in after s
   await page.getByRole('button', { name: 'Sign out' }).click();
 
   const again = page.getByTestId('welcome');
-  await again.getByRole('button', { name: /Already have one\? Log in/ }).click();
   const login = again.getByTestId('email-account-form');
   await login.getByLabel('Email').fill(email);
   await login.getByLabel('Password', { exact: true }).fill('wrong-pass');
@@ -60,7 +66,6 @@ test('create a Bio Bites account on the welcome screen, then log back in after s
 test('the demo account logs in with one tap', async ({ page }) => {
   await page.goto('/');
   const welcome = page.getByTestId('welcome');
-  await welcome.getByRole('button', { name: /Already have one\? Log in/ }).click();
   await welcome.getByTestId('demo-login').click();
   await expect(page.getByRole('heading', { name: /Biology is not hard/ })).toBeVisible();
   await page.goto('/profile');

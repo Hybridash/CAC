@@ -6,15 +6,12 @@ import { Icon, type IconName } from '../components/Icon';
 
 const TILES: IconName[] = ['microscope', 'dna', 'brain', 'sprout', 'heart', 'microbe'];
 
-/** The first screen: a Bio Bites account, Apple or Google to save progress, or play as a guest. */
+/** The first screen on every launch: log in (or create an account, use Apple or Google), or play as a guest. */
 export function WelcomePage() {
   const finishWelcome = usePlayer((s) => s.finishWelcome);
 
   return (
-    <main
-      className="grid min-h-dvh lg:grid-cols-[1.1fr_1fr]"
-      data-testid="welcome"
-    >
+    <main className="grid min-h-dvh grid-cols-1 lg:grid-cols-[1.1fr_1fr]" data-testid="welcome">
       <section
         className="flex flex-col justify-between gap-12 bg-night px-6 pt-[calc(env(safe-area-inset-top)+3rem)] pb-10 text-white sm:px-12 lg:pt-[calc(env(safe-area-inset-top)+3.5rem)] lg:pb-14"
         style={{
@@ -37,14 +34,14 @@ export function WelcomePage() {
           </p>
         </div>
 
-        <div className="hidden items-end justify-between gap-6 sm:flex">
-          <dl className="flex gap-10 text-white/80">
+        <div className="hidden flex-wrap items-end justify-between gap-x-6 gap-y-6 sm:flex">
+          <dl className="flex items-end gap-10 text-white/80">
             <div>
-              <dt className="text-sm">Interactive concepts</dt>
+              <dt className="text-sm whitespace-nowrap">Interactive concepts</dt>
               <dd className="font-display text-3xl font-bold text-white">{CONCEPTS.length}</dd>
             </div>
             <div>
-              <dt className="text-sm">High school topics</dt>
+              <dt className="text-sm whitespace-nowrap">High school topics</dt>
               <dd className="font-display text-3xl font-bold text-white">{HS_LESSONS.length}</dd>
             </div>
           </dl>
@@ -58,15 +55,14 @@ export function WelcomePage() {
         </div>
       </section>
 
-      <section className="flex items-center justify-center px-6 py-10 pb-[calc(env(safe-area-inset-bottom)+2.5rem)] sm:px-12">
+      {/* Left-aligned with the hero above on phones and tablets; top-aligned with the logo beside it on desktop. */}
+      <section className="flex items-start justify-start px-6 pt-10 pb-[calc(env(safe-area-inset-bottom)+2.5rem)] sm:px-12 lg:justify-center lg:pt-[calc(env(safe-area-inset-top)+3.5rem)]">
         <div className="flex w-full max-w-sm flex-col gap-4">
           <div>
-            <h2 className="text-3xl font-extrabold">Save your progress</h2>
-            <p className="mt-1.5 text-ink-soft">
-              Sign in to pick up where you left off on any device.
-            </p>
+            <h2 className="text-3xl font-extrabold">Log in</h2>
+            <p className="mt-1.5 text-ink-soft">Pick up where you left off on any device.</p>
           </div>
-          <EmailAccountForm collapsible large onSignedIn={finishWelcome} />
+          <EmailAccountForm large initialMode="login" onSignedIn={finishWelcome} />
           <div className="flex items-center gap-3 text-sm font-medium text-ink-soft">
             <span className="h-px flex-1 bg-line" />
             or
@@ -78,7 +74,7 @@ export function WelcomePage() {
             or
             <span className="h-px flex-1 bg-line" />
           </div>
-          <button className="btn-ghost py-3 text-lg" onClick={finishWelcome}>
+          <button className="btn-ghost h-13 text-lg" onClick={finishWelcome}>
             Continue as guest
           </button>
           <p className="text-sm text-ink-soft">

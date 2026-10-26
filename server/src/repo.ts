@@ -67,7 +67,8 @@ export function getUserByToken(db: DB, token: string, now: Date = new Date()): U
   const tokenHash = hashToken(token);
   const s = db
     .prepare('SELECT user_id, created_at, last_used_at FROM sessions WHERE token_hash = ?')
-    .get(tokenHash) as { user_id: string; created_at: string; last_used_at: string | null } | undefined;
+    .get(tokenHash) as
+    { user_id: string; created_at: string; last_used_at: string | null } | undefined;
   if (!s) return undefined;
   const t = now.getTime();
   const lastUsed = Date.parse(s.last_used_at ?? s.created_at);
@@ -115,9 +116,7 @@ export function purgeExpiredSessions(db: DB, now: Date): number {
   const idle = new Date(now.getTime() - SESSION_IDLE_MS).toISOString();
   const old = new Date(now.getTime() - SESSION_MAX_AGE_MS).toISOString();
   return db
-    .prepare(
-      'DELETE FROM sessions WHERE COALESCE(last_used_at, created_at) < ? OR created_at < ?',
-    )
+    .prepare('DELETE FROM sessions WHERE COALESCE(last_used_at, created_at) < ? OR created_at < ?')
     .run(idle, old).changes;
 }
 
@@ -213,6 +212,11 @@ export function playerState(db: DB, userId: string): PlayerState {
       )
       .all(userId) as { mystery_id: string }[]
   ).map((r) => r.mystery_id);
+  const unlockedMysteries = (
+    db.prepare('SELECT mystery_id FROM mystery_unlocks WHERE user_id = ?').all(userId) as {
+      mystery_id: string;
+    }[]
+  ).map((r) => r.mystery_id);
   const achievements = (
     db.prepare('SELECT key FROM achievements WHERE user_id = ?').all(userId) as { key: string }[]
   ).map((r) => r.key);
@@ -228,6 +232,7 @@ export function playerState(db: DB, userId: string): PlayerState {
     progress,
     inventory,
     mysteriesSolved,
+    unlockedMysteries,
     achievements,
     account: linkedAccount(db, userId),
   };

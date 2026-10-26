@@ -6,6 +6,8 @@ import { createUser } from './repo.js';
 export const DEMO_EMAIL = 'demo@gmail.com';
 export const DEMO_PASSWORD = 'demo123';
 export const DEMO_ATP = 750;
+/** Mysteries the demo account can open without first completing their concepts. */
+export const DEMO_MYSTERIES = ['thirsty-patient'];
 export const MIN_PASSWORD_LENGTH = 8;
 
 const KEY_LENGTH = 32;
@@ -132,13 +134,23 @@ export function shouldCreateDemo(env: NodeJS.ProcessEnv = process.env): boolean 
 /** Creates the demo account (demo@gmail.com / demo123) if it doesn't exist yet. */
 export function ensureDemoAccount(db: DB, now: Date) {
   const existing = findEmailAccount(db, DEMO_EMAIL);
+  let userId: string;
   if (existing) {
-    db.prepare('UPDATE users SET atp = MAX(atp, ?) WHERE id = ?').run(DEMO_ATP, existing.user_id);
-    return;
+    userId = existing.user_id;
+    db.prepare('UPDATE users SET atp = MAX(atp, ?) WHERE id = ?').run(DEMO_ATP, userId);
+  } else {
+    userId = createUser(db, now).user.id;
+    db.prepare('UPDATE users SET display_name = ?, atp = ? WHERE id = ?').run(
+      'Demo',
+      DEMO_ATP,
+      userId,
+    );
+    addEmailAccount(db, userId, DEMO_EMAIL, DEMO_PASSWORD, now);
   }
-  const { user } = createUser(db, now);
-  db.prepare('UPDATE users SET display_name = ?, atp = ? WHERE id = ?').run('Demo', DEMO_ATP, user.id);
-  addEmailAccount(db, user.id, DEMO_EMAIL, DEMO_PASSWORD, now);
+  const unlock = db.prepare(
+    'INSERT OR IGNORE INTO mystery_unlocks (user_id, mystery_id, granted_at) VALUES (?, ?, ?)',
+  );
+  for (const id of DEMO_MYSTERIES) unlock.run(userId, id, now.toISOString());
 }
 
 /**

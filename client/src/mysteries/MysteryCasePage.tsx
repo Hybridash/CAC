@@ -46,7 +46,7 @@ function Case({ m }: { m: Mystery }) {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const done = (cid: string) => !!player?.progress[cid]?.completedAt;
-  const unlocked = isMysteryUnlocked(m, done);
+  const unlocked = isMysteryUnlocked(m, done) || !!player?.unlockedMysteries?.includes(m.id);
   const solvedBefore = player?.mysteriesSolved.includes(m.id);
   const cat = CATEGORY_BY_ID[m.category];
   const allExamined = examined.size === m.clues.length;
@@ -102,9 +102,7 @@ function Case({ m }: { m: Mystery }) {
         <div className="absolute -top-4 -right-4 opacity-20" aria-hidden>
           <Icon name="mystery" size={170} />
         </div>
-        <p className="text-sm font-bold text-amber-300">
-          Case file · {cat.name}
-        </p>
+        <p className="text-sm font-bold text-amber-300">Case file · {cat.name}</p>
         <h1 className="text-4xl font-extrabold">{m.title}</h1>
         <div className="mt-1 flex flex-wrap items-center gap-3">
           <Stars difficulty={m.difficulty} />

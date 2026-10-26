@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   isAnswerCorrect,
   type Concept,
   type LabelQuestion,
   type QuizAnswer,
+  type QuizQuestion,
   type QuizSubmitResponse,
 } from '@bioplay/shared';
 import { DndArena, Draggable, DropZone } from '../templates/framework/dnd';
@@ -28,6 +29,14 @@ export function Quiz({
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const submitQuiz = usePlayer((s) => s.submitQuiz);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+
+  // On phones the feedback lands below the options, out of sight: bring it into view.
+  useEffect(() => {
+    if (!checked) return;
+    const still = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    feedbackRef.current?.scrollIntoView({ block: 'center', behavior: still ? 'auto' : 'smooth' });
+  }, [checked]);
 
   const q = concept.quiz[index];
   const answer = answers[index];
@@ -86,6 +95,9 @@ export function Quiz({
   };
 
   if (result) {
+    const missed = concept.quiz
+      .map((question, i) => ({ question, i, given: answers[i] }))
+      .filter(({ i }) => !result.results[i]);
     return (
       <div
         className="card flex flex-col items-center gap-3 p-6 text-center"
@@ -114,6 +126,24 @@ export function Quiz({
               You’ve already earned this quiz’s ATP. Come back after 24 hours for a review bonus!
             </p>
           )
+        )}
+        {missed.length > 0 && (
+          <section
+            className="mt-2 w-full border-t border-line pt-4 text-left"
+            data-testid="quiz-review"
+          >
+            <h4 className="text-lg font-bold">Review what you missed</h4>
+            <ol className="mt-3 grid gap-3">
+              {missed.map(({ question, i, given }) => (
+                <li key={i} className="rounded-2xl bg-amber-50 p-4 text-amber-950">
+                  <p className="text-sm font-bold text-amber-900">Question {i + 1}</p>
+                  <p className="mt-0.5 font-semibold">{question.prompt}</p>
+                  <WhatWentWrong q={question} answer={given} />
+                  <p className="mt-2">{question.explain}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
         )}
         <button className="btn-ghost" onClick={restart}>
           ↺ Try again
@@ -182,14 +212,18 @@ export function Quiz({
       )}
 
       {checked && (
-        <p
+        <div
+          ref={feedbackRef}
           role="status"
-          className={`rounded-2xl p-3 font-semibold ${correct ? 'bg-emerald-50 text-emerald-900' : 'bg-amber-50 text-amber-900'}`}
+          className={`rounded-2xl p-4 ${correct ? 'bg-emerald-50 text-emerald-950' : 'bg-amber-50 text-amber-950'}`}
         >
-          <Icon name={correct ? 'party' : 'bulb'} size={20} className="mr-1.5 -mt-0.5" />
-          {correct ? 'Correct! ' : 'Not quite. '}
-          {q.explain}
-        </p>
+          <p className="flex items-center gap-1.5 font-bold">
+            <Icon name={correct ? 'party' : 'bulb'} size={20} />
+            {correct ? 'Correct!' : 'Not quite.'}
+          </p>
+          {!correct && <WhatWentWrong q={q} answer={answer} />}
+          <p className="mt-2">{q.explain}</p>
+        </div>
       )}
       {error && <p className="text-rose-700">{error}</p>}
       <div className="flex justify-end">
@@ -208,6 +242,42 @@ export function Quiz({
         )}
       </div>
     </div>
+  );
+}
+
+/** For a wrong answer: what the player chose next to the right answer, so the explanation has context. */
+function WhatWentWrong({ q, answer }: { q: QuizQuestion; answer: QuizAnswer | undefined }) {
+  if (q.kind === 'label') {
+    const placed = Array.isArray(answer) ? answer : [];
+    const right = q.pairs.filter((_, d) => placed[d] === d).length;
+    return (
+      <div className="mt-2 text-sm">
+        <p>
+          {right} of {q.pairs.length} matched correctly. The right pairs:
+        </p>
+        <ul className="mt-1 grid gap-0.5">
+          {q.pairs.map((p, d) => (
+            <li key={d}>
+              <span className="font-bold">{p.term}</span> → {p.definition}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+  return (
+    <dl className="mt-2 grid gap-1 text-sm">
+      {typeof answer === 'number' && (
+        <div>
+          <dt className="inline font-bold">You chose: </dt>
+          <dd className="inline">{q.options[answer]}</dd>
+        </div>
+      )}
+      <div>
+        <dt className="inline font-bold">Right answer: </dt>
+        <dd className="inline">{q.options[q.answer]}</dd>
+      </div>
+    </dl>
   );
 }
 

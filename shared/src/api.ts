@@ -23,6 +23,8 @@ export interface PlayerState {
   /** avatarId -> number of copies ever pulled (≥1 means owned). */
   inventory: Record<string, number>;
   mysteriesSolved: string[];
+  /** Mysteries opened for this account directly, without their required concepts. */
+  unlockedMysteries: string[];
   achievements: string[];
   /** The account this progress is saved to (Google, Apple or a Bio Bites email account), or null for a guest. */
   account: LinkedAccount | null;

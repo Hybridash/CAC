@@ -36,9 +36,7 @@ const PATHS = {
       <path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" />
     </>
   ),
-  sound: (
-    <path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5ZM15.5 9a4 4 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" />
-  ),
+  sound: <path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5ZM15.5 9a4 4 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" />,
   soundOff: <path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5ZM16 9.5l5 5M21 9.5l-5 5" />,
   flame: (
     <path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.5 1.5 1.5 2 2 2 0-3-1-5.5 1-7.5Z" />
@@ -77,6 +75,8 @@ const PATHS = {
   ),
   moon: <path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z" />,
   arrow: <path d="M5 12h14m-5-5 5 5-5 5" />,
+  railCollapse: <path d="M4 5h16v14H4ZM9.5 5v14M16 9.5 13.5 12l2.5 2.5" />,
+  railExpand: <path d="M4 5h16v14H4ZM9.5 5v14M13.5 9.5 16 12l-2.5 2.5" />,
 } satisfies Record<string, ReactNode>;
 
 export type UiIconName = keyof typeof PATHS;

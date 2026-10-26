@@ -124,6 +124,15 @@ const MIGRATIONS: string[] = [
     count INTEGER NOT NULL DEFAULT 0
   );
   `,
+  `
+  -- Mysteries opened for one account directly, without completing their required concepts.
+  CREATE TABLE mystery_unlocks (
+    user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    mystery_id TEXT NOT NULL,
+    granted_at TEXT NOT NULL,
+    PRIMARY KEY (user_id, mystery_id)
+  );
+  `,
 ];
 
 export function openDatabase(file: string): DB {

@@ -33,7 +33,10 @@ export function solveMystery(
         .all(userId) as Pick<ProgressRow, 'concept_id'>[]
     ).map((r) => r.concept_id),
   );
-  if (!isMysteryUnlocked(m, (id) => completed.has(id))) {
+  const granted = db
+    .prepare('SELECT 1 FROM mystery_unlocks WHERE user_id = ? AND mystery_id = ?')
+    .get(userId, m.id);
+  if (!granted && !isMysteryUnlocked(m, (id) => completed.has(id))) {
     const missing = m.requires
       .filter((id) => !completed.has(id))
       .map((id) => CONCEPTS.find((c) => c.id === id)?.title ?? id);

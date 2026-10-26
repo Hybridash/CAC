@@ -22,6 +22,9 @@ interface Settings {
   toggleMute: () => void;
   theme: Theme;
   toggleTheme: () => void;
+  /** The desktop sidebar shrunk to an icon-only rail. */
+  railCollapsed: boolean;
+  toggleRail: () => void;
 }
 
 export const useSettings = create<Settings>((set, get) => ({
@@ -30,6 +33,12 @@ export const useSettings = create<Settings>((set, get) => ({
     const muted = !get().muted;
     storage.set('bioplay.muted', muted ? '1' : '0');
     set({ muted });
+  },
+  railCollapsed: storage.get('bioplay.rail') === 'collapsed',
+  toggleRail: () => {
+    const railCollapsed = !get().railCollapsed;
+    storage.set('bioplay.rail', railCollapsed ? 'collapsed' : 'open');
+    set({ railCollapsed });
   },
   theme: initialTheme(),
   toggleTheme: () => {

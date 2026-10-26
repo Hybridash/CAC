@@ -29,7 +29,7 @@ const MORE: NavItem[] = [
 ];
 
 const railLink = ({ isActive }: { isActive: boolean }) =>
-  `flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
+  `flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold whitespace-nowrap transition-colors ${
     isActive
       ? 'bg-brand-tint text-brand-dark shadow-[inset_3px_0_0_var(--color-brand)]'
       : 'text-ink-soft hover:bg-slate-100 hover:text-ink'
@@ -38,7 +38,10 @@ const railLink = ({ isActive }: { isActive: boolean }) =>
 export function Layout() {
   const player = usePlayer((s) => s.player);
   const connection = usePlayer((s) => s.connection);
-  const { muted, toggleMute, theme, toggleTheme } = useSettings();
+  const { muted, toggleMute, theme, toggleTheme, railCollapsed, toggleRail } = useSettings();
+  // Collapsed, the rail keeps its icons; labels stay for screen readers and show as tooltips.
+  const label = railCollapsed ? 'sr-only' : undefined;
+  const tip = (text: string) => (railCollapsed ? text : undefined);
   const { pathname } = useLocation();
   const [moreOpen, setMoreOpen] = useState(false);
 
@@ -57,7 +60,9 @@ export function Layout() {
   const moreActive = MORE.some((m) => pathname.startsWith(m.to));
 
   return (
-    <div className="min-h-dvh lg:pl-60">
+    <div
+      className={`min-h-dvh motion-safe:transition-[padding] motion-safe:duration-200 ${railCollapsed ? 'lg:pl-16' : 'lg:pl-60'}`}
+    >
       <a
         href="#main"
         className="sr-only z-[100] rounded-lg bg-surface p-2 focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
@@ -66,46 +71,79 @@ export function Layout() {
       </a>
 
       {/* Desktop rail */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-line bg-surface px-3 pt-[calc(env(safe-area-inset-top)+1.25rem)] pb-[calc(env(safe-area-inset-bottom)+1rem)] lg:flex">
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 hidden flex-col overflow-x-hidden border-r border-line bg-surface pt-[calc(env(safe-area-inset-top)+1.25rem)] pb-[calc(env(safe-area-inset-bottom)+1rem)] motion-safe:transition-[width,padding] motion-safe:duration-200 lg:flex ${railCollapsed ? 'w-16 px-[9px]' : 'w-60 px-3'}`}
+        data-testid="rail"
+      >
         <NavLink
           to="/"
-          className="mb-6 flex items-center gap-2.5 px-2"
+          className="mb-6 flex items-center gap-2.5 px-[7px]"
           aria-label="Bio Bites home"
+          title={tip('Bio Bites home')}
         >
           <img src="/icon.svg" alt="" width={32} height={32} className="rounded-lg" />
-          <span className="font-display text-xl font-extrabold tracking-tight">
+          <span className={`font-display text-xl font-extrabold tracking-tight ${label ?? ''}`}>
             Bio Bites
           </span>
         </NavLink>
         <nav className="flex flex-col gap-0.5" aria-label="Main">
           {NAV.map((n) => (
-            <NavLink key={n.to} to={n.to} end={n.to === '/'} className={railLink}>
-              <UiIcon name={n.icon} size={22} />
-              {n.label}
+            <NavLink
+              key={n.to}
+              to={n.to}
+              end={n.to === '/'}
+              className={railLink}
+              title={tip(n.label)}
+            >
+              <UiIcon name={n.icon} size={22} className="shrink-0" />
+              <span className={label}>{n.label}</span>
             </NavLink>
           ))}
         </nav>
         <div className="mt-auto flex flex-col gap-1 border-t border-line pt-3">
-          <NavLink to="/profile" className={railLink} aria-label="Your profile and stats">
-            <PlayerAvatar size={28} />
-            Profile
+          <NavLink
+            to="/profile"
+            className={railLink}
+            aria-label="Your profile and stats"
+            title={tip('Profile')}
+          >
+            <span className="-mx-[3px] shrink-0">
+              <PlayerAvatar size={28} />
+            </span>
+            <span className={label}>Profile</span>
           </NavLink>
           <button
             onClick={toggleMute}
-            className="flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-semibold text-ink-soft transition-colors hover:bg-slate-100 hover:text-ink"
+            className="flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-semibold whitespace-nowrap text-ink-soft transition-colors hover:bg-slate-100 hover:text-ink"
             aria-label={muted ? 'Unmute sound effects' : 'Mute sound effects'}
             aria-pressed={muted}
+            title={tip(muted ? 'Sound off' : 'Sound on')}
           >
-            <UiIcon name={muted ? 'soundOff' : 'sound'} size={22} />
-            {muted ? 'Sound off' : 'Sound on'}
+            <UiIcon name={muted ? 'soundOff' : 'sound'} size={22} className="shrink-0" />
+            <span className={label}>{muted ? 'Sound off' : 'Sound on'}</span>
           </button>
           <button
             onClick={toggleTheme}
-            className="flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-semibold text-ink-soft transition-colors hover:bg-slate-100 hover:text-ink"
+            className="flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-semibold whitespace-nowrap text-ink-soft transition-colors hover:bg-slate-100 hover:text-ink"
             aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+            title={tip(theme === 'dark' ? 'Light theme' : 'Dark theme')}
           >
-            <UiIcon name={theme === 'dark' ? 'sun' : 'moon'} size={22} />
-            {theme === 'dark' ? 'Light theme' : 'Dark theme'}
+            <UiIcon name={theme === 'dark' ? 'sun' : 'moon'} size={22} className="shrink-0" />
+            <span className={label}>{theme === 'dark' ? 'Light theme' : 'Dark theme'}</span>
+          </button>
+          <button
+            onClick={toggleRail}
+            className="flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-semibold whitespace-nowrap text-ink-soft transition-colors hover:bg-slate-100 hover:text-ink"
+            aria-label={railCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-expanded={!railCollapsed}
+            title={tip('Expand sidebar')}
+          >
+            <UiIcon
+              name={railCollapsed ? 'railExpand' : 'railCollapse'}
+              size={22}
+              className="shrink-0"
+            />
+            <span className={label}>Collapse</span>
           </button>
         </div>
       </aside>
@@ -221,7 +259,9 @@ export function Layout() {
           aria-controls="more-menu"
           className={`relative flex min-h-14 flex-col items-center justify-center gap-0.5 text-xs font-semibold ${moreOpen || moreActive ? 'text-brand-dark' : 'text-ink-soft'}`}
         >
-          {(moreOpen || moreActive) && <span className="bar-in absolute inset-x-4 top-0 h-0.5 bg-brand" />}
+          {(moreOpen || moreActive) && (
+            <span className="bar-in absolute inset-x-4 top-0 h-0.5 bg-brand" />
+          )}
           <UiIcon name="more" size={22} />
           More
         </button>

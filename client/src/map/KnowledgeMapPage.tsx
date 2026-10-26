@@ -23,6 +23,7 @@ type Status = 'done' | 'started' | 'new';
 export function KnowledgeMapPage() {
   const progress = usePlayer((s) => s.player?.progress ?? NO_PROGRESS);
   const solved = usePlayer((s) => s.player?.mysteriesSolved);
+  const granted = usePlayer((s) => s.player?.unlockedMysteries);
   const navigate = useNavigate();
   const layout = useMemo(() => computeMapLayout(CONCEPTS, CATEGORIES, MYSTERIES), []);
   const [focus, setFocus] = useState<string | null>(null);
@@ -75,7 +76,11 @@ export function KnowledgeMapPage() {
       </header>
 
       <div className="grid gap-4 lg:grid-cols-[1fr_300px]">
-        <div data-theme="light" className="card overflow-auto bg-paper p-2" style={{ maxHeight: '75vh' }}>
+        <div
+          data-theme="light"
+          className="card overflow-auto bg-paper p-2"
+          style={{ maxHeight: '75vh' }}
+        >
           <svg
             viewBox={`0 0 ${layout.width} ${layout.height}`}
             style={{ width: `${zoom * 100}%`, minWidth: zoom * 760 }}
@@ -183,7 +188,7 @@ export function KnowledgeMapPage() {
             })}
             {/* mysteries */}
             {layout.mysteryNodes.map(({ mystery: m, x, y }) => {
-              const unlocked = isMysteryUnlocked(m, done);
+              const unlocked = isMysteryUnlocked(m, done) || !!granted?.includes(m.id);
               const isSolved = solved?.includes(m.id);
               return (
                 <a
@@ -301,9 +306,7 @@ export function KnowledgeMapPage() {
               <p className="text-sm text-ink-soft">{focused.summary}</p>
               {(focused.prerequisites?.length ?? 0) > 0 && (
                 <div className="mt-2">
-                  <p className="text-xs font-extrabold text-ink-soft">
-                    Recommended first
-                  </p>
+                  <p className="text-xs font-extrabold text-ink-soft">Recommended first</p>
                   <ul className="text-sm">
                     {focused.prerequisites!.map((p) => (
                       <li key={p}>
